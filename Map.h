@@ -1,31 +1,54 @@
-//
-// Created by gery on 06/11/17.
-//
+/*
+	Header for Map
+*/
 
 #ifndef BATTLEFOROLYMPIA_PETAK_H
 #define BATTLEFOROLYMPIA_PETAK_H
 
 #include "Point/Point.h"
 
-typedef enum { NORMAL = 0, TOWER, CASTLE, VILLAGE } SquareType;
+typedef enum { NORMAL = ' ', TOWER = 'T', CASTLE = 'C', VILLAGE = 'V'} SquareType;
 
 typedef struct {
+	int ownerID;
     SquareType type;
-    int ownerID, unitID;
+    int unitID;
 } Square;
+/*
+*/
 
 typedef struct {
     int tribute;
     POINT location;
 } Village;
+/*
+*/
 
 typedef struct {
-    int height, width;
+    int height;
+    int width;
     Square* squares;
 } Map;
+/*
+*/
 
-#define Square(map, i, j) (*((map).squares[i * ((map).height) + j]))
+#define Height(M) (M).height
+#define Width(M) (M).width
+#define Grid(M, i, j) (M).squares[i*((M).width)+j]
 
+/* Konstruktor */
 
+/* Fungsi untuk membuat peta berdasarkan input tinggi dan lebar dari pengguna 
+	I.S.	: map belum terdefinisi
+	F.S.	: map terbentuk	*/
+void createMap(int height, int width, Map* map);
 
-#endif //BATTLEFOROLYMPIA_PETAK_H
+/* Destruktor */
+
+/* Fungsi untuk menghapus map */
+void deleteMap(Map* map);
+
+/* Fungsi untuk menampilkan map pada terminal */
+void printMap(Map map);
+
+#endif 

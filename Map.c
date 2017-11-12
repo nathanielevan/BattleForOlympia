@@ -3,6 +3,7 @@
 */
 
 #include "Map.h"
+#include "pcolor.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -16,9 +17,13 @@ void createMap(int height, int width, Map* map) {
 	map->squares = (Square*) calloc (height*width, sizeof(Square));
 	Height(*map) = height;
 	Width(*map) = width;
-	for (i = 0; i < height; i++)
-		for (j = 0; j < width; j++)
-			Grid(*map, i, j).type = initType; 
+	for (i = 0; i < height; i++) {
+		for (j = 0; j < width; j++) {
+			Grid(*map, i, j).type = initType;
+			Grid(*map, i, j).ownerID = -1;
+			Grid(*map, i, j).unitID = -1; 
+		}
+	}
 }
 
 /* Destruktor */
@@ -47,7 +52,28 @@ void printMap(Map map) {
 		}
 		putchar('\n'); printf("   ");
 		for (j = 0; j < w; j++) {
-			printf("* %c ", Grid(map, i, j).type);
+			switch (Grid(map, i, j).ownerID) {
+				case 0 :
+					print_red(Grid(map, i, j).type);
+					break;
+				case 1 :
+					print_green(Grid(map, i, j).type);
+					break;
+				case 2 :
+					print_yellow(Grid(map, i, j).type);
+					break;
+				case 3 :
+					print_blue(Grid(map, i, j).type);
+					break;
+				case 4 :
+					print_magenta(Grid(map, i, j).type);
+					break;
+				case 5 :
+					print_cyan(Grid(map, i, j).type);
+					break;
+				default :
+					printf("* %c ", Grid(map, i, j).type);
+			}
 		}
 		putchar('*'); putchar('\n');
 		printf("%3d", i);

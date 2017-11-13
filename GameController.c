@@ -39,7 +39,7 @@ boolean procBattle(Map *map, int attackerID, int defenderID) {
 	if (IsNeighbor(attacker->location, defender->location) && attacker->canAttack) {
 
 		/* Remove the defender health according to the attacker attack point */
-		defender->health -= attacker->attack;
+		defender->health -= attacker->attack - defender->defence;
 
 		/* Defender is death */
 		if (defender->health <= 0) {
@@ -55,7 +55,7 @@ boolean procBattle(Map *map, int attackerID, int defenderID) {
 		else if (defender->type == KING || defender->type == attacker->type) {
 
 			/* Attacker lose health according to the defender attack point */
-			attacker->health -= defender->attack;
+			attacker->health -= defender->attack - attacker->defence;
 		}
 
 		/* The battle occured */

@@ -65,7 +65,17 @@ int createUnit(const Map *map) {
 		} else {
 			llDelVFirst(&freeList, &i);
 			memset(&unitPool[i], 0, sizeof(Unit));
-			return i + 1;
+			Unit *unit;
+	    		UnitType *type = &unitTypes[type];
+	    		llDelFirst(&freeList, &i);
+	    		unit = &unitPool[i];
+	    		unit->health = type->maxHealth;
+	    		unit->movPoints = type->maxMovPoints;
+	    		unit->ownerID = 0;
+	    		unit->canAttack = true;
+	    		Absis(unit->location) = 0;
+	    		Ordinat(unit->location) = 0;
+	    		return i + 1;
 		}
 	}
 }

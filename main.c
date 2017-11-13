@@ -6,9 +6,9 @@ int width, height;
 Map map;
 
 void initializeMap(Map* map) {
-	scanf("%d %d", &height, &width);
-	createMap(height, width, map);
-	printMap(*map);
+    scanf("%d %d", &height, &width);
+    createMap(height, width, map);
+    printMap(*map);
 }
 
 int main() {

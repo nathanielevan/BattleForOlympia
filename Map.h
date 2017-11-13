@@ -1,5 +1,5 @@
 /*
-	Header for Map
+    Header for Map
 */
 #ifndef BATTLEFOROLYMPIA_PETAK_H
 #define BATTLEFOROLYMPIA_PETAK_H
@@ -9,7 +9,7 @@
 typedef enum { NORMAL = ' ', TOWER = 'T', CASTLE = 'C', VILLAGE = 'V'} SquareType;
 
 typedef struct {
-	int ownerID;
+    int ownerID;
     SquareType type;
     int unitID;
 } Square;
@@ -39,8 +39,8 @@ typedef struct {
 /* Konstruktor */
 
 /* Fungsi untuk membuat peta berdasarkan input tinggi dan lebar dari pengguna 
-	I.S.	: map belum terdefinisi
-	F.S.	: map terbentuk	*/
+    I.S.    : map belum terdefinisi
+    F.S.    : map terbentuk */
 void createMap(int height, int width, Map* map);
 
 /* Destruktor */

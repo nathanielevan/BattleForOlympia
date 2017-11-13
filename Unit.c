@@ -1,11 +1,15 @@
+/*
+	Body of Unit
+*/
 #include "Unit.h"
-#include "listlinier.h"
+#include "ListLinear/listlinier.h"
 
 const UnitType unitTypes[] = {
         {
                 .mapSymbol = 'K',
                 .maxHealth = 100,
                 .attack = 10,
+                .defence = 7,
                 .maxMovPoints = 1,
                 .atkType = MELEE,
                 .cost = 0},
@@ -13,6 +17,7 @@ const UnitType unitTypes[] = {
                 .mapSymbol = 'A',
                 .maxHealth = 100,
                 .attack = 15,
+                .defence = 3,
                 .maxMovPoints = 1,
                 .atkType = RANGED,
                 .cost = 150},
@@ -20,6 +25,7 @@ const UnitType unitTypes[] = {
                 .mapSymbol = 'S',
                 .maxHealth = 150,
                 .attack = 20,
+                .defence = 4,
                 .maxMovPoints = 2,
                 .atkType = MELEE,
                 .cost = 200},
@@ -27,6 +33,7 @@ const UnitType unitTypes[] = {
                 .mapSymbol = 'W',
                 .maxHealth = 75,
                 .attack = 10,
+                .defence = 1,
                 .maxMovPoints = 1,
                 .atkType = MELEE,
                 .cost = 200},
@@ -47,18 +54,16 @@ Unit *getUnit(int id) {
 int createUnit(const Map *map) {
 	int i;
 	if (capacity == 0) {
-		/* initialize the fucking pool */
-		capacity = Width(*map) * Height(*map);
+		/* initialize the unitpool */
+		capacity = width(*map) * height(*map);
 		unitPool = malloc(capacity * sizeof(Unit));
-		llCreateEmpty(&freeList);
-		for (i = 0; i < capacity; i++)
+		for (i = capacity; i-- > 0;)
 			llInsVFirst(&freeList, i);
 	} else {
-		/* piss in it */
 		if (llIsEmpty(freeList)) {
 			return -1;
 		} else {
-			llDelFirst(&freeList, &i);
+			llDelVFirst(&freeList, &i);
 			memset(&unitPool[i], 0, sizeof(Unit));
 			return i + 1;
 		}

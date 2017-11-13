@@ -19,6 +19,7 @@ void createMap(int height, int width, Map* map) {
 	Width(*map) = width;
 	for (i = 0; i < height; i++) {
 		for (j = 0; j < width; j++) {
+			/* Initialize square value */
 			Grid(*map, i, j).type = initType;
 			Grid(*map, i, j).ownerID = -1;
 			Grid(*map, i, j).unitID = -1; 
@@ -30,6 +31,7 @@ void createMap(int height, int width, Map* map) {
 
 /* Fungsi untuk menghapus map */
 void deleteMap(Map* map) {
+	/* Set the square value to default */
 	free(map->squares);
 	Height(*map) = 0;
 	Width(*map) = 0;
@@ -52,32 +54,13 @@ void printMap(Map map) {
 		}
 		putchar('\n'); printf("   ");
 		for (j = 0; j < w; j++) {
-			switch (Grid(map, i, j).ownerID) {
-				case 0 :
-					print_red(Grid(map, i, j).type);
-					break;
-				case 1 :
-					print_green(Grid(map, i, j).type);
-					break;
-				case 2 :
-					print_yellow(Grid(map, i, j).type);
-					break;
-				case 3 :
-					print_blue(Grid(map, i, j).type);
-					break;
-				case 4 :
-					print_magenta(Grid(map, i, j).type);
-					break;
-				case 5 :
-					print_cyan(Grid(map, i, j).type);
-					break;
-				default :
-					printf("* %c ", Grid(map, i, j).type);
-			}
+			/* Print char with the associative color */
+			printColor(Grid(map, i, j).type, Grid(map, i, j).ownerID);
 		}
 		putchar('*'); putchar('\n');
 		printf("%3d", i);
 		for (j = 0; j < w; j++) {
+			/* Print unit symbol with the associative color */
 			printf("*   ");
 		}
 		putchar('*'); putchar('\n'); printf("   ");
@@ -91,4 +74,29 @@ void printMap(Map map) {
 	}
 	putchar('\n');
 
+}
+
+void printColor(char symbol, int ownerID) {
+	switch (ownerID) {
+		case 0 :
+			print_red(symbol);
+			break;
+		case 1 :
+			print_green(symbol);
+			break;
+		case 2 :
+			print_yellow(symbol);
+			break;
+		case 3 :
+			print_blue(symbol);
+			break;
+		case 4 :
+			print_magenta(symbol);
+			break;
+		case 5 :
+			print_cyan(symbol);
+			break;
+		default :
+			printf("* %c ", symbol);
+	}
 }

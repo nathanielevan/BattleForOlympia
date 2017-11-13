@@ -4,21 +4,21 @@
 #ifndef BATTLEFOROLYMPIA_UNIT_H
 #define BATTLEFOROLYMPIA_UNIT_H
 
-typedef enum { KING = 0, ARCHER, SWORDSMAN } TypeID;
+typedef enum { KING = 0, ARCHER, SWORDSMAN, WHITE_MAGE } TypeID;
 
 typedef struct {
     int health, movPoints, ownerID;
     TypeID type;
     char* atkType;
     boolean canAttack;
-    POINT location;
+    Point location;
 } Unit;
 
 typedef enum {MELEE, RANGED} AtkType;
 
 typedef struct {
     char mapSymbol;
-    int maxHealth, attack, maxMovPoints, cost;
+    int maxHealth, attack, defence, maxMovPoints, cost;
     AtkType atkType;
 } UnitType;
 

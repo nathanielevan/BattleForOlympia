@@ -1,7 +1,6 @@
 /*
 	Header for Map
 */
-
 #ifndef BATTLEFOROLYMPIA_PETAK_H
 #define BATTLEFOROLYMPIA_PETAK_H
 
@@ -32,9 +31,10 @@ typedef struct {
 /*
 */
 
-#define Height(M) (M).height
-#define Width(M) (M).width
-#define Grid(M, i, j) (M).squares[i*((M).width)+j]
+#define height(M) (M).height
+#define width(M) (M).width
+#define grid(M, i, j) (M).squares[i*((M).width)+j]
+#define getSquare(M, p) (&grid((M), absis(p), ordinat(p)))
 
 /* Konstruktor */
 
@@ -48,10 +48,15 @@ void createMap(int height, int width, Map* map);
 /* Fungsi untuk menghapus map */
 void deleteMap(Map* map);
 
-/* memberikan warna sesuai dengan ID owner */
-void printColor(char symbol, int ownerID); 
+/* Aksesor */
+
+/* memberikan input mengenai informasi pada suatu koordinat x y */
+void printInfoSquare(int h, int w, Map map);
 
 /* Fungsi untuk menampilkan map pada terminal */
 void printMap(Map map);
+
+/* memberikan warna sesuai dengan ID owner */
+void printColor(char symbol, int ownerID); 
 
 #endif 

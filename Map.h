@@ -48,6 +48,9 @@ void createMap(int height, int width, Map* map);
 /* Fungsi untuk menghapus map */
 void deleteMap(Map* map);
 
+/* memberikan warna sesuai dengan ID owner */
+void printColor(char symbol, int ownerID); 
+
 /* Fungsi untuk menampilkan map pada terminal */
 void printMap(Map map);
 

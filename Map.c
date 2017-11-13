@@ -21,8 +21,8 @@ void createMap(int height, int width, Map* map) {
 		for (j = 0; j < width; j++) {
 			/* Initialize square value */
 			Grid(*map, i, j).type = initType;
-			Grid(*map, i, j).ownerID = -1;
-			Grid(*map, i, j).unitID = -1; 
+			Grid(*map, i, j).ownerID = 0;
+			Grid(*map, i, j).unitID = 0; 
 		}
 	}
 }
@@ -73,7 +73,6 @@ void printMap(Map map) {
 		putchar('*');
 	}
 	putchar('\n');
-
 }
 
 void printColor(char symbol, int ownerID) {

@@ -52,6 +52,38 @@ Unit *getUnit(int id) {
 }
 
 int createUnit(const Map *map) {
+	int i;
+	if (capacity == 0) {
+		/* initialize the unitpool */
+		capacity = width(*map) * height(*map);
+		unitPool = malloc(capacity * sizeof(Unit));
+		for (i = capacity; i-- > 0;)
+			llInsVFirst(&freeList, i);
+	} else {
+		if (llIsEmpty(freeList)) {
+			return -1;
+		} else {
+			llDelVFirst(&freeList, &i);
+			memset(&unitPool[i], 0, sizeof(Unit));
+			Unit *unit;
+	    		UnitType *type = &unitTypes[type];
+	    		llDelFirst(&freeList, &i);
+	    		unit = &unitPool[i];
+	    		unit->health = type->maxHealth;
+	    		unit->movPoints = type->maxMovPoints;
+	    		unit->ownerID = 0;
+	    		unit->canAttack = true;
+	    		Absis(unit->location) = 0;
+	    		Ordinat(unit->location) = 0;
+	    		return i + 1;
+		}
+	}
+}
+
+void destroyUnit(int id) {
+	llInsVFirst(&freeList, id - 1);
+}
+=======
     int i;
     if (capacity == 0) {
         /* initialize the unitpool */

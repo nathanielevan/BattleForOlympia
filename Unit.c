@@ -1,5 +1,5 @@
 /*
-	Body of Unit
+    Body of Unit
 */
 #include "Unit.h"
 #include "ListLinear/listlinier.h"
@@ -44,11 +44,11 @@ int capacity;
 llList freeList;
 
 Unit *getUnit(int id) {
-	if (id < 1 || id > capacity) {
-		return Nil;
-	} else {
-		return unitPool[id - 1];
-	}
+    if (id < 1 || id > capacity) {
+        return Nil;
+    } else {
+        return unitPool[id - 1];
+    }
 }
 
 int createUnit(const Map *map) {
@@ -82,4 +82,26 @@ int createUnit(const Map *map) {
 
 void destroyUnit(int id) {
 	llInsVFirst(&freeList, id - 1);
+}
+=======
+    int i;
+    if (capacity == 0) {
+        /* initialize the unitpool */
+        capacity = width(*map) * height(*map);
+        unitPool = malloc(capacity * sizeof(Unit));
+        for (i = capacity; i-- > 0;)
+            llInsVFirst(&freeList, i);
+    } else {
+        if (llIsEmpty(freeList)) {
+            return -1;
+        } else {
+            llDelVFirst(&freeList, &i);
+            memset(&unitPool[i], 0, sizeof(Unit));
+            return i + 1;
+        }
+    }
+}
+
+void destroyUnit(int id) {
+    llInsVFirst(&freeList, id - 1);
 }

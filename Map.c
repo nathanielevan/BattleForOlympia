@@ -66,8 +66,8 @@ void generateMap(int numPlayer, int w, int h, Map* map) {
     while (i > 0) {
         randomX = rand() % w;
         randomY = rand() &  == 0;
-        if (grid(*map, i, j).ownerID == 0) {
-            grid(*map, i, j).type = VILLAGE;
+        if (grid(*map, randomX, randomY).ownerID == 0) {
+            grid(*map, randomX, randomY).type = VILLAGE;
             i--;
         } 
     }

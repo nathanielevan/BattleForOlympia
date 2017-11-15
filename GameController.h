@@ -5,6 +5,8 @@
 #include "Map.h"
 
 const MISS_CHANCE = 30;
+const STARTING_GOLD = 100;
+const STARTING_INCOME = 100;
 
 typedef enum { ATTACK_MISSED, ATTACK_NOT_PERFORMED, ATTACK_SUCCEED } BattleFlag;
 typedef enum { NO_AVAILABE_CASTLE = 0, NOT_ENOUGH_GOLD, RECRUIT_SUCCESS } RecruitOutcome;

@@ -9,7 +9,6 @@ typedef enum { KING = 0, ARCHER, SWORDSMAN, WHITE_MAGE } TypeID;
 typedef struct {
     int health, movPoints, ownerID;
     TypeID type;
-    char* atkType;
     boolean canAttack;
     Point location;
 } Unit;
@@ -24,11 +23,13 @@ typedef struct {
 
 extern const UnitType unitTypes[];
 
+void initUnitPool(const Map *map);
+
 /* returns pointer to unit with the specified id */
 Unit *getUnit(int id);
 
 /* returns id of newly created unit */
-int createUnit();
+int createUnit(TypeID type);
 
 /* destroy te unit */
 void destroyUnit();

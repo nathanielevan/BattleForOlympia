@@ -1,15 +1,17 @@
-//
-// Created by gery on 09/11/17.
-//
-
 #ifndef BATTLEFOROLYMPIA_USER_H
 #define BATTLEFOROLYMPIA_USER_H
 
 #include "Unit.h"
+#include "CircularList/CircularList.h"
 
 typedef struct {
     int id, gold, income, upkeep, color;
-    Unit* units;
+    lcList units;
 } Player;
 
-#endif //BATTLEFOROLYMPIA_USER_H
+int addUnit(int playerID, TypeID unitType);
+void removeUnit(int playerID, int unitID);
+Player* getPlayer(int id);
+void createPlayers(const Map* map, int N);
+
+#endif /* BATTLEFOROLYMPIA_USER_H */

@@ -1,15 +1,17 @@
 #include "User.h"
-#include "Unit.h"
-#include "listsirkuler.h"
+#include <string.h>
 
 Player *players;
 int nPlayers;
 
-int addUnit(int playerID, int unitID){
+int addUnit(int playerID, TypeID unitType){
     Player* player = getPlayer(playerID);
-    Unit *unit = getUnit(unitID);
+    Unit *unit;
+    int unitID = createUnit(unitType);
+    unit = getUnit(unitID);
     unit->ownerID = playerID;
     lcInsVFirst(&player->units, unitID);
+    return unitID;
 }
 
 void removeUnit(int playerID, int unitID){

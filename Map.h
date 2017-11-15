@@ -48,6 +48,9 @@ void createMap(int height, int width, Map* map);
 /* Fungsi untuk menghapus map */
 void deleteMap(Map* map);
 
+/* Create Random empty Map first */
+void generateMap(int numPlayer, int w, int h, Map* map);
+
 /* Aksesor */
 
 /* memberikan input mengenai informasi pada suatu koordinat x y */

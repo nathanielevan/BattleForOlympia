@@ -4,6 +4,7 @@
 #include "Map.h"
 #include "pcolor.h"
 #include "Unit.h"
+#include "User.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -20,9 +21,9 @@ void createMap(int h, int w, Map* map) {
     for (i = 0; i < h; i++) {
         for (j = 0; j < w; j++) {
             /* Initialize square value */
-            Grid(*map, i, j).type = initType;
-            Grid(*map, i, j).ownerID = 0;
-            Grid(*map, i, j).unitID = 0; 
+            grid(*map, i, j).type = initType;
+            grid(*map, i, j).ownerID = 0;
+            grid(*map, i, j).unitID = 0; 
         }
     }
 }
@@ -37,11 +38,60 @@ void deleteMap(Map* map) {
     width(*map) = 0;
 }
 
+/* Create Random empty Map first */
+void generateMap(int numPlayer, int w, int h, Map* map) {
+    int i;
+    int totalVillage = (w * h) / 10;
+    int randomX, randomY;
+
+    /* make a fixed map for player */
+    for (i = 1; i <= numPlayer; i++) {
+        switch (i) {
+            case 1:
+                initializeGrid(map, i, 1, 1);
+                break;
+            case 2:
+                initializeGrid(map, i, w - 1, h - 1);
+                break;
+            case 3:
+                initializeGrid(map, i, w - 1, 1);
+                break;
+            case 4:
+                initializeGrid(map, i, 1, h - 1);
+                break;
+        }
+    }
+    /* Time to do random */
+    i = totalVillage;
+    while (i > 0) {
+        randomX = rand() % w;
+        randomY = rand() &  == 0;
+        if (grid(*map, randomX, randomY).ownerID == 0) {
+            grid(*map, randomX, randomY).type = VILLAGE;
+            i--;
+        } 
+    }
+}
+
+void initializeGrid(Map* map, int i, int x, int y) {
+    grid(*map, x - 1, y).type = CASTLE;
+    grid(*map, x, y - 1).type = CASTLE;
+    grid(*map, x, y + 1).type = CASTLE;
+    grid(*map, x + 1, y).type = CASTLE;
+    grid(*map, x, y).type = TOWER;
+    grid(*map, x, y).unitID = addUnit(i, KING);
+    grid(*map, x, y).ownerID = i;
+    grid(*map, x - 1, y).ownerID = i;
+    grid(*map, x, y - 1).ownerID = i;
+    grid(*map, x, y + 1).ownerID = i;
+    grid(*map, x + 1, y).ownerID = i;
+}
+
 /* memberikan input mengenai informasi pada suatu koordinat x y */
 void printInfoSquare(int h, int w, Map map) {
 
     /* Local Variables */
-    Square square = Grid(Map, h, w);
+    Square square = grid(Map, h, w);
     Unit* unit_type;
 
     if (square.unitID > 0)  unit_type = getUnit(square.unitID); 
@@ -88,7 +138,7 @@ void printInfoSquare(int h, int w, Map map) {
         printf("DEF %d\n", unitTypes[unit_type->type].defence);
     } else {
         printf("There's no unit here..\n");
-    }
+    } 
 }
 
 /* Fungsi untuk menampilkan map pada terminal */
@@ -109,13 +159,13 @@ void printMap(Map map) {
         putchar('\n'); printf("   ");
         for (j = 0; j < w; j++) {
             /* Print char with the associative color */
-            printColor(Grid(map, i, j).type, Grid(map, i, j).ownerID);
+            printColor(grid(map, i, j).type, grid(map, i, j).ownerID);
         }
         putchar('*'); putchar('\n');
         printf("%3d", i);
         for (j = 0; j < w; j++) {
             /* Print unit symbol with the associative color */
-            printColor(getUnitChar(map, i, j), Grid(map, i, j).ownerID);
+            printColor(getUnitChar(map, i, j), grid(map, i, j).ownerID);
         }
         putchar('*'); putchar('\n'); printf("   ");
         for (j = 0; j < w; j++) {
@@ -130,8 +180,8 @@ void printMap(Map map) {
 }
 
 char getUnitChar(Map map, int i, int j) {
-    if (Grid(map, i, j).unitID != 0) 
-        return unitTypes[getUnit(Grid(map, i, j).unitID)->type].mapSymbol;
+    if (grid(map, i, j).unitID != 0) 
+        return unitTypes[getUnit(grid(map, i, j).unitID)->type].mapSymbol;
     else 
         return ' ';
 }

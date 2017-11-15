@@ -4,6 +4,16 @@
 #include "User.h"
 #include "Map.h"
 
+const MISS_CHANCE = 30;
+
+typedef enum { ATTACK_MISSED, ATTACK_NOT_PERFORMED, ATTACK_SUCCEED } BattleFlag;
+typedef enum { NO_AVAILABE_CASTLE = 0, NOT_ENOUGH_GOLD, RECRUIT_SUCCESS } RecruitOutcome;
+
+typedef struct {
+	int defDamageDone, atkDamageDone, defHealth, atkHealth;
+	BattleFlag battleFlag;
+} BattleResult;
+
 /* Move unit with currUnitID with appropriate direction */
 /* False if the unit can't be moved as specified by the direction */
 /* True if the unit have moved */

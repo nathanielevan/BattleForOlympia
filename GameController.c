@@ -40,15 +40,6 @@ boolean moveUnit(Map *map, int currUnitID, int deltaX, int deltaY) {
 	return false;
 }
 
-int modifier(int attackerID, int defenderID) {
-
-	/* Access the address of the unit with the current ID */
-	Unit *attacker = getUnit(attackerID);
-	Unit *defender = getUnit(defenderID);
-
-	return 
-}
-
 BattleResult procBattle(Map *map, int attackerID, int defenderID) {
 
 	/* Access the address of the unit with the current unit ID */
@@ -109,6 +100,69 @@ BattleResult procBattle(Map *map, int attackerID, int defenderID) {
 	/* The two units can't battle */
 	battleResult.battleFlag = ATTACK_NOT_PERFORMED;
 	return battleResult;
+}
+
+void getTargetID(Map *map, int attackerID, int* targetID, int* numberOfUnits) {
+
+	/* Get the attacker address */
+	Unit* attacker = getUnit(attackerID);
+
+	Point targetLocation;
+
+	/* Counter for the number of units */
+	numberOfUnits* = -1;
+
+	/* Check for the south square */
+	if (ordinat(attacker->location) + 1 < map->height) {
+
+		/* Increase the counter for unit */
+		(numberOfUnits*)++;
+
+		/* Get the target location */
+		targetLocation = MakePoint(absis(attacker->location), ordinat(attacker->location) + 1);
+
+		/* Add the unitID to array of targetID */
+		targetID[(numberOfUnits*)] = getSquare(*map, targetLocation)->unitID;
+	}
+
+	/* Check for the north square */
+	if (ordinat(attacker->location) - 1 >= 0) {
+
+		/* Increase the counter for unit */
+		(numberOfUnits*)++;
+
+		/* Get the target location */
+		targetLocation = MakePoint(absis(attacker->location), ordinat(attacker->location) - 1);
+
+		/* Add the unitID to array of targetID */
+		targetID[(numberOfUnits*)] = getSquare(*map, targetLocation)->unitID;
+	}
+
+	/* Check for the east square */
+	if (absis(attacker->location) + 1 < map->width) {
+
+		/* Increase the counter for unit */
+		(numberOfUnits*)++;
+
+		/* Get the target location */
+		targetLocation = MakePoint(absis(attacker->location) + 1, ordinat(attacker->location));
+
+		/* Add the unitID to array of targetID */
+		targetID[(numberOfUnits*)] = getSquare(*map, targetLocation)->unitID;
+	}
+
+	/* Check for the west square */
+	if (absis(attacker->location) - 1 >= 0) {
+
+		/* Increase the counter for unit */
+		(numberOfUnits*)++;
+
+		/* Get the target location */
+		targetLocation = MakePoint(absis(attacker->location) - 1, ordinat(attacker->location));
+
+		/* Add the unitID to array of targetID */
+		targetID[(numberOfUnits*)] = getSquare(*map, targetLocation)->unitID;
+	}
 }
 
 RecruitOutcome recruitUnit(Map *map, int ownerID, TypeID typeID) {

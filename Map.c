@@ -8,6 +8,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/* Fungsi untuk mendapatkan nilai square dari id square */
+Square* getSquareByID(Map map, int ID) {
+    /* Dapatkan nilai dari sumbu x */
+    int x = ID / width(map);
+
+    /* Dapatkan nilai dari y */
+    int y = ID - x * width(map);
+
+    /* Return nilai square yang sesuai */
+    return grid(map, x, y);
+}
+
 /* Fungsi untuk membuat peta berdasarkan input tinggi dan lebar dari pengguna 
     I.S.    : map belum terdefinisi
     F.S.    : map terbentuk */
@@ -24,6 +36,7 @@ void createMap(int h, int w, Map* map) {
             grid(*map, i, j).type = initType;
             grid(*map, i, j).ownerID = 0;
             grid(*map, i, j).unitID = 0; 
+            grid(*map, i, j).squareID = i * width(*map) + j + 1;
         }
     }
 }
@@ -73,18 +86,22 @@ void generateMap(int numPlayer, int w, int h, Map* map) {
     }
 }
 
-void initializeGrid(Map* map, int i, int x, int y) {
+void initializeGrid(Map* map, int ownerID, int x, int y) {
     grid(*map, x - 1, y).type = CASTLE;
     grid(*map, x, y - 1).type = CASTLE;
     grid(*map, x, y + 1).type = CASTLE;
     grid(*map, x + 1, y).type = CASTLE;
     grid(*map, x, y).type = TOWER;
     grid(*map, x, y).unitID = addUnit(i, KING);
-    grid(*map, x, y).ownerID = i;
-    grid(*map, x - 1, y).ownerID = i;
-    grid(*map, x, y - 1).ownerID = i;
-    grid(*map, x, y + 1).ownerID = i;
-    grid(*map, x + 1, y).ownerID = i;
+    grid(*map, x, y).ownerID = ownerID;
+    grid(*map, x - 1, y).ownerID = ownerID;
+    addSquare(ownerID, grid(*map, x - 1, y).squareID);
+    grid(*map, x, y - 1).ownerID = ownerID;
+    addSquare(ownerID, grid(*map, x, y - 1).squareID);
+    grid(*map, x, y + 1).ownerID = ownerID;
+    addSquare(ownerID, grid(*map, x, y + 1).squareID);
+    grid(*map, x + 1, y).ownerID = ownerID;
+    addSquare(ownerID, grid(*map, x + 1, y).squareID);
 }
 
 /* memberikan input mengenai informasi pada suatu koordinat x y */

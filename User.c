@@ -14,6 +14,14 @@ int addUnit(int playerID, TypeID unitType){
     return unitID;
 }
 
+void addSquare(int playerID, int squareID) {
+    /* Get the player with the current ID */
+    Player* player = getPlayer(playerID);
+
+    /* Insert square ID into the list of square */
+    llInsVFirst(&player->squares, squareID);
+}
+
 void removeUnit(int playerID, int unitID){
     Player *player = getPlayer(playerID);
     Unit *unit = getPlayer(unitID);
@@ -35,7 +43,7 @@ void createPlayers(const Map* map, int N){
     nPlayers = N;
     players = (Player *) calloc(N, sizeof(Player));
     for (i = 0; i < N; i++) {
-        player = players[i];
+        player = &players[i];
         player->gold = STARTING_GOLD;
         player->income = STARTING_INCOME;
         player->upkeep = 0;

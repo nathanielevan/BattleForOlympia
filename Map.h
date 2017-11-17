@@ -11,6 +11,7 @@ typedef enum { NORMAL = ' ', TOWER = 'T', CASTLE = 'C', VILLAGE = 'V'} SquareTyp
 typedef struct {
     int ownerID;
     SquareType type;
+    int squareID;
     int unitID;
 } Square;
 /*
@@ -61,5 +62,7 @@ void printMap(Map map);
 
 /* memberikan warna sesuai dengan ID owner */
 void printColor(char symbol, int ownerID); 
+
+Square* getSquareByID(Map *map, int ID);
 
 #endif 

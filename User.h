@@ -7,6 +7,7 @@
 typedef struct {
     int id, gold, income, upkeep, color;
     lcList units;
+    llList squares;
 } Player;
 
 int addUnit(int playerID, TypeID unitType);

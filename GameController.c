@@ -200,4 +200,31 @@ RecruitOutcome recruitUnit(Map *map, int ownerID, TypeID typeID) {
 
 Point AvailabeCastleLocation(Map map, int ownerID) {
 
+	/* Access the address of the owner with the ID */
+	User *user = getUser(ownerID);
+
+	/* Get the first ID in the list */
+	lladdress address = llFirst(user->squares)
+
+	/* Iterate through the list until empty castle is found */
+	while (!llIsEmpty(address)) {
+
+		/* Get the square */
+		Square *square = getSquareByID(map, llInfo(address));
+
+		/* Check if the square is a castle and empty */
+		if (square->type == CASTLE && square->unitID == 0) {
+
+			/* Return the location of the square */
+			return square->location;
+		}
+
+		/* Iterate through the next address */
+		address = llNext(address);
+	}
+
+	/* Return empty point */
+	Point castleLocation = MakePoint(0, 0);
+
+	return castleLocation;
 }

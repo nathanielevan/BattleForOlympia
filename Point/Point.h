@@ -56,6 +56,5 @@ void GeserKeSbY (Point *P);
 /* F.S. P berada pada sumbu Y dengan ordinat yang sama dengan semula. */
 /* Proses : P digeser ke sumbu Y. */
 /* Contoh : Jika koordinat semula (9,9), maka menjadi (0,9) */
-=
 
-#endif //BATTLEFOROLYMPIA_Point_H
+#endif /* BATTLEFOROLYMPIA_POINT_H */

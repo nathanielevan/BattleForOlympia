@@ -12,8 +12,13 @@ typedef struct {
 } Player;
 
 int addUnit(int playerID, TypeID unitType);
+
 void removeUnit(int playerID, int unitID);
+
 Player* getPlayer(int id);
+
 void createPlayers(const Map* map, int N);
+
+void addSquare(int playerID, int squareID);
 
 #endif /* BATTLEFOROLYMPIA_USER_H */

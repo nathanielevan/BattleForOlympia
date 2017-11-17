@@ -52,6 +52,7 @@ void deleteMap(Map* map);
 /* Create Random empty Map first */
 void generateMap(int numPlayer, int w, int h, Map* map);
 
+void initializeGrid(Map* map, int ownerID, int x, int y);
 /* Aksesor */
 
 /* memberikan input mengenai informasi pada suatu koordinat x y */

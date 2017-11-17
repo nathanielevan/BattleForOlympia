@@ -15,7 +15,7 @@ int width, height, x, y;
 int Enemy, myUnit;
 int number_of_player, playerID, currUnitID;
 Map map;
-char[20] command;
+char command[20];
 Player currPlayer;
 boolean IsOneKing, validCommand;
 
@@ -41,7 +41,7 @@ int main() {
 
 	/* Create players */
 	printf("How many players do you want : ");
-	scanf("%d", number_of_player);
+	scanf("%d", &number_of_player);
 	createPlayers(&map, number_of_player);
 	printMap(map);
 
@@ -52,8 +52,8 @@ int main() {
 		for(i = 1; i <= number_of_player; i++){
 			/* Initialize */
 			playerID = i;
-			currUnit = 0;
-			currPlayer = getPlayer(playerID);
+			currUnitID = 0;
+			currPlayer = *getPlayer(playerID);
 
 			printf("Player %d's Turn\n", playerID);
 

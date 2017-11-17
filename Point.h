@@ -1,5 +1,9 @@
-#ifndef BATTLEFOROLYMPIA_POINT_H
-#define BATTLEFOROLYMPIA_POINT_H
+//
+// Created by gery on 06/11/17.
+//
+
+#ifndef BATTLEFOROLYMPIA_Point_H
+#define BATTLEFOROLYMPIA_Point_H
 
 #include "../boolean.h"
 
@@ -40,7 +44,6 @@ Point NextX (Point P);
 /* Mengirim salinan P dengan absis ditambah satu */
 Point NextY (Point P);
 /* Mengirim salinan P dengan ordinat ditambah satu */
-
 Point PlusDelta (Point P, int deltaX, int deltaY);
 /* Mengirim salinan P yang absisnya adalah Absis(P) + deltaX dan ordinatnya adalah Ordinat(P) + deltaY */
 void Geser (Point *P, int deltaX, int deltaY);
@@ -56,6 +59,5 @@ void GeserKeSbY (Point *P);
 /* F.S. P berada pada sumbu Y dengan ordinat yang sama dengan semula. */
 /* Proses : P digeser ke sumbu Y. */
 /* Contoh : Jika koordinat semula (9,9), maka menjadi (0,9) */
-=
 
 #endif //BATTLEFOROLYMPIA_Point_H

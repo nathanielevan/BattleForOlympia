@@ -35,4 +35,4 @@ int createUnit(TypeID type);
 /* destroy te unit */
 void destroyUnit();
 
-#endif //BATTLEFOROLYMPIA_UNIT_H
+#endif /* BATTLEFOROLYMPIA_UNIT_H */

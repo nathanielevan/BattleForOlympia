@@ -19,7 +19,7 @@ typedef struct {
 
 typedef struct {
     int tribute;
-    POINT location;
+    Point location;
 } Village;
 /*
 */
@@ -60,9 +60,12 @@ void printInfoSquare(int h, int w, Map map);
 /* Fungsi untuk menampilkan map pada terminal */
 void printMap(Map map);
 
+/* Fungsi untuk mendapatkan simbol character Unit*/
+char getUnitChar(Map map, int i, int j);
+
 /* memberikan warna sesuai dengan ID owner */
 void printColor(char symbol, int ownerID); 
 
-Square* getSquareByID(Map *map, int ID);
+Square* getSquareByID(Map map, int ID);
 
 #endif 

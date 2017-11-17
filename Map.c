@@ -8,18 +8,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* Fungsi untuk mendapatkan nilai square dari id square */
-Square* getSquareByID(Map map, int ID) {
-    /* Dapatkan nilai dari sumbu x */
-    int x = ID / width(map);
-
-    /* Dapatkan nilai dari y */
-    int y = ID - x * width(map);
-
-    /* Return nilai square yang sesuai */
-    return grid(map, x, y);
-}
-
 /* Fungsi untuk membuat peta berdasarkan input tinggi dan lebar dari pengguna 
     I.S.    : map belum terdefinisi
     F.S.    : map terbentuk */
@@ -227,4 +215,14 @@ void printColor(char symbol, int ownerID) {
         default :
             printf("* %c ", symbol);
     }
+}
+
+/* Fungsi untuk mendapatkan nilai square dari id square */
+Square* getSquareByID(Map map, int ID) {
+    /* Dapatkan nilai dari sumbu x */
+    int x = ID / width(map);
+    /* Dapatkan nilai dari y */
+    int y = ID - x * width(map);
+    /* Return nilai square yang sesuai */
+    return &grid(map, x, y);
 }

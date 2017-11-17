@@ -6,13 +6,20 @@
 #include "Map.h"
 #include <stdlib.h>
 
-boolean canMove(int currUnitID, int deltaX, int deltaY) {
-	if (abs(deltaX) + abs(deltaY) >= unit->movPoints) &&
-		PlusDelta(unit->location, deltaX, deltaY) 
+boolean canMove(Unit *unit, int deltaX, int deltaY, Map *map) {
+
+	if ((abs(deltaX) + abs(deltaY) <= unit->movPoints) &&
+			isInMap(PlusDelta(unit->location, deltaX, deltaY), map))
 		/* Hasilkan nilai true karena unit mampu bergerak */
 		return true;
 	/* Unit tidak mampu bergerak, hasilkan false */
 	return false;
+}
+
+boolean isInMap (Point point, Map *map) {
+
+	/* Check if it is in map */
+	return absis(point) < width(*map) && absis(point) >= 0 && ordinat(point) < height(*map) && ordinat(point) >= 0;
 }
 
 boolean moveUnit(Map *map, int currUnitID, int deltaX, int deltaY) {
@@ -21,10 +28,10 @@ boolean moveUnit(Map *map, int currUnitID, int deltaX, int deltaY) {
 	Unit *unit = getUnit(currUnitID);
 
 	/* Check if the unit able to do the move */
-	if (canMove(currUnitID, deltaX, deltaY)) {
+	if (canMove(unit, deltaX, deltaY, map)) {
 
 		/* Remove the current unit from the map */
-		getSquare(*map, unit->location)->currUnitID = 0;
+		getSquare(*map, unit->location)->unitID = 0;
 
 		/* Translate the location of the unit with the corresponding X and Y */
 		unit->location = PlusDelta(unit->location, deltaX, deltaY);
@@ -58,34 +65,34 @@ BattleResult procBattle(Map *map, int attackerID, int defenderID) {
 		/* Check if the attack missed the target */
 		if ((float) rand()/RAND_MAX >= MISS_CHANCE) {
 			/* The attack missed */
-			battleResult.battleFlag = MISSED;
+			battleResult.battleFlag = ATTACK_MISSED;
 
 			/* Return the battle result */
 			return battleResult;
 		}
 
 		/* Remove the defender health according to the attacker attack point */
-		defender->health -= attacker->attack - defender->defence;
+		defender->health -= unitTypes[attacker->type].attack - unitTypes[defender->type].defence;
 
 		/* Update the battle result */
 		battleResult.defHealth = defender->health;
-		battleResult.atkDamageDone = attacker->attack - defender->defence;
+		battleResult.atkDamageDone = unitTypes[attacker->type].attack - unitTypes[defender->type].defence;
 
-		/* Defender is death */
+		/* Defender is dead */
 		if (defender->health <= 0) {
 
 			/* Remove the unit from the list of unit */
 			destroyUnit(defenderID);
 
 			/* Remove the unit from the map */
-			getSquare(*map, unit->location)->unitID = 0;
+			getSquare(*map, defender->location)->unitID = 0;
 		}
 
 		/* Defender is still alive and can attack */
 		else if (defender->type == KING || defender->type == attacker->type) {
 
 			/* Attacker lose health according to the defender attack point */
-			attacker->health -= defender->attack - attacker->defence;
+			attacker->health -= unitTypes[defender->type].attack - unitTypes[attacker->type].defence;
 
 			/* Update the battle result */
 			battleResult.atkHealth = attacker->health;
@@ -110,85 +117,87 @@ void getTargetID(Map *map, int attackerID, int* targetID, int* numberOfUnits) {
 	Point targetLocation;
 
 	/* Counter for the number of units */
-	numberOfUnits* = -1;
+	*numberOfUnits = -1;
 
 	/* Check for the south square */
 	if (ordinat(attacker->location) + 1 < map->height) {
 
 		/* Increase the counter for unit */
-		(numberOfUnits*)++;
+		(*numberOfUnits)++;
 
 		/* Get the target location */
 		targetLocation = MakePoint(absis(attacker->location), ordinat(attacker->location) + 1);
 
 		/* Add the unitID to array of targetID */
-		targetID[(numberOfUnits*)] = getSquare(*map, targetLocation)->unitID;
+		targetID[(*numberOfUnits)] = getSquare(*map, targetLocation)->unitID;
 	}
 
 	/* Check for the north square */
 	if (ordinat(attacker->location) - 1 >= 0) {
 
 		/* Increase the counter for unit */
-		(numberOfUnits*)++;
+		(*numberOfUnits)++;
 
 		/* Get the target location */
 		targetLocation = MakePoint(absis(attacker->location), ordinat(attacker->location) - 1);
 
 		/* Add the unitID to array of targetID */
-		targetID[(numberOfUnits*)] = getSquare(*map, targetLocation)->unitID;
+		targetID[(*numberOfUnits)] = getSquare(*map, targetLocation)->unitID;
 	}
 
 	/* Check for the east square */
 	if (absis(attacker->location) + 1 < map->width) {
 
 		/* Increase the counter for unit */
-		(numberOfUnits*)++;
+		(*numberOfUnits)++;
 
 		/* Get the target location */
 		targetLocation = MakePoint(absis(attacker->location) + 1, ordinat(attacker->location));
 
 		/* Add the unitID to array of targetID */
-		targetID[(numberOfUnits*)] = getSquare(*map, targetLocation)->unitID;
+		targetID[(*numberOfUnits)] = getSquare(*map, targetLocation)->unitID;
 	}
 
 	/* Check for the west square */
 	if (absis(attacker->location) - 1 >= 0) {
 
 		/* Increase the counter for unit */
-		(numberOfUnits*)++;
+		(*numberOfUnits)++;
 
 		/* Get the target location */
 		targetLocation = MakePoint(absis(attacker->location) - 1, ordinat(attacker->location));
 
 		/* Add the unitID to array of targetID */
-		targetID[(numberOfUnits*)] = getSquare(*map, targetLocation)->unitID;
+		targetID[(*numberOfUnits)] = getSquare(*map, targetLocation)->unitID;
 	}
 }
 
 RecruitOutcome recruitUnit(Map *map, int ownerID, TypeID typeID) {
 
+	int currUnitID;
+
 	/* Access the address of the owner with the current owner ID */
-	User *user = getUser(ownerID);
+	Player *player = getPlayer(ownerID);
 
 	/* Find the available castle location for the player */
 	Point castleLocation = AvailabeCastleLocation(*map, ownerID);
 
-	/* Check if the user have enough money */
-	if (user->gold >= unitTypes[typeID].cost) 
+	/* Check if the player have enough money */
+	if (player->gold >= unitTypes[typeID].cost) 
 
-		/* User doesn't have enough gold */
+		/* Player doesn't have enough gold */
 		return NOT_ENOUGH_GOLD;
 	
 
-	/* Check if the user have empty castle */
-	if (absis(castleLocation) != -1 && ordinat(castleLocation) != -1)
+	/* Check if the player have empty castle */
+	if (absis(castleLocation) == 0 && ordinat(castleLocation) == -1)
 
-		/* User doesn't have empty castle */
+		/* Player doesn't have empty castle */
 		return NO_AVAILABE_CASTLE;
 
 
 	/* Recruit the unit */
-	int currUnitID = addUnit(ownerID, typeID);
+	currUnitID = addUnit(ownerID, typeID);
 
 	/* Add the unit into an available castle in the map */
 	getSquare(*map, castleLocation)->unitID = currUnitID;
@@ -200,14 +209,17 @@ RecruitOutcome recruitUnit(Map *map, int ownerID, TypeID typeID) {
 
 Point AvailabeCastleLocation(Map map, int ownerID) {
 
+	Point castleLocation;
+	int x, y;
+
 	/* Access the address of the owner with the ID */
-	User *user = getUser(ownerID);
+	Player *player = getPlayer(ownerID);
 
 	/* Get the first ID in the list */
-	lladdress address = llFirst(user->squares)
+	lladdress address = llFirst(player->squares);
 
 	/* Iterate through the list until empty castle is found */
-	while (!llIsEmpty(address)) {
+	while (address != Nil) {
 
 		/* Get the square */
 		Square *square = getSquareByID(map, llInfo(address));
@@ -215,8 +227,14 @@ Point AvailabeCastleLocation(Map map, int ownerID) {
 		/* Check if the square is a castle and empty */
 		if (square->type == CASTLE && square->unitID == 0) {
 
+			y = (square->squareID - 1) / width(map);
+
+			x = (square->squareID - 1) % width(map);
+
+			castleLocation = MakePoint(x, y);
+
 			/* Return the location of the square */
-			return square->location;
+			return castleLocation;
 		}
 
 		/* Iterate through the next address */
@@ -224,7 +242,7 @@ Point AvailabeCastleLocation(Map map, int ownerID) {
 	}
 
 	/* Return empty point */
-	Point castleLocation = MakePoint(0, 0);
+	castleLocation = MakePoint(0, -1);
 
 	return castleLocation;
 }

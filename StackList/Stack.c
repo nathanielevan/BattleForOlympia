@@ -1,5 +1,4 @@
-/* File : stacklist.c */
-#include "stacklist.h"
+#include "Stack.h"
 #include <stdlib.h>
 
 /* Prototype manajemen memori */
@@ -7,20 +6,20 @@
 void stkAlokasi (stkAddress *P, int X)
 /* I.S. Sembarang */
 /* F.S. Alamat P dialokasi, jika berhasil maka stkInfo(P)=X dan 
-        stkNext(P)=Nil */
-/*      P=Nil jika alokasi gagal */
+        stkNext(P)=NULL */
+/*      P=NULL jika alokasi gagal */
 {
   /* Algoritma */
   *P = (stkElement *) malloc(sizeof(stkElement));
-  if (*P != Nil) {
+  if (*P != NULL) {
     stkInfo(*P) = X;
-    stkNext(*P) = Nil;
+    stkNext(*P) = NULL;
   }
-  /* else *P == Nil */
+  /* else *P == NULL */
 }
 
 void stkDealokasi (stkAddress P)
-/* I.S. P adalah hasil alokasi, P != Nil */
+/* I.S. P adalah hasil alokasi, P != NULL */
 /* F.S. Alamat P didealokasi, dikembalikan ke sistem */
 {
   /* Algoritma */
@@ -30,10 +29,10 @@ void stkDealokasi (stkAddress P)
 /* ********* PROTOTYPE REPRESENTASI LOJIK stkStack ***************/
 
 boolean stkIsEmpty (stkStack S)
-/* Mengirim true jika stkStack kosong: stkTop(S) = Nil */
+/* Mengirim true jika stkStack kosong: stkTop(S) = NULL */
 {
   /* Algoritma */
-  return stkTop(S) == Nil;
+  return stkTop(S) == NULL;
 }
 
 void stkCreateEmpty (stkStack * S)
@@ -41,7 +40,7 @@ void stkCreateEmpty (stkStack * S)
 /* F.S. Membuat sebuah stkStack S yang kosong */
 {
   /* Algoritma */
-  stkTop(*S) = Nil;
+  stkTop(*S) = NULL;
 }
 
 void stkPush (stkStack * S, int X)
@@ -55,8 +54,8 @@ void stkPush (stkStack * S, int X)
   stkAddress P;
   /* Algoritma */
   stkAlokasi(&P, X);
-  if (P != Nil) {
-    /* Bila S kosong, ini menjadi stkNext(P) = Nil */
+  if (P != NULL) {
+    /* Bila S kosong, ini menjadi stkNext(P) = NULL */
     stkNext(P) = stkTop(*S);
     stkTop(*S) = P;
   }
@@ -76,4 +75,13 @@ void stkPop (stkStack * S, int * X)
   *X = stkInfo(P);
   stkTop(*S) = stkNext(P);
   stkDealokasi(P);
+}
+
+void stkDestroy(stkStack *S) {
+  stkAddress P;
+  while (!stkIsEmpty(*S)) {
+    P = stkTop(*S);
+    stkTop(*S) = stkNext(P);
+    stkDealokasi(P);
+  }
 }

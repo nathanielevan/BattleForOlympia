@@ -1,5 +1,6 @@
 #include "Undo.h"
-#include "Stack.h"
+#include "Unit.h"
+#include "StackList/Stack.h"
 
 typedef union {
     struct {
@@ -9,15 +10,15 @@ typedef union {
     int i;
 } UndoStkEntry;
 
-Stack undoStack = Nil;
+stkStack undoStack = { NULL };
 
 void initUndo() {
     stkDestroy(&undoStack);
 }
 
 void registerMove(int unitID, const Map *map, Point from, Point to) {
-    int deltaX = Absis(to) - Absis(from);
-    int deltaY = Ordinat(to) - Ordinat(from);
+    int deltaX = absis(to) - absis(from);
+    int deltaY = ordinat(to) - ordinat(from);
     int delta = deltaX + deltaY * width(*map);
     UndoStkEntry u;
     u.delta = delta;
@@ -35,6 +36,6 @@ void undo(const Map *map) {
     deltaX = u.delta % width(*map);
     delta = abs(deltaX) + abs(deltaY);
     unit->movPoints += delta;
-    Absis(unit->location) -= deltaX;
-    Ordinat(unit->location) -= deltaY;
+    absis(unit->location) -= deltaX;
+    ordinat(unit->location) -= deltaY;
 }

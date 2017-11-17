@@ -66,7 +66,7 @@ void generateMap(int numPlayer, int w, int h, Map* map) {
     i = totalVillage;
     while (i > 0) {
         randomX = rand() % w;
-        randomY = rand() &  == 0;
+        randomY = rand() % h;
         if (grid(*map, randomX, randomY).ownerID == 0) {
             grid(*map, randomX, randomY).type = VILLAGE;
             i--;
@@ -80,7 +80,7 @@ void initializeGrid(Map* map, int ownerID, int x, int y) {
     grid(*map, x, y + 1).type = CASTLE;
     grid(*map, x + 1, y).type = CASTLE;
     grid(*map, x, y).type = TOWER;
-    grid(*map, x, y).unitID = addUnit(i, KING);
+    grid(*map, x, y).unitID = addUnit(ownerID, KING);
     grid(*map, x, y).ownerID = ownerID;
     grid(*map, x - 1, y).ownerID = ownerID;
     addSquare(ownerID, grid(*map, x - 1, y).squareID);
@@ -96,7 +96,7 @@ void initializeGrid(Map* map, int ownerID, int x, int y) {
 void printInfoSquare(int h, int w, Map map) {
 
     /* Local Variables */
-    Square square = grid(Map, h, w);
+    Square square = grid(map, h, w);
     Unit* unit_type;
 
     if (square.unitID > 0)  unit_type = getUnit(square.unitID); 
@@ -134,7 +134,7 @@ void printInfoSquare(int h, int w, Map map) {
             case SWORDSMAN:
                 printf("Swordsman\n");
                 break;
-            case WHITE_IMAGE:
+            case WHITE_MAGE:
                 printf("White Mage\n");
         }
         printf("Owned by Player %d\n", square.ownerID);

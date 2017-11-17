@@ -1,4 +1,5 @@
 #include "User.h"
+#include "GameController.h"
 #include <string.h>
 
 Player *players;
@@ -24,7 +25,7 @@ void addSquare(int playerID, int squareID) {
 
 void removeUnit(int playerID, int unitID){
     Player *player = getPlayer(playerID);
-    Unit *unit = getPlayer(unitID);
+    Unit *unit = getUnit(unitID);
     lcDelP(&player->units, unitID);
     unit->ownerID = 0;
 }
@@ -48,6 +49,6 @@ void createPlayers(const Map* map, int N){
         player->income = STARTING_INCOME;
         player->upkeep = 0;
         player->color = i;
-        player->units = Nil;
+        lcCreateEmpty(&player->units);
     }
 }

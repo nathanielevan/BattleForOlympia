@@ -1,6 +1,6 @@
 #include "boolean.h"
 #include "GameController.h"
-#include "Point.h"
+#include "Point/Point.h"
 #include "Unit.h"
 #include "User.h"
 #include "Map.h"

@@ -1,4 +1,4 @@
-/* File : stacklist.h */
+/* File : stack.h */
 #ifndef _STACKLIST_H
 #define _STACKLIST_H
 
@@ -51,5 +51,7 @@ void stkPop (stkStack * S, int * X);
 /* F.S. X adalah nilai elemen TOP yang lama, */
 /*      elemen TOP yang lama didealokasi */
 /* Pada dasarnya adalah operasi Delete First pada list linier */
+void stkDestroy(stkStack *S);
+/* Menghapus semua elemen dari stack */
 
 #endif

@@ -57,4 +57,4 @@ void GeserKeSbY (Point *P);
 /* Proses : P digeser ke sumbu Y. */
 /* Contoh : Jika koordinat semula (9,9), maka menjadi (0,9) */
 
-#endif //BATTLEFOROLYMPIA_Point_H
+#endif /* BATTLEFOROLYMPIA_POINT_H */

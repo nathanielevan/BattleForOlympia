@@ -1,12 +1,12 @@
 /* File : listlinier.h */
 /* contoh ADT list berkait dengan representasi fisik pointer  */
 /* Representasi lladdress dengan pointer */
-/* int adalah integer */
 
 #ifndef BATTLEFOROLYMPIA_LINEARLIST_H
 #define BATTLEFOROLYMPIA_LINEARLIST_H
 
 #include "boolean.h"
+#include <stdlib.h>
 
 #define Nil NULL
 

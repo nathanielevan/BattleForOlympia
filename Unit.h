@@ -1,8 +1,9 @@
-#include "boolean.h"
-#include "Point/Point.h"
-
 #ifndef BATTLEFOROLYMPIA_UNIT_H
 #define BATTLEFOROLYMPIA_UNIT_H
+
+#include "boolean.h"
+#include "Point/Point.h"
+#include "Map.h"
 
 typedef enum { KING = 0, ARCHER, SWORDSMAN, WHITE_MAGE } TypeID;
 

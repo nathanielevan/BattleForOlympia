@@ -2,7 +2,9 @@
   Body of Unit
 */
 #include "Unit.h"
-#include "ListLinear/listlinier.h"
+#include "LinearList/LinearList.h"
+#include <stdlib.h>
+#include <string.h>
 
 const UnitType unitTypes[] = {
     {
@@ -44,6 +46,7 @@ int capacity;
 llList freeList;
 
 void initUnitPool(const Map *map) {
+    int i;
     if (capacity == 0) {
         /* initialize the unitpool */
         capacity = width(*map) * height(*map);
@@ -55,36 +58,32 @@ void initUnitPool(const Map *map) {
 
 Unit *getUnit(int id) {
     if (id < 1 || id > capacity) {
-        return Nil;
+        return NULL;
     } else {
-        return unitPool[id - 1];
+        return &unitPool[id - 1];
     }
 }
 
-int createUnit(TypeID type) {
+int createUnit(TypeID typeID) {
     Unit *unit;
-    UnitType *type;
+    const UnitType *type;
     int i;
     if (llIsEmpty(freeList)) {
         return -1;
     } else {
         llDelVFirst(&freeList, &i);
-        type = &unitTypes[type];
+        type = &unitTypes[typeID];
         unit = &unitPool[i];
         memset(unit, 0, sizeof(Unit));
-        unit->type = 
+        unit->type = typeID;
         unit->health = type->maxHealth;
         unit->movPoints = type->maxMovPoints;
         unit->ownerID = 0;
         unit->canAttack = true;
-        Absis(unit->location) = 0;
-        Ordinat(unit->location) = 0;
+        absis(unit->location) = 0;
+        ordinat(unit->location) = 0;
         return i + 1;
     }
-}
-
-void destroyUnit(int id) {
-    llInsVFirst(&freeList, id - 1);
 }
 
 void destroyUnit(int id) {

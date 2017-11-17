@@ -30,6 +30,8 @@ boolean isInMap (Point point, Map *map);
 /* True if the fight occured */
 BattleResult procBattle(Map *map, int attackerID, int defenderID);
 
+void getTargetID(Map *map, int attackerID, int* targetID, int* numberOfUnits);
+
 /* Recruit and add unit to the current owner with the owner ID */
 /* False if the owner can't recruit the unit */
 /* True if the owner recruited the unit succesfully */

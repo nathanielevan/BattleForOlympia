@@ -5,6 +5,8 @@ Prepared by: Asisten IF2110
 Created at: 30/10/2017
 **/
 
+/* Mantap */
+
 #include <stdio.h>
 #include "pcolor.h"
 

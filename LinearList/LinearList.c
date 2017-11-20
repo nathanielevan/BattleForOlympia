@@ -7,7 +7,7 @@
  *                  fisik pointer
  */
 
-#include "listlinier.h"
+#include "LinearList.h"
 #include <stdlib.h>
 #include <stdio.h>
 

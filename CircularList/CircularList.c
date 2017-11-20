@@ -29,7 +29,7 @@ void lcCreateEmpty (lcList *L)
 }
 
 /****************** Manajemen Memori ******************/
-lcaddress lcAlokasi (lcInfotype X)
+lcaddress lcAlokasi (lcType X)
 /* Mengirimkan lcaddress hasil alokasi sebuah elemen */
 /* Jika alokasi berhasil, maka lcaddress tidak nil, dan misalnya */
 /* menghasilkan P, maka lcInfo(P)=X, lcNext(P)=Nil */
@@ -56,7 +56,7 @@ void lcDealokasi (lcaddress P)
 }
 
 /****************** PENCARIAN SEBUAH ELEMEN lcList ******************/
-lcaddress lcSearch (lcList L, lcInfotype X)
+lcaddress lcSearch (lcList L, lcType X)
 /* Mencari apakah ada elemen lcList dengan lcInfo(P)= X */
 /* Jika ada, mengirimkan lcaddress elemen tersebut. */
 /* Jika tidak ada, mengirimkan Nil */
@@ -64,7 +64,7 @@ lcaddress lcSearch (lcList L, lcInfotype X)
     /* Kamus lokal */
     lcaddress P, PFirst = lcFirst(L);
     /* Algoritma */
-    P = PlcFirst;
+    P = PFirst;
     if (P == Nil) {
         return Nil;
     } else {
@@ -82,7 +82,7 @@ lcaddress lcSearch (lcList L, lcInfotype X)
 
 /*** PENAMBAHAN ELEMEN ***/
 
-void lcInsVFirst (lcList *L, lcInfotype X)
+void lcInsVFirst (lcList *L, lcType X)
 /* I.S. L mungkin kosong */
 /* F.S. Melakukan alokasi sebuah elemen dan */
 /* menambahkan elemen pertama dengan nilai X jika alokasi berhasil */
@@ -95,7 +95,7 @@ void lcInsVFirst (lcList *L, lcInfotype X)
         lcInsertFirst(L, P);
 }
 
-void lcInsVLast (lcList *L, lcInfotype X)
+void lcInsVLast (lcList *L, lcType X)
 /* I.S. L mungkin kosong */
 /* F.S. Melakukan alokasi sebuah elemen dan */
 /* menambahkan elemen lcList di akhir: elemen terakhir yang baru */
@@ -111,7 +111,7 @@ void lcInsVLast (lcList *L, lcInfotype X)
 
 /*** PENGHAPUSAN ELEMEN ***/
 
-void lcDelVFirst (lcList *L, lcInfotype * X)
+void lcDelVFirst (lcList *L, lcType * X)
 /* I.S. lcList L tidak kosong  */
 /* F.S. Elemen pertama lcList dihapus: nilai lcInfo disimpan pada X */
 /*      dan alamat elemen pertama di-dealokasi */
@@ -124,7 +124,7 @@ void lcDelVFirst (lcList *L, lcInfotype * X)
     lcDealokasi(P);
 }
 
-void lcDelVLast (lcList *L, lcInfotype * X)
+void lcDelVLast (lcList *L, lcType * X)
 /* I.S. lcList tidak kosong */
 /* F.S. Elemen terakhir lcList dihapus: nilai lcInfo disimpan pada X */
 /*      dan alamat elemen terakhir di-dealokasi */
@@ -191,7 +191,7 @@ void lcInsertAfter (lcList *L, lcaddress P, lcaddress Prec)
 }
 
 /*** PENGHAPUSAN SEBUAH ELEMEN ***/
-void lcaddressDelFirst (lcList *L, lcaddress *P)
+void lcDelFirst (lcList *L, lcaddress *P)
 /* I.S. lcList tidak kosong */
 /* F.S. P adalah alamat elemen pertama lcList sebelum penghapusan */
 /*      Elemen lcList berkurang satu (mungkin menjadi kosong) */
@@ -248,7 +248,7 @@ void lcDelAfter (lcList *L, lcaddress *Pdel, lcaddress Prec)
     lcNext(*Pdel) = Nil;
 }
 
-void lcDelP (lcList *L, lcInfotype X)
+void lcDelP (lcList *L, lcType X)
 /* I.S. Sembarang */
 /* F.S. Jika ada elemen lcList berlcaddress P, dengan lcInfo(P)=X  */
 /* Maka P dihapus dari lcList dan di-dealokasi */

@@ -6,7 +6,8 @@
 #ifndef circularlcList_H
 #define circularlcList_H
 
-#include "boolean.h"
+
+#include "../boolean.h"
 
 #define Nil NULL
 

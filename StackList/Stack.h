@@ -2,7 +2,7 @@
 #ifndef _STACKLIST_H
 #define _STACKLIST_H
 
-#include "boolean.h"
+#include "../boolean.h"
 #include <stdlib.h>
 
 /* stkStack dengan representasi berkait dengan pointer */

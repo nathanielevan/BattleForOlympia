@@ -51,8 +51,9 @@ void initUnitPool(const Map *map) {
         /* initialize the unitpool */
         capacity = width(*map) * height(*map);
         unitPool = malloc(capacity * sizeof(Unit));
-        for (i = capacity; i-- > 0;)
+        for (i = capacity; i-- > 0;) {
             llInsVFirst(&freeList, i);
+        }
     }
 }
 

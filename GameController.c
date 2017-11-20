@@ -172,15 +172,12 @@ void getTargetID(Map *map, int attackerID, int* targetID, int* numberOfUnits) {
 	}
 }
 
-RecruitOutcome recruitUnit(Map *map, int ownerID, TypeID typeID) {
+RecruitOutcome recruitUnit(Map *map, int ownerID, TypeID typeID, Point castleLocation) {
 
 	int currUnitID;
 
 	/* Access the address of the owner with the current owner ID */
 	Player *player = getPlayer(ownerID);
-
-	/* Find the available castle location for the player */
-	Point castleLocation = AvailabeCastleLocation(*map, ownerID);
 
 	/* Check if the player have enough money */
 	if (player->gold >= unitTypes[typeID].cost) 
@@ -207,16 +204,15 @@ RecruitOutcome recruitUnit(Map *map, int ownerID, TypeID typeID) {
 
 }
 
-Point AvailabeCastleLocation(Map map, int ownerID) {
-
-	Point castleLocation;
-	int x, y;
+void AvailabeCastleLocation(Map map, int ownerID, int *castleID, int *numberOfCastle) {
 
 	/* Access the address of the owner with the ID */
 	Player *player = getPlayer(ownerID);
 
 	/* Get the first ID in the list */
 	lladdress address = llFirst(player->squares);
+	/* Set the number of castle to be zero */
+	*numberOfCastle = 0;
 
 	/* Iterate through the list until empty castle is found */
 	while (address != Nil) {
@@ -226,23 +222,13 @@ Point AvailabeCastleLocation(Map map, int ownerID) {
 
 		/* Check if the square is a castle and empty */
 		if (square->type == CASTLE && square->unitID == 0) {
-
-			y = (square->squareID - 1) / width(map);
-
-			x = (square->squareID - 1) % width(map);
-
-			castleLocation = MakePoint(x, y);
-
-			/* Return the location of the square */
-			return castleLocation;
+			/* Increase the number of castle */
+			(*numberOfCastle)++;
+			/* Add the ID to the list of castle ID */
+			castleID[*numberOfCastle - 1] = llInfo(address);
 		}
 
 		/* Iterate through the next address */
 		address = llNext(address);
 	}
-
-	/* Return empty point */
-	castleLocation = MakePoint(0, -1);
-
-	return castleLocation;
 }

@@ -5,9 +5,6 @@
 #include "CircularList/CircularList.h"
 #include "LinearList/LinearList.h"
 
-#define STARTING_INCOME 100
-#define STARTING_GOLD 300
-
 typedef struct {
     int id, gold, income, upkeep, color;
     lcList units;

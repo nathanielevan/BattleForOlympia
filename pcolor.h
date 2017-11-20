@@ -1,3 +1,5 @@
+#ifndef BATTLEFOROLYMPIA_COLOR_H
+#define BATTLEFOROLYMPIA_COLOR_H
 /**
 Filename: pcolor.h
 Description: Print character with some color in terminal
@@ -26,3 +28,5 @@ void print_yellow(char c);
 void print_blue(char c);
 void print_magenta(char c);
 void print_cyan(char c);
+
+#endif

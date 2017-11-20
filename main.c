@@ -9,6 +9,10 @@
 #include "boolean.h"
 
 
+const int MISS_CHANCE = 30;
+const int STARTING_GOLD = 100;
+const int STARTING_INCOME = 100;
+
 /* Var Global */
 int i; //Iterating variable
 int width, height, x, y;
@@ -16,7 +20,8 @@ int Enemy, myUnit;
 int number_of_player, playerID, currUnitID;
 Map map;
 char command[20];
-Player currPlayer;
+Unit *currUnit;
+Player *currPlayer;
 boolean IsOneKing, validCommand;
 
 
@@ -43,6 +48,12 @@ int main() {
 	printf("How many players do you want : ");
 	scanf("%d", &number_of_player);
 	createPlayers(&map, number_of_player);
+
+	/* Initialize unit pool */
+	initUnitPool(&map);
+
+	generateMap(number_of_player, map.width, map.height, &map);
+
 	printMap(map);
 
 	/* Initialize */
@@ -53,13 +64,17 @@ int main() {
 			/* Initialize */
 			playerID = i;
 			currUnitID = 0;
-			currPlayer = *getPlayer(playerID);
+			currUnit = getUnit(currUnitID);
+			currPlayer = getPlayer(playerID);
 
 			printf("Player %d's Turn\n", playerID);
 
-			printf("Cash : %dG | Income : %dG | Upkeep : %dG\n", currPlayer.gold, currPlayer.income, currPlayer.upkeep);
-			printf("Unit : | Movement Point : %d\n");
-			printf("--------------------------------------------\n");
+			printf("Cash : %dG | Income : %dG | Upkeep : %dG\n", currPlayer->gold, currPlayer->income, currPlayer->upkeep);
+
+			if (currUnitID != 0) {
+				printf("Unit : | Movement Point : %d\n", currUnit->movPoints);
+				printf("--------------------------------------------\n");
+			}
 
 			/* Input command game */
 			printf("Insert your command : ");
@@ -77,13 +92,14 @@ int main() {
 					printf("\n");
 					printf("Please​ ​enter​ ​cell’s​ ​coordinate​ ​x​ ​y :​ ");
 					scanf("%d %d",&x,&y);
+					From = currUnit->location;
 					IsCanMove = moveUnit(&map, currUnitID, x, y);
 					while(!IsCanMove){
 						printf("You​ ​can’t​ ​move​ ​there\n");
 						printf("Please​ ​enter​ ​cell’s​ ​coordinate​ ​x​ ​y :​ ");
 						scanf("%d %d",&x,&y);
 					}
-					registerMove(currUnitID, &map, );
+					registerMove(currUnitID, &map, From, currUnit->location);
 					printf("You​ ​have​ ​successfully​ ​moved​ ​to​ (%d, %d)\n", x, y);
 				}else if (command == "UNDO"){
 					validCommand = true;
@@ -94,6 +110,7 @@ int main() {
 					validCommand = true;
 					
 					printf("=== List of Units ===\n");
+				/*
 				}else if (command == "RECRUIT"){
 					validCommand = true;
 					
@@ -106,6 +123,7 @@ int main() {
 					}
 					printf("\n");
 					printf("=== List of Recruits ===\n");
+					*/
 				}else if (command == "ATTACK"){
 					validCommand = true;
 					

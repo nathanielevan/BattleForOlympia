@@ -73,8 +73,11 @@ void initializeGrid(Map* map, int ownerID, int h, int w) {
     grid(*map, h, w + 1).type = CASTLE;
     grid(*map, h, w).type = TOWER;
     grid(*map, h, w).unitID = addUnit(ownerID, KING);
+    /* Get the unit location */
     Unit *unit = getUnit(grid(*map, h, w).unitID);
+    unit->ownerID = ownerID;
     unit->location = MakePoint(h, w);
+    /* Get the ownerID of the grid */
     grid(*map, h, w).ownerID = ownerID;
     grid(*map, h - 1, w).ownerID = ownerID;
     grid(*map, h + 1, w).ownerID = ownerID;
@@ -147,6 +150,7 @@ void printMap(Map map) {
     int w = width(map), h = height(map);
     int i, j;
     /* Algoritma */
+    system("clear");
     printf("   ");
     for (i = 0; i < w; i++) {
         printf(" %2d ", i);
@@ -165,10 +169,18 @@ void printMap(Map map) {
         putchar('*'); putchar('\n');
 
         /* print the center of the grid*/
+        Unit* unit;
+        int ownerId;
         printf("%3d", i);
         for (j = 0; j < w; j++) {
+            unit = getUnit(grid(map, i, j).unitID);
+            if (unit != Nil) {
+                ownerId = unit->ownerID;
+            } else {
+                ownerId = 0;
+            }
             /* Print unit symbol with the associative color */
-            printColor(getUnitChar(map, i, j), grid(map, i, j).ownerID);
+            printColor(getUnitChar(map, i, j), ownerId);
         }
         putchar('*'); putchar('\n'); printf("   ");
 

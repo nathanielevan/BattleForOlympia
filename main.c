@@ -1,3 +1,6 @@
+/* the main program of the games */
+
+/* All things included */
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,7 +12,7 @@
 #include "boolean.h"
 #include <string.h>
 
-
+/* The constant of the game */
 const int MISS_CHANCE = 30;
 const int STARTING_GOLD = 100;
 const int STARTING_INCOME = 100;
@@ -25,7 +28,6 @@ char command[20];
 Unit *currUnit;
 Player *currPlayer;
 boolean IsOneKing, validCommand;
-
 
 int main() {
     srand(time(NULL));
@@ -86,7 +88,7 @@ int main() {
 						printf("\n");
 						printMap(map);
 						printf("\n");
-						printf("Please​ ​enter​ ​cell’s​ ​coordinate​ ​x​ ​y :​ ");
+						printf("Please​ ​enter​ ​your unit movement (x y):​ ");
 						scanf("%d %d",&x,&y);
 						From = currUnit->location;
 						IsCanMove = moveUnit(&map, currUnitID, x, y);
@@ -98,6 +100,10 @@ int main() {
 						}
 						registerMove(currUnitID, &map, From, currUnit->location);
 						printf("You​ ​have​ ​successfully​ ​moved​ ​to​ (%d, %d)\n", x, y);
+						printf("\n");
+						printMap(map);
+						printf("\n");
+
 					}else if (strcmp(command, "UNDO") == 0){
 						validCommand = true;
 						
@@ -112,11 +118,10 @@ int main() {
 						currUnit = getUnit(currUnitID);
 
 					}else if (strcmp(command, "RECRUIT") == 0){
-						validCommand = true;
-						
-						AvailabeCastleLocation(map, playerID, castleID, &numberOfCastle);
-
 						int j;
+
+						validCommand = true;
+						AvailabeCastleLocation(map, playerID, castleID, &numberOfCastle);
 
 						if (numberOfCastle > 0) {
 
@@ -174,32 +179,34 @@ int main() {
 						printf("Select enemy you want to attack : ");
 						scanf("%d", &Enemy);
 						procBattle(&map, listOfTargetID[Enemy - 1], currUnitID);
+
 					}else if (strcmp(command, "MAP") == 0){ //UDAH JADI
 						validCommand = true;
-						
 						printf("\n");
 						printMap(map);
 						printf("\n");
+
 					}else if (strcmp(command, "INFO") == 0){ //UDAH JADI
 						validCommand = true;
-						
 						printf("Enter​ ​the​ ​coordinate​ ​of​ ​the​ ​cell : ");
 						scanf("%d %d",&x,&y);
 						printInfoSquare(x, y, map);
+
 					}else if (strcmp(command, "END_TURN") == 0) { //UDAH JADI
 						validCommand = true;
-
 						printf("Your turn has ended.\n");
 						break;
+
 					}else if (strcmp(command, "SAVE") == 0) {
 						validCommand = true;
 						
-
 					}else if (strcmp(command, "EXIT") == 0) {
 						validCommand = true;
-						
-
-					}else printf("Wrong command!\n");
+			
+					}else {
+						printf("Wrong command!\n");
+						validCommand = true;
+					}
 				}
 			}
 		}

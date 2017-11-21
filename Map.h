@@ -37,7 +37,6 @@ typedef struct {
 #define grid(M, i, j) (M).squares[(i)*(width(M)) + (j)]
 #define getSquare(M, p) (&grid((M), ordinat(p), absis(p)))
 
-
 /* Konstruktor */
 
 /* Fungsi untuk membuat peta berdasarkan input tinggi dan lebar dari pengguna 

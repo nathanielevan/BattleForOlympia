@@ -35,7 +35,7 @@ typedef struct {
 #define height(M) (M).height
 #define width(M) (M).width
 #define grid(M, i, j) (M).squares[(i)*(width(M)) + (j)]
-#define getSquare(M, p) (&grid((M), absis(p), ordinat(p)))
+#define getSquare(M, p) (&grid((M), ordinat(p), absis(p)))
 
 /* Konstruktor */
 

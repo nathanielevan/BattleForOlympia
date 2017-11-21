@@ -65,14 +65,13 @@ int main() {
 
 			printf("Player %d's Turn\n", playerID);
 
-			printf("Cash : %dG | Income : %dG | Upkeep : %dG\n", currPlayer->gold, currPlayer->income, currPlayer->upkeep);
-
-			if (currUnitID != 0) {
-				printf("Unit : | Movement Point : %d\n", currUnit->movPoints);
-				printf("--------------------------------------------\n");
-			}
-
 			while(1) {
+				printf("Cash : %dG | Income : %dG | Upkeep : %dG\n", currPlayer->gold, currPlayer->income, currPlayer->upkeep);
+
+				if (currUnitID != 0) {
+					printf("Unit : %c | Movement Point : %d\n", unitTypes[currUnit->type].mapSymbol, currUnit->movPoints);
+					printf("--------------------------------------------\n");
+				}
 				/* Input command game */
 				printf("Insert your command : ");
 				scanf("%s", command);
@@ -93,7 +92,7 @@ int main() {
 						IsCanMove = moveUnit(&map, currUnitID, x, y);
 						while(!IsCanMove){
 							printf("You​ ​can’t​ ​move​ ​there\n");
-							printf("Please​ ​enter​ ​cell’s​ ​coordinate​ ​x​ ​y :​ ");
+							printf("Please​ ​enter​ ​direction ​x​ ​y :​ ");
 							scanf("%d %d",&x,&y);
 							IsCanMove = moveUnit(&map, currUnitID, x, y);
 						}
@@ -108,7 +107,9 @@ int main() {
 						validCommand = true;
 						
 						printf("=== List of Units ===\n");
-						printOwnedUnits(playerID);
+						currUnitID = changeUnit(playerID);
+
+						currUnit = getUnit(currUnitID);
 
 					}else if (strcmp(command, "RECRUIT") == 0){
 						validCommand = true;
@@ -160,13 +161,19 @@ int main() {
 
 					}else if (strcmp(command, "ATTACK") == 0){
 						validCommand = true;
-						
+						int* listOfTargetID;
+						listOfTargetID = (int*) malloc(sizeof(int) * 4);
+						int numberOfUnits, j;
 						initUndo();
 						printf("Enemies that ​you​ ​can ​attack :\n");
-						//print list
+						getTargetID(&map, currUnitID, listOfTargetID, &numberOfUnits);
+						for (int j = 0; j < numberOfUnits; j++) {
+							Unit *unit = getUnit(listOfTargetID[j]);
+							printf("%d. %c (%d,%d)\n", (j + 1), unitTypes[unit->type].mapSymbol, absis(unit->location), ordinat(unit->location));
+						}
 						printf("Select enemy you want to attack : ");
 						scanf("%d", &Enemy);
-						procBattle(&map, myUnit, Enemy);
+						procBattle(&map, listOfTargetID[Enemy - 1], currUnitID);
 					}else if (strcmp(command, "MAP") == 0){ //UDAH JADI
 						validCommand = true;
 						

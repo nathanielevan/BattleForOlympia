@@ -44,6 +44,6 @@ RecruitOutcome recruitUnit(Map *map, int ownerID, TypeID typeID, Point castleLoc
 /* Return P(-1, -1) if there are no available location */
 void AvailabeCastleLocation(Map map, int ownerID, int *castleID, int* numberOfCastle);
 
-void printOwnedUnits(int ownerID);
+int changeUnit(int ownerID);
 
 #endif

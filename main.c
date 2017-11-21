@@ -25,13 +25,6 @@ Player *currPlayer;
 boolean IsOneKing, validCommand;
 
 
-void initializeMap(Map* map) {
-    scanf("%d %d", &height, &width);
-    createMap(height, width, map);
-    generateMap(4, width, height, map);
-    printMap(*map);
-}
-
 int main() {
     srand(time(NULL));
     printf("Start a New Game!\n");

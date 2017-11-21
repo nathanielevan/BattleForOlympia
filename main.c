@@ -55,9 +55,9 @@ int main() {
 	IsOneKing = false;
 
 	while(!IsOneKing){
-		for(i = 1; i <= number_of_player; i++){
+		for(i = 1;; i++){
 			/* Initialize */
-			playerID = i;
+			playerID = i % number_of_player;
 			currUnitID = 0;
 			currUnit = getUnit(currUnitID);
 			currPlayer = getPlayer(playerID);
@@ -108,6 +108,8 @@ int main() {
 						validCommand = true;
 						
 						printf("=== List of Units ===\n");
+						printOwnedUnits(playerID);
+
 					}else if (strcmp(command, "RECRUIT") == 0){
 						validCommand = true;
 						

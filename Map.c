@@ -73,6 +73,8 @@ void initializeGrid(Map* map, int ownerID, int h, int w) {
     grid(*map, h, w + 1).type = CASTLE;
     grid(*map, h, w).type = TOWER;
     grid(*map, h, w).unitID = addUnit(ownerID, KING);
+    Unit *unit = getUnit(grid(*map, h, w).unitID);
+    unit->location = MakePoint(h, w);
     grid(*map, h, w).ownerID = ownerID;
     grid(*map, h - 1, w).ownerID = ownerID;
     grid(*map, h + 1, w).ownerID = ownerID;

@@ -225,3 +225,51 @@ void AvailabeCastleLocation(Map map, int ownerID, int *castleID, int *numberOfCa
 		address = llNext(address);
 	}
 }
+
+void printOwnedUnits(int ownerID) {
+
+	/* Access the player */
+	Player *player = getPlayer(ownerID);
+	/* Store the number of units */
+	int numberOfUnits = 0;
+	/* Get the first ID in the list */
+	lcaddress address = lcFirst(player->units);
+	/* Iterate through the list */
+	while (1) {
+		if (lcNext(address) != lcFirst(player->units)) {
+
+			/* Access the unit */
+			Unit *unit = getUnit(lcInfo(address));
+			/* Increase the number of units */
+			numberOfUnits++;
+			/* Print unit */
+			printf("%d. %c (%d,%d) | HP %d | ATK %d | DEF %d", 
+				numberOfUnits, 
+				unitTypes[unit->type].mapSymbol, 
+				absis(unit->location), ordinat(unit->location), 
+				unit->health, 
+				unitTypes[unit->type].attack, 
+				unitTypes[unit->type].defence);
+
+		}
+		else {
+
+			/* Access the unit */
+			Unit *unit = getUnit(lcInfo(address));
+			/* Increase the number of units */
+			numberOfUnits++;
+			/* Print unit */
+			printf("%d. %c (%d,%d) | HP %d | ATK %d | DEF %d\n", 
+				numberOfUnits, 
+				unitTypes[unit->type].mapSymbol, 
+				absis(unit->location), ordinat(unit->location), 
+				unit->health, 				
+				unitTypes[unit->type].attack, 
+				unitTypes[unit->type].defence);
+
+			break;
+		}
+		address = lcNext(address);
+	}
+
+}

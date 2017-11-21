@@ -73,6 +73,8 @@ void initializeGrid(Map* map, int ownerID, int h, int w) {
     grid(*map, h, w + 1).type = CASTLE;
     grid(*map, h, w).type = TOWER;
     grid(*map, h, w).unitID = addUnit(ownerID, KING);
+    Unit *unit = getUnit(grid(*map, h, w).unitID);
+    unit->location = MakePoint(h, w);
     grid(*map, h, w).ownerID = ownerID;
     grid(*map, h - 1, w).ownerID = ownerID;
     grid(*map, h + 1, w).ownerID = ownerID;
@@ -218,9 +220,19 @@ void printColor(char symbol, int ownerID) {
 /* Fungsi untuk mendapatkan nilai square dari id square */
 Square* getSquareByID(Map map, int ID) {
     /* Dapatkan nilai dari sumbu x */
-    int x = ID / width(map);
+    int x = (ID - 1) % width(map);
     /* Dapatkan nilai dari y */
-    int y = ID - x * width(map);
+    int y = (ID - 1) / width(map);
     /* Return nilai square yang sesuai */
     return &grid(map, x, y);
+}
+
+Point getPointByID(Map map, int ID) {
+    Point P;
+    /* Dapatkan nilai dari sumbu x */
+    int x = (ID - 1) % width(map);
+    /* Dapatkan nilai dari y */
+    int y = (ID - 1) / width(map);
+    P = MakePoint(x, y);
+    return P;
 }

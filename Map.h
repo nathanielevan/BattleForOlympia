@@ -35,7 +35,8 @@ typedef struct {
 #define height(M) (M).height
 #define width(M) (M).width
 #define grid(M, i, j) (M).squares[(i)*(width(M)) + (j)]
-#define getSquare(M, p) (&grid((M), absis(p), ordinat(p)))
+#define getSquare(M, p) (&grid((M), ordinat(p), absis(p)))
+
 
 /* Konstruktor */
 
@@ -68,5 +69,7 @@ char getUnitChar(Map map, int i, int j);
 void printColor(char symbol, int ownerID); 
 
 Square* getSquareByID(Map map, int ID);
+
+Point getPointByID(Map map, int ID);
 
 #endif 

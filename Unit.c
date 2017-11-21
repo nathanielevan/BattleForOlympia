@@ -12,7 +12,7 @@ const UnitType unitTypes[] = {
         .maxHealth = 100,
         .attack = 10,
         .defence = 7,
-        .maxMovPoints = 1,
+        .maxMovPoints = 10,
         .atkType = MELEE,
         .cost = 0},
     {

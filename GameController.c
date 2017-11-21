@@ -5,6 +5,7 @@
 #include "User.h"
 #include "Map.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 boolean canMove(Unit *unit, int deltaX, int deltaY, Map *map) {
 
@@ -38,6 +39,9 @@ boolean moveUnit(Map *map, int currUnitID, int deltaX, int deltaY) {
 
 		/* Add the current unit to the new square on the map */
 		getSquare(*map, unit->location)->unitID = currUnitID; 
+
+		/* Decrease the movement point of unit */
+		unit->movPoints--;
 
 		/* The movement is done succesfully */
 		return true;
@@ -117,10 +121,10 @@ void getTargetID(Map *map, int attackerID, int* targetID, int* numberOfUnits) {
 	Point targetLocation;
 
 	/* Counter for the number of units */
-	*numberOfUnits = -1;
+	*numberOfUnits = 0;
 
 	/* Check for the south square */
-	if (ordinat(attacker->location) + 1 < map->height) {
+	if (ordinat(attacker->location) + 1 < map->height && getSquare(*map, PlusDelta(attacker->location, 0, 1))->unitID != 0) {
 
 		/* Increase the counter for unit */
 		(*numberOfUnits)++;
@@ -129,11 +133,11 @@ void getTargetID(Map *map, int attackerID, int* targetID, int* numberOfUnits) {
 		targetLocation = MakePoint(absis(attacker->location), ordinat(attacker->location) + 1);
 
 		/* Add the unitID to array of targetID */
-		targetID[(*numberOfUnits)] = getSquare(*map, targetLocation)->unitID;
+		targetID[(*numberOfUnits) - 1] = getSquare(*map, targetLocation)->unitID;
 	}
 
 	/* Check for the north square */
-	if (ordinat(attacker->location) - 1 >= 0) {
+	if (ordinat(attacker->location) - 1 >= 0 && getSquare(*map, PlusDelta(attacker->location, 0, -1))->unitID != 0) {
 
 		/* Increase the counter for unit */
 		(*numberOfUnits)++;
@@ -142,11 +146,11 @@ void getTargetID(Map *map, int attackerID, int* targetID, int* numberOfUnits) {
 		targetLocation = MakePoint(absis(attacker->location), ordinat(attacker->location) - 1);
 
 		/* Add the unitID to array of targetID */
-		targetID[(*numberOfUnits)] = getSquare(*map, targetLocation)->unitID;
+		targetID[(*numberOfUnits) - 1] = getSquare(*map, targetLocation)->unitID;
 	}
 
 	/* Check for the east square */
-	if (absis(attacker->location) + 1 < map->width) {
+	if (absis(attacker->location) + 1 < map->width && getSquare(*map, PlusDelta(attacker->location, 1, 0))->unitID != 0) {
 
 		/* Increase the counter for unit */
 		(*numberOfUnits)++;
@@ -155,11 +159,11 @@ void getTargetID(Map *map, int attackerID, int* targetID, int* numberOfUnits) {
 		targetLocation = MakePoint(absis(attacker->location) + 1, ordinat(attacker->location));
 
 		/* Add the unitID to array of targetID */
-		targetID[(*numberOfUnits)] = getSquare(*map, targetLocation)->unitID;
+		targetID[(*numberOfUnits) - 1] = getSquare(*map, targetLocation)->unitID;
 	}
 
 	/* Check for the west square */
-	if (absis(attacker->location) - 1 >= 0) {
+	if (absis(attacker->location) - 1 >= 0 && getSquare(*map, PlusDelta(attacker->location, -1, 0))->unitID != 0) {
 
 		/* Increase the counter for unit */
 		(*numberOfUnits)++;
@@ -168,7 +172,7 @@ void getTargetID(Map *map, int attackerID, int* targetID, int* numberOfUnits) {
 		targetLocation = MakePoint(absis(attacker->location) - 1, ordinat(attacker->location));
 
 		/* Add the unitID to array of targetID */
-		targetID[(*numberOfUnits)] = getSquare(*map, targetLocation)->unitID;
+		targetID[(*numberOfUnits) - 1] = getSquare(*map, targetLocation)->unitID;
 	}
 }
 
@@ -180,18 +184,10 @@ RecruitOutcome recruitUnit(Map *map, int ownerID, TypeID typeID, Point castleLoc
 	Player *player = getPlayer(ownerID);
 
 	/* Check if the player have enough money */
-	if (player->gold >= unitTypes[typeID].cost) 
+	if (player->gold < unitTypes[typeID].cost) 
 
 		/* Player doesn't have enough gold */
 		return NOT_ENOUGH_GOLD;
-	
-
-	/* Check if the player have empty castle */
-	if (absis(castleLocation) == 0 && ordinat(castleLocation) == -1)
-
-		/* Player doesn't have empty castle */
-		return NO_AVAILABE_CASTLE;
-
 
 	/* Recruit the unit */
 	currUnitID = addUnit(ownerID, typeID);
@@ -231,4 +227,64 @@ void AvailabeCastleLocation(Map map, int ownerID, int *castleID, int *numberOfCa
 		/* Iterate through the next address */
 		address = llNext(address);
 	}
+}
+
+int changeUnit(int ownerID) {
+	/* Variable */
+	int unitOrder, i, unitID;
+	/* Access the player */
+	Player *player = getPlayer(ownerID);
+	/* Store the number of units */
+	int numberOfUnits = 0;
+	/* Get the first ID in the list */
+	lcaddress address = lcFirst(player->units);
+	/* Iterate through the list */
+	while (1) {
+		if (lcNext(address) != lcFirst(player->units)) {
+
+			/* Access the unit */
+			Unit *unit = getUnit(lcInfo(address));
+			/* Increase the number of units */
+			numberOfUnits++;
+			/* Print unit */
+			printf("%d. %c (%d,%d) | HP %d | ATK %d | DEF %d", 
+				numberOfUnits, 
+				unitTypes[unit->type].mapSymbol, 
+				absis(unit->location), ordinat(unit->location), 
+				unit->health, 
+				unitTypes[unit->type].attack, 
+				unitTypes[unit->type].defence);
+
+		}
+		else {
+
+			/* Access the unit */
+			Unit *unit = getUnit(lcInfo(address));
+			/* Increase the number of units */
+			numberOfUnits++;
+			/* Print unit */
+			printf("%d. %c (%d,%d) | HP %d | ATK %d | DEF %d\n", 
+				numberOfUnits, 
+				unitTypes[unit->type].mapSymbol, 
+				absis(unit->location), ordinat(unit->location), 
+				unit->health, 				
+				unitTypes[unit->type].attack, 
+				unitTypes[unit->type].defence);
+
+			break;
+		}
+		address = lcNext(address);
+	}
+
+	printf("Enter the order of unit (1-%d) : ", numberOfUnits);
+	scanf("%d", &unitOrder);
+
+	address = lcFirst(player->units);
+
+	for (i = 0; i < unitOrder - 1; i++) {
+		address = lcNext(address);
+	}
+
+	return lcInfo(address);
+
 }

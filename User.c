@@ -10,10 +10,7 @@ int addUnit(int playerID, TypeID unitType){
     Player* player = getPlayer(playerID);
     Unit *unit;
     int unitID = createUnit(unitType);
-    printf("%d\n", unitID);
     unit = getUnit(unitID);
-    printf("cek\n");
-    printf("%d", unit->type);
     unit->ownerID = playerID;
     lcInsVFirst(&player->units, unitID);
     return unitID;

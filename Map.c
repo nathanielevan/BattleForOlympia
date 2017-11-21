@@ -42,31 +42,23 @@ void deleteMap(Map* map) {
 /* Create Random empty Map first */
 void generateMap(int numPlayer, int w, int h, Map* map) {
     int i;
-    int totalVillage = (w * h) / 10;
-    int randomX, randomY;
+    int totalVillage = (w * h) / 8;
+    int randomX, randomY, randomN;
 
     /* make a fixed map for player */
     for (i = 1; i <= numPlayer; i++) {
-        switch (i) {
-            case 1:
-                initializeGrid(map, i, 1, 1);
-                break;
-            case 2:
-                initializeGrid(map, i, w - 1, h - 1);
-                break;
-            case 3:
-                initializeGrid(map, i, w - 1, 1);
-                break;
-            case 4:
-                initializeGrid(map, i, 1, h - 1);
-                break;
-        }
+        if (i == 1) initializeGrid(map, i, 1, 1);
+        else if (i == 2) initializeGrid(map, i, h - 2, w - 2);
+        else if (i == 3) initializeGrid(map, i, h - 2, 1);
+        else initializeGrid(map, i, 1, w - 2);
     }
+
     /* Time to do random */
     i = totalVillage;
     while (i > 0) {
-        randomX = rand() % w;
-        randomY = rand() % h;
+        randomN = (rand() / (float) RAND_MAX) * w * h;
+        randomX = (rand() / (float) RAND_MAX) * w;
+        randomY = (rand() / (float) RAND_MAX) * h;
         if (grid(*map, randomX, randomY).ownerID == 0) {
             grid(*map, randomX, randomY).type = VILLAGE;
             i--;
@@ -74,22 +66,23 @@ void generateMap(int numPlayer, int w, int h, Map* map) {
     }
 }
 
-void initializeGrid(Map* map, int ownerID, int x, int y) {
-    grid(*map, x - 1, y).type = CASTLE;
-    grid(*map, x, y - 1).type = CASTLE;
-    grid(*map, x, y + 1).type = CASTLE;
-    grid(*map, x + 1, y).type = CASTLE;
-    grid(*map, x, y).type = TOWER;
-    grid(*map, x, y).unitID = addUnit(ownerID, KING);
-    grid(*map, x, y).ownerID = ownerID;
-    grid(*map, x - 1, y).ownerID = ownerID;
-    addSquare(ownerID, grid(*map, x - 1, y).squareID);
-    grid(*map, x, y - 1).ownerID = ownerID;
-    addSquare(ownerID, grid(*map, x, y - 1).squareID);
-    grid(*map, x, y + 1).ownerID = ownerID;
-    addSquare(ownerID, grid(*map, x, y + 1).squareID);
-    grid(*map, x + 1, y).ownerID = ownerID;
-    addSquare(ownerID, grid(*map, x + 1, y).squareID);
+void initializeGrid(Map* map, int ownerID, int h, int w) {
+    grid(*map, h - 1, w).type = CASTLE;
+    grid(*map, h + 1, w).type = CASTLE;
+    grid(*map, h, w - 1).type = CASTLE;
+    grid(*map, h, w + 1).type = CASTLE;
+    grid(*map, h, w).type = TOWER;
+    grid(*map, h, w).unitID = addUnit(ownerID, KING);
+    grid(*map, h, w).ownerID = ownerID;
+    grid(*map, h - 1, w).ownerID = ownerID;
+    grid(*map, h + 1, w).ownerID = ownerID;
+    grid(*map, h, w - 1).ownerID = ownerID;
+    grid(*map, h, w + 1).ownerID = ownerID;
+    addSquare(ownerID, grid(*map, h, w).squareID);
+    addSquare(ownerID, grid(*map, h - 1, w).squareID);
+    addSquare(ownerID, grid(*map, h, w - 1).squareID);
+    addSquare(ownerID, grid(*map, h, w + 1).squareID);    
+    addSquare(ownerID, grid(*map, h + 1, w).squareID);
 }
 
 /* memberikan input mengenai informasi pada suatu koordinat x y */
@@ -162,17 +155,22 @@ void printMap(Map map) {
             putchar('*');
         }
         putchar('\n'); printf("   ");
+        /* print the top of the grid */
         for (j = 0; j < w; j++) {
             /* Print char with the associative color */
             printColor(grid(map, i, j).type, grid(map, i, j).ownerID);
         }
         putchar('*'); putchar('\n');
+
+        /* print the center of the grid*/
         printf("%3d", i);
         for (j = 0; j < w; j++) {
             /* Print unit symbol with the associative color */
             printColor(getUnitChar(map, i, j), grid(map, i, j).ownerID);
         }
         putchar('*'); putchar('\n'); printf("   ");
+
+        /* print the bottom of the grid */
         for (j = 0; j < w; j++) {
             printf("*   ");
         }
@@ -220,9 +218,19 @@ void printColor(char symbol, int ownerID) {
 /* Fungsi untuk mendapatkan nilai square dari id square */
 Square* getSquareByID(Map map, int ID) {
     /* Dapatkan nilai dari sumbu x */
-    int x = ID / width(map);
+    int x = (ID - 1) % width(map);
     /* Dapatkan nilai dari y */
-    int y = ID - x * width(map);
+    int y = (ID - 1) / width(map);
     /* Return nilai square yang sesuai */
     return &grid(map, x, y);
+}
+
+Point getPointByID(Map map, int ID) {
+    Point P;
+    /* Dapatkan nilai dari sumbu x */
+    int x = (ID - 1) % width(map);
+    /* Dapatkan nilai dari y */
+    int y = (ID - 1) / width(map);
+    P = MakePoint(x, y);
+    return P;
 }

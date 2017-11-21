@@ -5,6 +5,7 @@
 #include "User.h"
 #include "Map.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 boolean canMove(Unit *unit, int deltaX, int deltaY, Map *map) {
 
@@ -180,18 +181,10 @@ RecruitOutcome recruitUnit(Map *map, int ownerID, TypeID typeID, Point castleLoc
 	Player *player = getPlayer(ownerID);
 
 	/* Check if the player have enough money */
-	if (player->gold >= unitTypes[typeID].cost) 
+	if (player->gold < unitTypes[typeID].cost) 
 
 		/* Player doesn't have enough gold */
 		return NOT_ENOUGH_GOLD;
-	
-
-	/* Check if the player have empty castle */
-	if (absis(castleLocation) == 0 && ordinat(castleLocation) == -1)
-
-		/* Player doesn't have empty castle */
-		return NO_AVAILABE_CASTLE;
-
 
 	/* Recruit the unit */
 	currUnitID = addUnit(ownerID, typeID);

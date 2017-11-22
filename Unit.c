@@ -14,7 +14,8 @@ const UnitType unitTypes[] = {
         .defence = 7,
         .maxMovPoints = 10,
         .atkType = MELEE,
-        .cost = 0},
+        .cost = 0,
+        .upkeep = 0},
     {
         .mapSymbol = 'A',
         .maxHealth = 100,
@@ -22,7 +23,8 @@ const UnitType unitTypes[] = {
         .defence = 3,
         .maxMovPoints = 1,
         .atkType = RANGED,
-        .cost = 150},
+        .cost = 150,
+        .upkeep = 15},
     {
         .mapSymbol = 'S',
         .maxHealth = 150,
@@ -30,7 +32,8 @@ const UnitType unitTypes[] = {
         .defence = 4,
         .maxMovPoints = 2,
         .atkType = MELEE,
-        .cost = 200},
+        .cost = 200,
+        .upkeep = 20},
     {
         .mapSymbol = 'W',
         .maxHealth = 75,
@@ -38,7 +41,8 @@ const UnitType unitTypes[] = {
         .defence = 1,
         .maxMovPoints = 1,
         .atkType = MELEE,
-        .cost = 200},
+        .cost = 200,
+        .upkeep = 20},
 };
 
 Unit *unitPool;

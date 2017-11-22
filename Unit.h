@@ -18,7 +18,7 @@ typedef enum {MELEE, RANGED} AtkType;
 
 typedef struct {
     char mapSymbol;
-    int maxHealth, attack, defence, maxMovPoints, cost;
+    int maxHealth, attack, defence, maxMovPoints, cost, upkeep;
     AtkType atkType;
 } UnitType;
 

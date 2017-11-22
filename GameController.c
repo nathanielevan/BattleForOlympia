@@ -40,6 +40,14 @@ boolean moveUnit(Map *map, int currUnitID, int deltaX, int deltaY) {
 		/* Add the current unit to the new square on the map */
 		getSquare(*map, unit->location)->unitID = currUnitID; 
 
+		if (getSquare(*map, unit->location)->type == VILLAGE) {
+			getSquare(*map, unit->location)->ownerID = unit->ownerID;
+
+			Player *player = getPlayer(unit->ownerID);
+
+			player->income += getSquare(*map, unit->location)->tribute;
+		}
+
 		/* Decrease the movement point of unit */
 		unit->movPoints--;
 
@@ -192,6 +200,14 @@ RecruitOutcome recruitUnit(Map *map, int ownerID, TypeID typeID, Point castleLoc
 	/* Recruit the unit */
 	currUnitID = addUnit(ownerID, typeID);
 
+	Unit *unit = getUnit(currUnitID);
+
+	player->gold -= unitTypes[unit->type].cost;
+
+	player->upkeep += unitTypes[unit->type].upkeep;
+
+	unit->location = castleLocation;
+
 	/* Add the unit into an available castle in the map */
 	getSquare(*map, castleLocation)->unitID = currUnitID;
 
@@ -247,7 +263,7 @@ int changeUnit(int ownerID) {
 			/* Increase the number of units */
 			numberOfUnits++;
 			/* Print unit */
-			printf("%d. %c (%d,%d) | HP %d | ATK %d | DEF %d", 
+			printf("%d. %c (%d,%d) | HP %d | ATK %d | DEF %d\n", 
 				numberOfUnits, 
 				unitTypes[unit->type].mapSymbol, 
 				absis(unit->location), ordinat(unit->location), 

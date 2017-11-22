@@ -11,16 +11,13 @@ typedef enum { NORMAL = ' ', TOWER = 'T', CASTLE = 'C', VILLAGE = 'V'} SquareTyp
 typedef struct {
     int ownerID;
     SquareType type;
+    int tribute;
     int squareID;
     int unitID;
 } Square;
 /*
 */
 
-typedef struct {
-    int tribute;
-    Point location;
-} Village;
 /*
 */
 

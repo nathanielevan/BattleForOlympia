@@ -17,8 +17,9 @@ void registerMove(int unitID, const Map *map, Point from, Point to,
     int deltaY = ordinat(to) - ordinat(from);
     int delta = deltaX + deltaY * width(*map);
     UndoStkEntry u;
-    u.delta = delta;
     u.unitID = unitID;
+    u.delta = delta;
+    u.oldMovPoints = getUnit(unitID)->movPoints;
     u.prevDestOwnerID = prevDestOwnerID;
     stkPush(&undoStack, u);
 }
@@ -35,8 +36,8 @@ boolean undo(Map *map) {
     deltaY = u.delta / width(*map);
     deltaX = u.delta % width(*map);
     delta = abs(deltaX) + abs(deltaY);
-    unit->movPoints += delta;
+    unit->movPoints = delta; /* give movpoints to reverse the motion */
     moveUnit(map, u.unitID, -deltaX, -deltaY);
-    unit->movPoints += delta;
+    unit->movPoints = u.oldMovPoints; /* restore movpoints */
     return true;
 }

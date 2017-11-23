@@ -44,7 +44,7 @@ void deleteMap(Map* map) {
 void generateMap(int numPlayer, int w, int h, Map* map) {
     int i;
     int totalVillage = (w * h) / 8;
-    int randomX, randomY, randomN;
+    int randomX, randomY;
 
     /* make a fixed map for player */
     for (i = 1; i <= numPlayer; i++) {
@@ -57,10 +57,8 @@ void generateMap(int numPlayer, int w, int h, Map* map) {
     /* Time to do random */
     i = totalVillage;
     while (i > 0) {
-        randomN = (rand() / (float) RAND_MAX) * w * h;
         randomX = (rand() / (float) RAND_MAX) * w;
         randomY = (rand() / (float) RAND_MAX) * h;
-        printf("%d %d\n", randomX, randomY);
         if (grid(*map, randomY, randomX).ownerID == 0) {
             grid(*map, randomY, randomX).type = VILLAGE;
             i--;
@@ -152,7 +150,8 @@ void printMap(Map map) {
     int w = width(map), h = height(map);
     int i, j;
     /* Algoritma */
-    system("clear");
+    /* Clear the entire window, then move the cursor to the top left corner */
+    printf("\x1B[2J\x1B[1;1H");
     printf("   ");
     for (i = 0; i < w; i++) {
         printf(" %2d ", i);

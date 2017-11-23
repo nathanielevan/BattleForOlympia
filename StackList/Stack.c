@@ -3,7 +3,7 @@
 
 /* Prototype manajemen memori */
 
-void stkAlokasi (stkAddress *P, int X)
+void stkAlokasi (stkAddress *P, stkInfoType X)
 /* I.S. Sembarang */
 /* F.S. Alamat P dialokasi, jika berhasil maka stkInfo(P)=X dan 
         stkNext(P)=NULL */
@@ -43,7 +43,7 @@ void stkCreateEmpty (stkStack * S)
   stkTop(*S) = NULL;
 }
 
-void stkPush (stkStack * S, int X)
+void stkPush (stkStack * S, stkInfoType X)
 /* Menambahkan X sebagai elemen stkStack S */
 /* I.S. S mungkin kosong, X terdefinisi */
 /* F.S. X menjadi stkTop yang baru jika alokasi X berhasil, */
@@ -61,7 +61,7 @@ void stkPush (stkStack * S, int X)
   }
 }
 
-void stkPop (stkStack * S, int * X)
+void stkPop (stkStack * S, stkInfoType * X)
 /* Menghapus X dari stkStack S. */
 /* I.S. S tidak mungkin kosong */
 /* F.S. X adalah nilai elemen stkTop yang lama, */

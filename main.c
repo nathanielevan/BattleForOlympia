@@ -102,6 +102,7 @@ int main() {
 				if (strcmp(command, "MOVE") == 0){
 					boolean IsCanMove;
 					Point From, To;
+					int prevDestOwnerID;
 					validCommand = true;
 					printf("\n");
 					printMap(map);
@@ -109,14 +110,18 @@ int main() {
 					printf("Please​ ​enter​ ​your unit movement (x y):​ ");
 					scanf("%d %d",&x,&y);
 					From = currUnit->location;
+					To = PlusDelta(From, x, y);
+					prevDestOwnerID = getSquare(map, To)->ownerID;
 					IsCanMove = moveUnit(&map, currUnitID, x, y);
 					while(!IsCanMove){
 						printf("You​ ​can’t​ ​move​ ​there\n");
 						printf("Please​ ​enter​ ​direction ​x​ ​y :​ ");
 						scanf("%d %d",&x,&y);
+						To = PlusDelta(From, x, y);
+						prevDestOwnerID = getSquare(map, To)->ownerID;
 						IsCanMove = moveUnit(&map, currUnitID, x, y);
 					}
-					registerMove(currUnitID, &map, From, currUnit->location);
+					registerMove(currUnitID, &map, From, To, prevDestOwnerID);
 					printf("You​ ​have​ ​successfully​ ​moved​ ​to​ (%d, %d)\n", x, y);
 					printMainMap(map);
 

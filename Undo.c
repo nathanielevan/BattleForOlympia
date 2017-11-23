@@ -1,14 +1,9 @@
 #include "Undo.h"
 #include "Unit.h"
-
-typedef struct {
-    int unitID;
-    int delta;
-    int prevDestOwnerID;
-} UndoStkEntry;
-
-#define stkInfoType UndoStkEntry
+#include "GameController.h"
 #include "StackList/Stack.h"
+
+/* UndoStkEntry defined in Stack.h */
 
 stkStack undoStack = { NULL };
 
@@ -28,10 +23,12 @@ void registerMove(int unitID, const Map *map, Point from, Point to,
     stkPush(&undoStack, u);
 }
 
-void undo(const Map *map) {
+boolean undo(Map *map) {
     UndoStkEntry u;
     Unit *unit;
     int deltaX, deltaY, delta;
+    if (stkIsEmpty(undoStack))
+        return false;
     stkPop(&undoStack, &u);
     unit = getUnit(u.unitID);
     getSquare(*map, unit->location)->ownerID = u.prevDestOwnerID;
@@ -39,6 +36,7 @@ void undo(const Map *map) {
     deltaX = u.delta % width(*map);
     delta = abs(deltaX) + abs(deltaY);
     unit->movPoints += delta;
-    absis(unit->location) -= deltaX;
-    ordinat(unit->location) -= deltaY;
+    moveUnit(map, u.unitID, -deltaX, -deltaY);
+    unit->movPoints += delta;
+    return true;
 }

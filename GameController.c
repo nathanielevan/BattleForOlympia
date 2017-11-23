@@ -121,6 +121,22 @@ BattleResult procBattle(Map *map, int attackerID, int defenderID) {
 	return battleResult;
 }
 
+void procHeal(Map *map, int unitID, int targetID) {
+	Unit *unit = getUnit(unitID);
+	Unit *target = getUnit(targetID);
+
+	if (unit->canAttack) {
+		unit->canAttack = false;
+		target->health += unitTypes[unit->type].attack*3;
+
+		if (target->health > unitTypes[target->type].maxHealth) {
+			target->health = unitTypes[target->type].maxHealth;
+		}
+	} else {
+		printf("You can't heal right now!\n");
+	}
+}
+
 void getTargetID(Map *map, int attackerID, int* targetID, int* numberOfUnits) {
 
 	/* Get the attacker address */

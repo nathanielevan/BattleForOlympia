@@ -11,7 +11,7 @@ const int MISS_CHANCE;
 const int STARTING_GOLD;
 const int STARTING_INCOME;
 
-typedef enum { ATTACK_MISSED, ATTACK_NOT_PERFORMED, ATTACK_SUCCEED } BattleFlag;
+typedef enum { ATTACK_MISSED, ATTACK_NOT_PERFORMED, ATTACK_SUCCEED} BattleFlag;
 typedef enum { NO_AVAILABE_CASTLE = 0, NOT_ENOUGH_GOLD, RECRUIT_SUCCESS } RecruitOutcome;
 
 typedef struct {
@@ -32,6 +32,8 @@ boolean isInMap (Point point, Map *map);
 /* False if the fight didn't occur */
 /* True if the fight occured */
 BattleResult procBattle(Map *map, int attackerID, int defenderID);
+
+void procHeal(Map *map, int unitID, int targetID); 
 
 void getTargetID(Map *map, int attackerID, int* targetID, int* numberOfUnits);
 

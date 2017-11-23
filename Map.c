@@ -25,6 +25,7 @@ void createMap(int h, int w, Map* map) {
             grid(*map, i, j).ownerID = 0;
             grid(*map, i, j).unitID = 0; 
             grid(*map, i, j).squareID = i * width(*map) + j + 1;
+            grid(*map, i, j).moveAble = 0;
         }
     }
 }
@@ -59,6 +60,7 @@ void generateMap(int numPlayer, int w, int h, Map* map) {
         randomN = (rand() / (float) RAND_MAX) * w * h;
         randomX = (rand() / (float) RAND_MAX) * w;
         randomY = (rand() / (float) RAND_MAX) * h;
+        printf("%d %d\n", randomX, randomY);
         if (grid(*map, randomY, randomX).ownerID == 0) {
             grid(*map, randomY, randomX).type = VILLAGE;
             i--;
@@ -204,28 +206,33 @@ char getUnitChar(Map map, int i, int j) {
 }
 
 void printColor(char symbol, int ownerID) {
-    int color = getPlayer(ownerID)->color;
-    switch (color) {
-        case 0 :
-            print_blue(symbol);
-            break;
-        case 1 :
-            print_green(symbol);
-            break;
-        case 2 :
-            print_yellow(symbol);
-            break;
-        case 3 :
-            print_cyan(symbol);
-            break;
-        case 4 :
-            print_red(symbol);
-            break;
-        case 5 :
-            print_magenta(symbol);
-            break;
-        default :
-            printf("* %c ", symbol);
+    if (ownerID == 0) {
+        printf("* %s%c ", WHITE, symbol);
+    }
+    else {
+        int color = getPlayer(ownerID)->color;
+        switch (color) {
+            case 0 :
+                print_red(symbol);
+                break;
+            case 1 :
+                print_green(symbol);
+                break;
+            case 2 :
+                print_yellow(symbol);
+                break;
+            case 3 :
+                print_blue(symbol);
+                break;
+            case 4 :
+                print_magenta(symbol);
+                break;
+            case 5 :
+                print_cyan(symbol);
+                break;
+            default :
+                printf("* %c ", symbol);
+        }
     }
 }
 
@@ -236,7 +243,7 @@ Square* getSquareByID(Map map, int ID) {
     /* Dapatkan nilai dari y */
     int y = (ID - 1) / width(map);
     /* Return nilai square yang sesuai */
-    return &grid(map, y, x);
+    return &grid(map, x, y);
 }
 
 Point getPointByID(Map map, int ID) {

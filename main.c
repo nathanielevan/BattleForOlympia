@@ -35,6 +35,10 @@ void printMainMap(Map map) {
 	printf("\n");
 }
 
+void destroyListTargetID(int* targetID) {
+	free(targetID + i);
+}
+
 int main() {
     srand(time(NULL));
     printf("Start a New Game!\n");
@@ -76,7 +80,6 @@ int main() {
 			printf("\n");
 
 			printf("\nPlayer %d's Turn\n", playerID);
-			printf("\n");
 
 			while(1) {
 				printf("\nCash : %dG | Income : %dG | Upkeep : %dG\n", currPlayer->gold, currPlayer->income, currPlayer->upkeep);
@@ -117,7 +120,7 @@ int main() {
 						prevDestOwnerID = getSquare(map, To)->ownerID;
 						IsCanMove = moveUnit(&map, currUnitID, x, y);
 					}
-					registerMove(currUnitID, &map, From, To, prevDestOwnerID);
+					registerMove(currUnitID, &map, From, To);
 					printf("You​ ​have​ ​successfully​ ​moved​ ​to​ (%d, %d)\n", x, y);
 					printMainMap(map);
 
@@ -136,8 +139,8 @@ int main() {
 					printMainMap(map);
 				}else if (strcmp(command, "NEXT_UNIT") == 0) {
 					validCommand = true;
+					initUndo();
 					
-
 				}else if (strcmp(command, "RECRUIT") == 0){
 					int j;
 
@@ -182,6 +185,7 @@ int main() {
 							printf("Not enough gold to recruit unit\n");
 						}
 					}
+
 					else {
 						printf("No empty castle\n");
 					}
@@ -205,7 +209,7 @@ int main() {
 						printf("Select enemy you want to attack : ");
 						scanf("%d", &Enemy);
 
-						battleResult = procBattle(&map, listOfTargetID[Enemy - 1], currUnitID);
+						battleResult = procBattle(&map, currUnitID, listOfTargetID[Enemy - 1]);
 
 						printMainMap(map);
 
@@ -227,13 +231,13 @@ int main() {
 					else {
 						puts("There are no enemies in your sight");
 					}
-					free(listOfTargetID);
+					destroyListTargetID(listOfTargetID);
 				}else if (strcmp(command, "HEAL") == 0) {
 					validCommand = true;
 
 					int* listOfTargetID;
+					int* listOfOwnedID;
 					int numberOfUnits, j;
-					BattleResult battleResult;
 
 					initUndo();
 
@@ -242,27 +246,29 @@ int main() {
 					} else {
 						Unit *unit; 
 						listOfTargetID = (int*) malloc(sizeof(int) * 4);
+						listOfOwnedID = (int*) malloc(sizeof(int) * 4);
 						getTargetID(&map, currUnitID, listOfTargetID, &numberOfUnits);
 						if (numberOfUnits > 0) {
 							int nUnitHeal = 0;
 							for (int j = 0; j < numberOfUnits; j++) {
 								unit = getUnit(listOfTargetID[j]);
 								if (unit->ownerID == playerID) {
+									listOfOwnedID[nUnitHeal] = listOfTargetID[j];
 									nUnitHeal++;
 								}
 							}
 							if (nUnitHeal == 0) printf("There are no your other units in your sight\n");
 							else {
+								int idx = 0;
 								printf("Units that ​you​ ​can ​heal :\n");
-								for (int j = 0; j < numberOfUnits; j++) {
-									unit = getUnit(listOfTargetID[j]);
-									if (unit->ownerID == playerID) {
-										printf("%d. %c (%d,%d)\n", (j + 1), unitTypes[unit->type].mapSymbol, absis(unit->location), ordinat(unit->location));
-									}
+								for (int j = 0; j < nUnitHeal; j++) {
+									unit = getUnit(listOfOwnedID[j]);
+									printf("%d. %c (%d,%d)\n", (j + 1), unitTypes[unit->type].mapSymbol, absis(unit->location), ordinat(unit->location));
 								}
-								printf("Select unit you want to attack : ");
+								printf("Select unit you want to heal : ");
 								scanf("%d", &otherUnit);
 
+								procHeal(&map, currUnitID, listOfOwnedID[otherUnit - 1]);
 							}
 						} else {
 							puts("There are no your other units in your sight");
@@ -298,7 +304,6 @@ int main() {
 					printf("Wrong command!\n");
 					validCommand = true;
 				}
-				free(castleID);
 			}
 		}
 	}

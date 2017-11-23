@@ -36,10 +36,7 @@ void printMainMap(Map map) {
 }
 
 void destroyListTargetID(int* targetID) {
-	int i;
-	for (i = 0; i < 4; i++) {
-		free(targetID + i);
-	}
+	free(targetID + i);
 }
 
 int main() {
@@ -212,7 +209,7 @@ int main() {
 						printf("Select enemy you want to attack : ");
 						scanf("%d", &Enemy);
 
-						battleResult = procBattle(&map, listOfTargetID[Enemy - 1], currUnitID);
+						battleResult = procBattle(&map, currUnitID, listOfTargetID[Enemy - 1]);
 
 						printMainMap(map);
 
@@ -239,8 +236,8 @@ int main() {
 					validCommand = true;
 
 					int* listOfTargetID;
+					int* listofOwnedID;
 					int numberOfUnits, j;
-					BattleResult battleResult;
 
 					initUndo();
 
@@ -249,27 +246,32 @@ int main() {
 					} else {
 						Unit *unit; 
 						listOfTargetID = (int*) malloc(sizeof(int) * 4);
+						listOfOwnedID = (int*) malloc(sizeof(int) * 4);
 						getTargetID(&map, currUnitID, listOfTargetID, &numberOfUnits);
 						if (numberOfUnits > 0) {
 							int nUnitHeal = 0;
 							for (int j = 0; j < numberOfUnits; j++) {
 								unit = getUnit(listOfTargetID[j]);
 								if (unit->ownerID == playerID) {
+									listOfOwnedID[nUnitHeal] = listOfTargetID[j];
 									nUnitHeal++;
 								}
 							}
 							if (nUnitHeal == 0) printf("There are no your other units in your sight\n");
 							else {
+								int idx = 0;
 								printf("Units that ​you​ ​can ​heal :\n");
-								for (int j = 0; j < numberOfUnits; j++) {
+								for (int j = 0; j < nUnitHeal; j++) {
 									unit = getUnit(listOfTargetID[j]);
 									if (unit->ownerID == playerID) {
-										printf("%d. %c (%d,%d)\n", (j + 1), unitTypes[unit->type].mapSymbol, absis(unit->location), ordinat(unit->location));
+										printf("%d. %c (%d,%d)\n", (idx + 1), unitTypes[unit->type].mapSymbol, absis(unit->location), ordinat(unit->location));
+										idx++;
 									}
 								}
-								printf("Select unit you want to attack : ");
+								printf("Select unit you want to heal : ");
 								scanf("%d", &otherUnit);
 
+								procHeal(&map, currUnitID, )
 							}
 						} else {
 							puts("There are no your other units in your sight");

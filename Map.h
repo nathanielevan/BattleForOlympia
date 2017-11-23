@@ -14,6 +14,7 @@ typedef struct {
     int tribute;
     int squareID;
     int unitID;
+    int moveAble;
 } Square;
 /*
 */

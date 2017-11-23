@@ -25,6 +25,7 @@ void createMap(int h, int w, Map* map) {
             grid(*map, i, j).ownerID = 0;
             grid(*map, i, j).unitID = 0; 
             grid(*map, i, j).squareID = i * width(*map) + j + 1;
+            grid(*map, i, j).moveAble = 0;
         }
     }
 }

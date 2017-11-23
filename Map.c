@@ -44,7 +44,7 @@ void deleteMap(Map* map) {
 void generateMap(int numPlayer, int w, int h, Map* map) {
     int i;
     int totalVillage = (w * h) / 8;
-    int randomX, randomY;
+    int randomX, randomY, randomN;
 
     /* make a fixed map for player */
     for (i = 1; i <= numPlayer; i++) {
@@ -57,10 +57,12 @@ void generateMap(int numPlayer, int w, int h, Map* map) {
     /* Time to do random */
     i = totalVillage;
     while (i > 0) {
+        randomN = (rand() / (float) RAND_MAX) * (MAX_TRIBUTE - MIN_TRIBUTE);
         randomX = (rand() / (float) RAND_MAX) * w;
         randomY = (rand() / (float) RAND_MAX) * h;
         if (grid(*map, randomY, randomX).ownerID == 0) {
             grid(*map, randomY, randomX).type = VILLAGE;
+            grid(*map, randomY, randomX).tribute = MIN_TRIBUTE + randomN;
             i--;
         } 
     }

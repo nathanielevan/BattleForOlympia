@@ -231,8 +231,6 @@ void cmdInfo(){
 
 void cmdEndTurn(){
 	validCommand = true;
-	printf("Your turn has ended.\n");
-
 	currPlayer->gold += currPlayer->income - currPlayer->upkeep;
 }
 
@@ -276,14 +274,20 @@ int main() {
 			initUndo();
 			printMainMap();
 
-			ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-			total_space = (w.ws_col - 26)/2;
+			
 
 			while(1) {
+				printf("\x1B[42m");
+				ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+				total_space = (w.ws_col - 19)/2;
 				for(k = 0; k < total_space; k++) {
 					putchar(' ');
 				}
-				printf("--Player %d's Turn--\n", playerID);
+				printf("--Player %d's Turn--", playerID);
+				for(k = total_space + 19; k < w.ws_col; k++) {
+					putchar(' ');
+				}
+				printf("\x1B[0m\n");
 				printf("\nCash : %dG | Income : %dG | Upkeep : %dG\n", currPlayer->gold, currPlayer->income, currPlayer->upkeep);
 
 				if (currUnitID != 0) {

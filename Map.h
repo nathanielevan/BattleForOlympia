@@ -19,6 +19,10 @@ typedef struct {
 /*
 */
 
+/* Maximum and minimum tributes from villages */
+#define MIN_TRIBUTE 150
+#define MAX_TRIBUTE 250
+
 /*
 */
 

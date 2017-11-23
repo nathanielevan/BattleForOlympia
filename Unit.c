@@ -24,7 +24,7 @@ const UnitType unitTypes[] = {
         .maxMovPoints = 1,
         .atkType = RANGED,
         .cost = 150,
-        .upkeep = 15},
+        .upkeep = 1}, /* Spec 4e: Upkeep = number of units - king */
     {
         .mapSymbol = 'S',
         .maxHealth = 150,
@@ -33,7 +33,7 @@ const UnitType unitTypes[] = {
         .maxMovPoints = 2,
         .atkType = MELEE,
         .cost = 200,
-        .upkeep = 20},
+        .upkeep = 1},
     {
         .mapSymbol = 'W',
         .maxHealth = 75,
@@ -42,7 +42,7 @@ const UnitType unitTypes[] = {
         .maxMovPoints = 1,
         .atkType = MELEE,
         .cost = 200,
-        .upkeep = 20},
+        .upkeep = 1},
 };
 
 Unit *unitPool;

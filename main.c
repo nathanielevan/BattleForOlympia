@@ -36,7 +36,40 @@ void printMainMap(Map map) {
 }
 
 void destroyListTargetID(int* targetID) {
-	free(targetID + i);
+	free(targetID);
+}
+
+void healNearbyUnit(lcaddress addrUnit, Map* map, int playerID) {
+	/* Local Variabele */
+	Unit *unit;
+	Unit *unitTarget;
+	int numberOfUnits, j;
+	unit = getUnit(lcInfo(addrUnit));
+	if (unit->type == WHITE_MAGE) {
+		int* listOfTargetID = (int*) malloc(sizeof(int) * 4);
+		getTargetID(map, lcInfo(addrUnit), listOfTargetID, &numberOfUnits);
+		for (int j = 0; j < numberOfUnits; j++) {
+			unitTarget = getUnit(listOfTargetID[j]);
+			if (unit->ownerID == playerID) {
+				procHeal(map, lcInfo(addrUnit), listOfTargetID[j]);
+			}
+		}
+		free(listOfTargetID);
+	}
+}
+
+void healMage(Player *currPlayer, int playerID, Map* map) {
+	/* Local Variabele */
+	lcList units = currPlayer->units;
+	lcaddress addrUnit = lcFirst(units);
+	
+	if (!lcIsEmpty(units)) {
+		while (lcNext(addrUnit) != lcFirst(units)) {
+			healNearbyUnit(addrUnit, map, playerID);
+			addrUnit = lcNext(addrUnit);
+		}
+		healNearbyUnit(addrUnit, map, playerID);
+	}
 }
 
 int main() {
@@ -73,11 +106,9 @@ int main() {
 			currPlayer = getPlayer(playerID);
 			castleID = (int*) malloc(sizeof(int) * 4);
 
+			healMage(currPlayer, playerID, &map);
 			initUndo();
-
-			printf("\n");
-			printMap(map);
-			printf("\n");
+			printMainMap(map);
 
 			printf("\nPlayer %d's Turn\n", playerID);
 
@@ -233,49 +264,6 @@ int main() {
 						puts("There are no enemies in your sight");
 					}
 					destroyListTargetID(listOfTargetID);
-				}else if (strcmp(command, "HEAL") == 0) {
-					validCommand = true;
-					initUndo();
-
-					int* listOfTargetID;
-					int* listOfOwnedID;
-					int numberOfUnits, j;
-
-					if (currUnit->type != WHITE_MAGE) {
-						printf("Your unit is not White Mage! You can't heal your others unit!\n");
-					} else {
-						Unit *unit; 
-						listOfTargetID = (int*) malloc(sizeof(int) * 4);
-						listOfOwnedID = (int*) malloc(sizeof(int) * 4);
-						getTargetID(&map, currUnitID, listOfTargetID, &numberOfUnits);
-						if (numberOfUnits > 0) {
-							int nUnitHeal = 0;
-							for (int j = 0; j < numberOfUnits; j++) {
-								unit = getUnit(listOfTargetID[j]);
-								if (unit->ownerID == playerID) {
-									listOfOwnedID[nUnitHeal] = listOfTargetID[j];
-									nUnitHeal++;
-								}
-							}
-							if (nUnitHeal == 0) printf("There are no your other units in your sight\n");
-							else {
-								int idx = 0;
-								printf("Units that ​you​ ​can ​heal :\n");
-								for (int j = 0; j < nUnitHeal; j++) {
-									unit = getUnit(listOfOwnedID[j]);
-									printf("%d. %c (%d,%d)\n", (j + 1), unitTypes[unit->type].mapSymbol, absis(unit->location), ordinat(unit->location));
-								}
-								printf("Select unit you want to heal : ");
-								scanf("%d", &otherUnit);
-
-								procHeal(&map, currUnitID, listOfOwnedID[otherUnit - 1]);
-							}
-						} else {
-							puts("There are no your other units in your sight");
-						}
-					}
-
-
 				}else if (strcmp(command, "MAP") == 0){ //UDAH JADI
 					validCommand = true;
 					printMainMap(map);

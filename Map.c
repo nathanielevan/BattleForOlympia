@@ -60,8 +60,8 @@ void generateMap(int numPlayer, int w, int h, Map* map) {
         randomX = (rand() / (float) RAND_MAX) * w;
         randomY = (rand() / (float) RAND_MAX) * h;
         printf("%d %d\n", randomX, randomY);
-        if (grid(*map, randomX, randomY).ownerID == 0) {
-            grid(*map, randomX, randomY).type = VILLAGE;
+        if (grid(*map, randomY, randomX).ownerID == 0) {
+            grid(*map, randomY, randomX).type = VILLAGE;
             i--;
         } 
     }

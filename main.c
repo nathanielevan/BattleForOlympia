@@ -110,17 +110,17 @@ int main() {
 					scanf("%d %d",&x,&y);
 					From = currUnit->location;
 					To = PlusDelta(From, x, y);
-					prevDestOwnerID = getSquare(map, To)->ownerID;
+					registerMove(currUnitID, &map, From, To);
 					IsCanMove = moveUnit(&map, currUnitID, x, y);
 					while(!IsCanMove){
+						cancelMoveReg();
 						printf("You​ ​can’t​ ​move​ ​there\n");
 						printf("Please​ ​enter​ ​direction ​x​ ​y :​ ");
 						scanf("%d %d",&x,&y);
 						To = PlusDelta(From, x, y);
-						prevDestOwnerID = getSquare(map, To)->ownerID;
+						registerMove(currUnitID, &map, From, To);
 						IsCanMove = moveUnit(&map, currUnitID, x, y);
 					}
-					registerMove(currUnitID, &map, From, To);
 					printf("You​ ​have​ ​successfully​ ​moved​ ​to​ (%d, %d)\n", x, y);
 					printMainMap(map);
 
@@ -132,7 +132,8 @@ int main() {
 					printMap(map);
 				}else if (strcmp(command, "CHANGE_UNIT") == 0){
 					validCommand = true;
-						
+					initUndo();
+
 					printf("=== List of Units ===\n");
 					currUnitID = changeUnit(playerID);
 					currUnit = getUnit(currUnitID);
@@ -140,11 +141,11 @@ int main() {
 				}else if (strcmp(command, "NEXT_UNIT") == 0) {
 					validCommand = true;
 					initUndo();
-					
 				}else if (strcmp(command, "RECRUIT") == 0){
 					int j;
 
 					validCommand = true;
+					initUndo();
 					AvailabeCastleLocation(map, playerID, castleID, &numberOfCastle);
 
 					if (numberOfCastle > 0) {
@@ -192,13 +193,13 @@ int main() {
 
 				}else if (strcmp(command, "ATTACK") == 0){
 					validCommand = true;
-					
+					initUndo();
+
 					int* listOfTargetID;
 					listOfTargetID = (int*) malloc(sizeof(int) * 4);
 					int numberOfUnits, j;
 					BattleResult battleResult;
-					
-					initUndo();
+				    
 					getTargetID(&map, currUnitID, listOfTargetID, &numberOfUnits);
 					if (numberOfUnits > 0) {
 						printf("Enemies that ​you​ ​can ​attack :\n");
@@ -234,12 +235,11 @@ int main() {
 					destroyListTargetID(listOfTargetID);
 				}else if (strcmp(command, "HEAL") == 0) {
 					validCommand = true;
+					initUndo();
 
 					int* listOfTargetID;
 					int* listOfOwnedID;
 					int numberOfUnits, j;
-
-					initUndo();
 
 					if (currUnit->type != WHITE_MAGE) {
 						printf("Your unit is not White Mage! You can't heal your others unit!\n");

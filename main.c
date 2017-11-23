@@ -63,8 +63,6 @@ int main() {
 	initUnitPool(&map);
 	/* Generate the Map for the Game */
 	generateMap(number_of_player, map.width, map.height, &map);
-	/* Print the Map to the terminal */
-	printMap(map);
 
 	/* Initialize */
 	IsOneKing = false;
@@ -134,7 +132,10 @@ int main() {
 					currUnitID = changeUnit(playerID);
 					currUnit = getUnit(currUnitID);
 					printMainMap(map);
+				}else if (strcmp(command, "NEXT_UNIT") == 0) {
+					validCommand = true;
 
+					
 				}else if (strcmp(command, "RECRUIT") == 0){
 					int j;
 
@@ -260,7 +261,7 @@ int main() {
 								}
 								printf("Select unit you want to attack : ");
 								scanf("%d", &otherUnit);
-								
+
 							}
 						} else {
 							puts("There are no your other units in your sight");
@@ -293,7 +294,7 @@ int main() {
 					validCommand = true;
 	
 				}else {
-					//printf("Wrong command!\n");
+					printf("Wrong command!\n");
 					validCommand = true;
 				}
 			}

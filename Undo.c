@@ -2,6 +2,7 @@
 #include "Unit.h"
 #include "GameController.h"
 #include "StackList/Stack.h"
+#include <assert.h>
 
 /* UndoStkEntry defined in Stack.h */
 
@@ -11,8 +12,7 @@ void initUndo() {
     stkDestroy(&undoStack);
 }
 
-void registerMove(int unitID, const Map *map, Point from, Point to,
-                  int prevDestOwnerID) {
+void registerMove(int unitID, const Map *map, Point from, Point to) {
     int deltaX = absis(to) - absis(from);
     int deltaY = ordinat(to) - ordinat(from);
     int delta = deltaX + deltaY * width(*map);
@@ -20,8 +20,14 @@ void registerMove(int unitID, const Map *map, Point from, Point to,
     u.unitID = unitID;
     u.delta = delta;
     u.oldMovPoints = getUnit(unitID)->movPoints;
-    u.prevDestOwnerID = prevDestOwnerID;
+    u.prevDestOwnerID = getSquare(*map, to)->ownerID;
     stkPush(&undoStack, u);
+}
+
+void cancelMoveReg() {
+    UndoStkEntry u;
+    assert(!stkIsEmpty(undoStack));
+    stkPop(&undoStack, &u);
 }
 
 boolean undo(Map *map) {

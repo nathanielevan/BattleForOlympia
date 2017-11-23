@@ -35,13 +35,6 @@ void printMainMap(Map map) {
 	printf("\n");
 }
 
-void destroyListTargetID(int* targetID) {
-	int i;
-	for (i = 0; i < 4; i++) {
-		free(targetID + i);
-	}
-}
-
 int main() {
     srand(time(NULL));
     printf("Start a New Game!\n");
@@ -81,6 +74,7 @@ int main() {
 			printf("\n");
 
 			printf("\nPlayer %d's Turn\n", playerID);
+			printf("\n");
 
 			while(1) {
 				printf("\nCash : %dG | Income : %dG | Upkeep : %dG\n", currPlayer->gold, currPlayer->income, currPlayer->upkeep);
@@ -134,8 +128,8 @@ int main() {
 					printMainMap(map);
 				}else if (strcmp(command, "NEXT_UNIT") == 0) {
 					validCommand = true;
-
 					
+
 				}else if (strcmp(command, "RECRUIT") == 0){
 					int j;
 
@@ -180,7 +174,6 @@ int main() {
 							printf("Not enough gold to recruit unit\n");
 						}
 					}
-
 					else {
 						printf("No empty castle\n");
 					}
@@ -226,7 +219,7 @@ int main() {
 					else {
 						puts("There are no enemies in your sight");
 					}
-					destroyListTargetID(listOfTargetID);
+					free(listOfTargetID);
 				}else if (strcmp(command, "HEAL") == 0) {
 					validCommand = true;
 
@@ -297,6 +290,7 @@ int main() {
 					printf("Wrong command!\n");
 					validCommand = true;
 				}
+				free(castleID);
 			}
 		}
 	}

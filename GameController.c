@@ -18,13 +18,11 @@ boolean canMove(Unit *unit, int deltaX, int deltaY, Map *map) {
 }
 
 boolean isInMap (Point point, Map *map) {
-
 	/* Check if it is in map */
 	return absis(point) < width(*map) && absis(point) >= 0 && ordinat(point) < height(*map) && ordinat(point) >= 0;
 }
 
 boolean moveUnit(Map *map, int currUnitID, int deltaX, int deltaY) {
-
 	/* Access the address of the unit with the current unit ID */
 	Unit *unit = getUnit(currUnitID);
 
@@ -108,7 +106,7 @@ BattleResult procBattle(Map *map, int attackerID, int defenderID) {
 
 			/* Update the battle result */
 			battleResult.atkHealth = attacker->health;
-			battleResult.defDamageDone = defender->health;
+			battleResult.defDamageDone = unitTypes[defender->type].attack - unitTypes[attacker->type].defence;
 		}
 
 		/* The battle occured, update battle result */
@@ -234,23 +232,28 @@ RecruitOutcome recruitUnit(Map *map, int ownerID, TypeID typeID, Point castleLoc
 
 void AvailabeCastleLocation(Map map, int ownerID, int *castleID, int *numberOfCastle) {
 
+	printf("%d\n", ownerID);
+
 	/* Access the address of the owner with the ID */
 	Player *player = getPlayer(ownerID);
 
 	/* Get the first ID in the list */
 	lladdress address = llFirst(player->squares);
+
 	/* Set the number of castle to be zero */
 	*numberOfCastle = 0;
 
+	llPrintInfo(player->squares);
+
 	/* Iterate through the list until empty castle is found */
 	while (address != Nil) {
-
+		printf("ce");
 		/* Get the square */
 		Square *square = getSquareByID(map, llInfo(address));
-
 		/* Check if the square is a castle and empty */
 		if (square->type == CASTLE && square->unitID == 0) {
 			/* Increase the number of castle */
+
 			(*numberOfCastle)++;
 			/* Add the ID to the list of castle ID */
 			castleID[*numberOfCastle - 1] = llInfo(address);

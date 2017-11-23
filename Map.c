@@ -59,7 +59,6 @@ void generateMap(int numPlayer, int w, int h, Map* map) {
         randomN = (rand() / (float) RAND_MAX) * w * h;
         randomX = (rand() / (float) RAND_MAX) * w;
         randomY = (rand() / (float) RAND_MAX) * h;
-        printf("%d %d\n", randomX, randomY);
         if (grid(*map, randomY, randomX).ownerID == 0) {
             grid(*map, randomY, randomX).type = VILLAGE;
             i--;
@@ -208,7 +207,7 @@ void printColor(char symbol, int ownerID) {
     int color = getPlayer(ownerID)->color;
     switch (color) {
         case 0 :
-            print_red(symbol);
+            print_blue(symbol);
             break;
         case 1 :
             print_green(symbol);
@@ -217,13 +216,13 @@ void printColor(char symbol, int ownerID) {
             print_yellow(symbol);
             break;
         case 3 :
-            print_blue(symbol);
+            print_cyan(symbol);
             break;
         case 4 :
-            print_magenta(symbol);
+            print_red(symbol);
             break;
         case 5 :
-            print_cyan(symbol);
+            print_magenta(symbol);
             break;
         default :
             printf("* %c ", symbol);
@@ -237,7 +236,7 @@ Square* getSquareByID(Map map, int ID) {
     /* Dapatkan nilai dari y */
     int y = (ID - 1) / width(map);
     /* Return nilai square yang sesuai */
-    return &grid(map, x, y);
+    return &grid(map, y, x);
 }
 
 Point getPointByID(Map map, int ID) {

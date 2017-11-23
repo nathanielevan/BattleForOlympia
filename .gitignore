@@ -1,4 +1,6 @@
 *~
 *.gch
 main
+game
 *.o
+a.out

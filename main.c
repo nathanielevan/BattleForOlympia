@@ -20,7 +20,7 @@ const int STARTING_INCOME = 100;
 /* Var Global */
 int i; //Iterating variable
 int width, height, x, y;
-int Enemy, myUnit;
+int Enemy, myUnit, otherUnit;
 int number_of_player, playerID, currUnitID, numberOfCastle;
 int *castleID;
 Map map;
@@ -28,6 +28,19 @@ char command[20];
 Unit *currUnit;
 Player *currPlayer;
 boolean IsOneKing, validCommand;
+
+void printMainMap(Map map) {
+	printf("\n");
+	printMap(map);
+	printf("\n");
+}
+
+void destroyListTargetID(int* targetID) {
+	int i;
+	for (i = 0; i < 4; i++) {
+		free(targetID + i);
+	}
+}
 
 int main() {
     srand(time(NULL));
@@ -48,10 +61,8 @@ int main() {
 
 	/* Initialize unit pool */
 	initUnitPool(&map);
-
+	/* Generate the Map for the Game */
 	generateMap(number_of_player, map.width, map.height, &map);
-
-	printMap(map);
 
 	/* Initialize */
 	IsOneKing = false;
@@ -65,6 +76,8 @@ int main() {
 			currPlayer = getPlayer(playerID);
 			castleID = (int*) malloc(sizeof(int) * 4);
 
+			initUndo();
+
 			printf("\n");
 			printMap(map);
 			printf("\n");
@@ -72,7 +85,7 @@ int main() {
 			printf("\nPlayer %d's Turn\n", playerID);
 
 			while(1) {
-				printf("Cash : %dG | Income : %dG | Upkeep : %dG\n", currPlayer->gold, currPlayer->income, currPlayer->upkeep);
+				printf("\nCash : %dG | Income : %dG | Upkeep : %dG\n", currPlayer->gold, currPlayer->income, currPlayer->upkeep);
 
 				if (currUnitID != 0) {
 					printf("Unit : %c (%d,%d) | HP %d | Movement Point : %d\n", 
@@ -91,6 +104,7 @@ int main() {
 				if (strcmp(command, "MOVE") == 0){
 					boolean IsCanMove;
 					Point From, To;
+					int prevDestOwnerID;
 					validCommand = true;
 					printf("\n");
 					printMap(map);
@@ -98,36 +112,38 @@ int main() {
 					printf("Please​ ​enter​ ​your unit movement (x y):​ ");
 					scanf("%d %d",&x,&y);
 					From = currUnit->location;
+					To = PlusDelta(From, x, y);
+					prevDestOwnerID = getSquare(map, To)->ownerID;
 					IsCanMove = moveUnit(&map, currUnitID, x, y);
 					while(!IsCanMove){
 						printf("You​ ​can’t​ ​move​ ​there\n");
 						printf("Please​ ​enter​ ​direction ​x​ ​y :​ ");
 						scanf("%d %d",&x,&y);
+						To = PlusDelta(From, x, y);
+						prevDestOwnerID = getSquare(map, To)->ownerID;
 						IsCanMove = moveUnit(&map, currUnitID, x, y);
 					}
-					registerMove(currUnitID, &map, From, currUnit->location);
+					registerMove(currUnitID, &map, From, To, prevDestOwnerID);
 					printf("You​ ​have​ ​successfully​ ​moved​ ​to​ (%d, %d)\n", x, y);
-					printf("\n");
-					printMap(map);
-					printf("\n");
+					printMainMap(map);
 
 				}else if (strcmp(command, "UNDO") == 0){
 					validCommand = true;
 						
-					undo(&map);
+					if (!undo(&map))
+						puts("Cannot undo move!");
 					printMap(map);
 				}else if (strcmp(command, "CHANGE_UNIT") == 0){
 					validCommand = true;
 						
 					printf("=== List of Units ===\n");
 					currUnitID = changeUnit(playerID);
-
 					currUnit = getUnit(currUnitID);
+					printMainMap(map);
+				}else if (strcmp(command, "NEXT_UNIT") == 0) {
+					validCommand = true;
 
-					printf("\n");
-					printMap(map);
-					printf("\n");
-
+					
 				}else if (strcmp(command, "RECRUIT") == 0){
 					int j;
 
@@ -163,9 +179,7 @@ int main() {
 
 						RecruitOutcome recruitOutcome = recruitUnit(&map, playerID, typeID, castleLocation); 
 
-						printf("\n");
-						printMap(map);
-						printf("\n");
+						printMainMap(map);
 
 						if (recruitOutcome == RECRUIT_SUCCESS) {
 							printf("Recruit success\n");
@@ -181,10 +195,12 @@ int main() {
 
 				}else if (strcmp(command, "ATTACK") == 0){
 					validCommand = true;
+					
 					int* listOfTargetID;
 					listOfTargetID = (int*) malloc(sizeof(int) * 4);
 					int numberOfUnits, j;
 					BattleResult battleResult;
+					
 					initUndo();
 					getTargetID(&map, currUnitID, listOfTargetID, &numberOfUnits);
 					if (numberOfUnits > 0) {
@@ -198,9 +214,7 @@ int main() {
 
 						battleResult = procBattle(&map, listOfTargetID[Enemy - 1], currUnitID);
 
-						printf("\n");
-						printMap(map);
-						printf("\n");
+						printMainMap(map);
 
 						if (battleResult.battleFlag == ATTACK_MISSED) 
 							puts("Ow no! Your attack missed.\n");
@@ -220,12 +234,52 @@ int main() {
 					else {
 						puts("There are no enemies in your sight");
 					}
+					destroyListTargetID(listOfTargetID);
+				}else if (strcmp(command, "HEAL") == 0) {
+					validCommand = true;
+
+					int* listOfTargetID;
+					int numberOfUnits, j;
+					BattleResult battleResult;
+
+					initUndo();
+
+					if (currUnit->type != WHITE_MAGE) {
+						printf("Your unit is not White Mage! You can't heal your others unit!\n");
+					} else {
+						Unit *unit; 
+						listOfTargetID = (int*) malloc(sizeof(int) * 4);
+						getTargetID(&map, currUnitID, listOfTargetID, &numberOfUnits);
+						if (numberOfUnits > 0) {
+							int nUnitHeal = 0;
+							for (int j = 0; j < numberOfUnits; j++) {
+								unit = getUnit(listOfTargetID[j]);
+								if (unit->ownerID == playerID) {
+									nUnitHeal++;
+								}
+							}
+							if (nUnitHeal == 0) printf("There are no your other units in your sight\n");
+							else {
+								printf("Units that ​you​ ​can ​heal :\n");
+								for (int j = 0; j < numberOfUnits; j++) {
+									unit = getUnit(listOfTargetID[j]);
+									if (unit->ownerID == playerID) {
+										printf("%d. %c (%d,%d)\n", (j + 1), unitTypes[unit->type].mapSymbol, absis(unit->location), ordinat(unit->location));
+									}
+								}
+								printf("Select unit you want to attack : ");
+								scanf("%d", &otherUnit);
+
+							}
+						} else {
+							puts("There are no your other units in your sight");
+						}
+					}
+
 
 				}else if (strcmp(command, "MAP") == 0){ //UDAH JADI
 					validCommand = true;
-					printf("\n");
-					printMap(map);
-					printf("\n");
+					printMainMap(map);
 
 				}else if (strcmp(command, "INFO") == 0){ //UDAH JADI
 					validCommand = true;
@@ -248,7 +302,7 @@ int main() {
 					validCommand = true;
 	
 				}else {
-					//printf("Wrong command!\n");
+					printf("Wrong command!\n");
 					validCommand = true;
 				}
 			}

@@ -1,14 +1,9 @@
 #include "Undo.h"
 #include "Unit.h"
+#include "GameController.h"
 #include "StackList/Stack.h"
 
-typedef union {
-    struct {
-        short unitID;
-        short delta;
-    };
-    int i;
-} UndoStkEntry;
+/* UndoStkEntry defined in Stack.h */
 
 stkStack undoStack = { NULL };
 
@@ -16,26 +11,32 @@ void initUndo() {
     stkDestroy(&undoStack);
 }
 
-void registerMove(int unitID, const Map *map, Point from, Point to) {
+void registerMove(int unitID, const Map *map, Point from, Point to,
+                  int prevDestOwnerID) {
     int deltaX = absis(to) - absis(from);
     int deltaY = ordinat(to) - ordinat(from);
     int delta = deltaX + deltaY * width(*map);
     UndoStkEntry u;
     u.delta = delta;
     u.unitID = unitID;
-    stkPush(&undoStack, u.i);
+    u.prevDestOwnerID = prevDestOwnerID;
+    stkPush(&undoStack, u);
 }
 
-void undo(const Map *map) {
+boolean undo(Map *map) {
     UndoStkEntry u;
     Unit *unit;
     int deltaX, deltaY, delta;
-    stkPop(&undoStack, &u.i);
+    if (stkIsEmpty(undoStack))
+        return false;
+    stkPop(&undoStack, &u);
     unit = getUnit(u.unitID);
+    getSquare(*map, unit->location)->ownerID = u.prevDestOwnerID;
     deltaY = u.delta / width(*map);
     deltaX = u.delta % width(*map);
     delta = abs(deltaX) + abs(deltaY);
     unit->movPoints += delta;
-    absis(unit->location) -= deltaX;
-    ordinat(unit->location) -= deltaY;
+    moveUnit(map, u.unitID, -deltaX, -deltaY);
+    unit->movPoints += delta;
+    return true;
 }

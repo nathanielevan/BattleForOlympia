@@ -5,16 +5,24 @@
 #include "../boolean.h"
 #include <stdlib.h>
 
+typedef struct {
+    int unitID;
+    int delta;
+    int prevDestOwnerID;
+} UndoStkEntry;
+
+#define stkInfoType UndoStkEntry
+
 /* stkStack dengan representasi berkait dengan pointer */
 typedef struct stkSElement * stkAddress;
 typedef struct stkSElement { 
-	int Info;
-	stkAddress Next; 
+  stkInfoType Info;
+  stkAddress Next;
 } stkElement; 
 
 /* Type stkStack dengan ciri TOP : */
 typedef struct { 
-	stkAddress TOP;  /* alamat TOP: elemen puncak */
+  stkAddress TOP;  /* alamat TOP: elemen puncak */
 } stkStack;
 
 /* Selektor */
@@ -24,7 +32,7 @@ typedef struct {
 #define stkInfo(P) (P)->Info
 
 /* Prototype manajemen memori */
-void stkAlokasi (stkAddress *P, int X);
+void stkAlokasi (stkAddress *P, stkInfoType X);
 /* I.S. Sembarang */
 /* F.S. Alamat P dialokasi, jika berhasil maka Info(P)=X dan 
         Next(P)=Nil */
@@ -39,13 +47,13 @@ boolean stkIsEmpty (stkStack S);
 void stkCreateEmpty (stkStack * S);
 /* I.S. sembarang */ 
 /* F.S. Membuat sebuah stkStack S yang kosong */
-void stkPush (stkStack * S, int X);
+void stkPush (stkStack * S, stkInfoType X);
 /* Menambahkan X sebagai elemen stkStack S */
 /* I.S. S mungkin kosong, X terdefinisi */
 /* F.S. X menjadi TOP yang baru jika alokasi X berhasil, */
 /*      jika tidak, S tetap */
 /* Pada dasarnya adalah operasi Insert First pada list linier */
-void stkPop (stkStack * S, int * X);
+void stkPop (stkStack * S, stkInfoType * X);
 /* Menghapus X dari stkStack S. */
 /* I.S. S tidak mungkin kosong */
 /* F.S. X adalah nilai elemen TOP yang lama, */

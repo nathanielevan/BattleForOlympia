@@ -5,9 +5,13 @@
 #include "../boolean.h"
 #include <stdlib.h>
 
-#ifndef stkInfoType
-#define stkInfoType int
-#endif
+typedef struct {
+    int unitID;
+    int delta;
+    int prevDestOwnerID;
+} UndoStkEntry;
+
+#define stkInfoType UndoStkEntry
 
 /* stkStack dengan representasi berkait dengan pointer */
 typedef struct stkSElement * stkAddress;

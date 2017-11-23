@@ -47,7 +47,7 @@ boolean moveUnit(Map *map, int currUnitID, int deltaX, int deltaY) {
 		}
 
 		/* Decrease the movement point of unit */
-		unit->movPoints--;
+		unit->movPoints -= abs(deltaX) + abs(deltaY);
 
 		/* The movement is done succesfully */
 		return true;

@@ -69,6 +69,8 @@ int main() {
 			currPlayer = getPlayer(playerID);
 			castleID = (int*) malloc(sizeof(int) * 4);
 
+			initUndo();
+
 			printf("\n");
 			printMap(map);
 			printf("\n");
@@ -122,7 +124,8 @@ int main() {
 				}else if (strcmp(command, "UNDO") == 0){
 					validCommand = true;
 						
-					undo(&map);
+					if (!undo(&map))
+						puts("Cannot undo move!");
 					printMap(map);
 				}else if (strcmp(command, "CHANGE_UNIT") == 0){
 					validCommand = true;

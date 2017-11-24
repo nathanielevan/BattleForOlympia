@@ -97,10 +97,10 @@ void printInfoSquare(int h, int w, Map map) {
 
     /* Local Variables */
     Square square = grid(map, h, w);
-    Unit* unit_type;
+    Unit* unit;
 
-    if (square.unitID > 0)  unit_type = getUnit(square.unitID); 
-    else unit_type = Nil;
+    if (square.unitID > 0)  unit = getUnit(square.unitID); 
+    else unit = Nil;
 
     /* print the information from one square */
     /* print Cell Info */
@@ -123,59 +123,62 @@ void printInfoSquare(int h, int w, Map map) {
     }
     /* Print Unit Info */
     printf("== Unit Info ==\n");
-    if (unit_type != Nil) {
-        switch (unit_type->type){
-            case KING:
-                printf("King\n");
-                break;
-            case ARCHER:
-                printf("Archer\n");
-                break;
-            case SWORDSMAN:
-                printf("Swordsman\n");
-                break;
-            case WHITE_MAGE:
-                printf("White Mage\n");
-        }
+    if (unit != Nil) {
+        printf("%s\n", unitTypes[unit->type].description);
         printf("Owned by Player %d\n", square.ownerID);
-        printf("Health %d/%d | ", unit_type->health, unitTypes[unit_type->type].maxHealth);
-        printf("ATK %d | ", unitTypes[unit_type->type].attack);
-        printf("DEF %d\n", unitTypes[unit_type->type].defence);
+        printf("Health %d/%d | ", unit->health, unitTypes[unit->type].maxHealth);
+        printf("ATK %d | ", unitTypes[unit->type].attack);
+        printf("DEF %d\n", unitTypes[unit->type].defence);
     } else {
         printf("There's no unit here..\n");
     } 
 }
 
 /* Fungsi untuk menampilkan map pada terminal */
-void printMap(Map map, int highlightUnitID) {
+void printMap(Map map, int highlightUnitID, int total_space) {
     /* Var lokal */
-    int w = width(map), h = height(map);
-    int i, j;
+    int wMap = width(map), hMap = height(map);
+    int i, j, k;
     /* Algoritma */
     /* Clear the entire window, then move the cursor to the top left corner */
     printf("\x1B[2J\x1B[1;1H");
     printf("   ");
-    for (i = 0; i < w; i++) {
+    for (k = 0; k < total_space; k++) {
+        putchar(' ');
+    }
+    for (i = 0; i < wMap; i++) {
         printf(" %2d ", i);
     }
     putchar('\n'); printf("   ");
-    for (i = 0; i < h; i++) {
-        for (j = 0; j < 4*w+1; j++) {
+
+    for (i = 0; i < hMap; i++) {
+
+        for (k = 0; k < total_space; k++) {
+            putchar(' ');
+        }
+        for (j = 0; j < 4*wMap+1; j++) {
             putchar('*');
         }
-        putchar('\n'); printf("   ");
+        putchar('\n'); 
+
+        for (k = 0; k < total_space; k++) {
+            putchar(' ');
+        }   
+        printf("   ");
         /* print the top of the grid */
-        for (j = 0; j < w; j++) {
+        for (j = 0; j < wMap; j++) {
             /* Print char with the associative color */
             printColor(grid(map, i, j).type, grid(map, i, j).ownerID, false);
         }
         putchar('*'); putchar('\n');
-
+        for (k = 0; k < total_space; k++) {
+            putchar(' ');
+        }   
         /* print the center of the grid*/
         Unit* unit;
         int ownerId;
         printf("%3d", i);
-        for (j = 0; j < w; j++) {
+        for (j = 0; j < wMap; j++) {
             unit = getUnit(grid(map, i, j).unitID);
             if (unit != Nil) {
                 ownerId = unit->ownerID;
@@ -185,15 +188,22 @@ void printMap(Map map, int highlightUnitID) {
             /* Print unit symbol with the associative color */
             printColor(getUnitChar(map, i, j), ownerId, grid(map, i, j).unitID == highlightUnitID);
         }
-        putchar('*'); putchar('\n'); printf("   ");
-
+        putchar('*'); putchar('\n'); 
+        for (k = 0; k < total_space; k++) {
+            putchar(' ');
+        }
+        printf("   ");
         /* print the bottom of the grid */
-        for (j = 0; j < w; j++) {
+        for (j = 0; j < wMap; j++) {
             printf("*   ");
         }
-        putchar('*'); putchar('\n'); printf("   ");
+        putchar('*'); putchar('\n'); 
+        printf("   ");
     }
-    for (j = 0; j < 4*w+1; j++) {
+    for (k = 0; k < total_space; k++) {
+        putchar(' ');
+    }
+    for (j = 0; j < 4*wMap + 1; j++) {
         putchar('*');
     }
     putchar('\n');

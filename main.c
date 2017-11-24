@@ -26,6 +26,7 @@ struct winsize w;
 /* Var Global */
 int i,k; //Iterating variable
 int width, height, x, y;
+int total_space;
 int Enemy, myUnit, otherUnit;
 int number_of_player, playerID, currUnitID, numberOfCastle;
 int *castleID;
@@ -37,8 +38,13 @@ boolean IsOneKing, validCommand;
 
 /* Game commands */
 void printMainMap() {
+	total_space = (w.ws_col-(4*width+7))/2;
+
+	if (total_space < 0) {
+		total_space = 0;
+	}
 	printf("\n");
-	printMap(map, currUnitID);
+	printMap(map, currUnitID, total_space);
 	printf("\n");
 }
 
@@ -78,9 +84,7 @@ void cmdMove() {
 	Point From, To;
 
 	validCommand = true;
-	printf("\n");
-	printMap(map, currUnitID);
-	printf("\n");
+	printMainMap();
 	printf("Please​ ​enter​ ​your unit movement (x y):​ ");
 	scanf("%d %d",&x,&y);
 	From = currUnit->location;
@@ -102,9 +106,11 @@ void cmdMove() {
 void cmdUndo(){
 	validCommand = true;
 						
-	if (!undo(&map))
-	puts("Cannot undo move!");
-	printMap(map, currUnitID);
+	if (!undo(&map)) {
+		printMainMap();
+		puts("Cannot undo move!");
+		putchar('\n');
+	}
 }
 
 void cmdChangeUnit(){
@@ -120,6 +126,7 @@ void cmdChangeUnit(){
 void cmdNextUnit(){
 	validCommand = true;
 	initUndo();
+	printMainMap();
 }
 
 void cmdRecruit(){
@@ -154,16 +161,17 @@ void cmdRecruit(){
 		printf("3. White Mage 	| HP 75  | ATK 10 | DEF 1 | GOLD 200\n");
 		printf("Enter the type of unit (1-3) : ");
 		scanf("%d", &typeID);
+		typeID = typeID - 1 + ARCHER;
 
 		RecruitOutcome recruitOutcome = recruitUnit(&map, playerID, typeID, castleLocation); 
 
 		printMainMap();
 
 		if (recruitOutcome == RECRUIT_SUCCESS) {
-			printf("Recruit success\n");
+			printf("Recruit success! \n\n");
 		}
 		else if (recruitOutcome == NOT_ENOUGH_GOLD) {
-			printf("Not enough gold to recruit unit\n");
+			printf("You don't have enough gold to recruit unit!\n\n");
 		}
 	}
 
@@ -235,7 +243,6 @@ void cmdEndTurn(){
 
 /* Main Program */
 int main(const int argc, const char *argv[]) {
-	int total_space;
 	srand(time(NULL));
 	if (argc > 1) {
 		if (loadFrom("savefile.boo", &map, &players, &nPlayers)) {
@@ -254,6 +261,16 @@ int main(const int argc, const char *argv[]) {
 		scanf("%d", &width);
 		printf("Height : ");
 		scanf("%d", &height);
+
+		/*Give WARNING */
+		ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+		if (4*width+4 > w.ws_col) {
+			total_space = (w.ws_col-62)/2;
+			for (i = 0; i < total_space; i++) {
+				putchar(' ');
+			}
+			printf("******* WARNING: YOUR MAP IS WIDER THAN YOUR TERMINAL *******\n\n");
+		}
 		createMap(height, width, &map);
 
 		/* Create players */
@@ -277,12 +294,12 @@ int main(const int argc, const char *argv[]) {
 			playerID = i % number_of_player + !(i % number_of_player) * number_of_player;
 			currPlayer = getPlayer(playerID);
 			if (!lcIsEmpty(currPlayer->units)) {
-				currUnit = getUnit(lcInfo(lcFirst(currPlayer->units)));
+				currUnitID = lcInfo(lcFirst(currPlayer->units));
+				currUnit = getUnit(currUnitID);
 			} else {
-				goto exitGame;
+				continue;
 			}
 			
-
 			healMage(currPlayer, playerID, &map);
 			initUndo();
 			printMainMap();
@@ -343,6 +360,7 @@ int main(const int argc, const char *argv[]) {
 				}else if (strcmp(command, "SAVE") == 0) {
 					validCommand = true;
 					saveAs("savefile.boo", &map, players, nPlayers);
+					putchar('\n');
 				}else if (strcmp(command, "EXIT") == 0) {
 					validCommand = true;
 					goto exitGame;

@@ -186,7 +186,12 @@ void printMap(Map map, int highlightUnitID, int total_space) {
                 ownerId = 0;
             }
             /* Print unit symbol with the associative color */
-            printColor(getUnitChar(map, i, j), ownerId, grid(map, i, j).unitID == highlightUnitID);
+            if (grid(map, i, j).unitID == highlightUnitID) {
+                printColor(getUnitChar(map, i, j), 5, true);
+            } else {
+                printColor(getUnitChar(map, i, j), ownerId, false);
+            }
+            
         }
         putchar('*'); putchar('\n'); 
         for (k = 0; k < total_space; k++) {
@@ -218,7 +223,9 @@ char getUnitChar(Map map, int i, int j) {
 
 void printColor(char symbol, int ownerID, boolean bold) {
     int color = -1;
-    if (ownerID != 0) {
+    if (ownerID == 5) {
+        color = 5;
+    } else if (ownerID != 0) {
         color = getPlayer(ownerID)->color;
     }
     printf("*");
@@ -257,7 +264,7 @@ Square* getSquareByID(Map map, int ID) {
     /* Dapatkan nilai dari y */
     int y = (ID - 1) / width(map);
     /* Return nilai square yang sesuai */
-    return &grid(map, x, y);
+    return &grid(map, y, x);
 }
 
 Point getPointByID(Map map, int ID) {

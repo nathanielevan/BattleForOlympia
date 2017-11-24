@@ -58,7 +58,9 @@ void healNearbyUnit(lcaddress addrUnit, Map* map, int playerID) {
 		getTargetID(map, lcInfo(addrUnit), listOfTargetID, &numberOfUnits);
 		for (j = 0; j < numberOfUnits; j++) {
 			if (unit->ownerID == playerID) {
+				Unit *targetUnit = getUnit(listOfTargetID[j]);
 				procHeal(map, lcInfo(addrUnit), listOfTargetID[j]);
+				printf("Your %s unit just healed your %s! \n\n", unitTypes[unit->type].description, unitTypes[targetUnit->type].description);
 			}
 		}
 		free(listOfTargetID);
@@ -126,6 +128,8 @@ void cmdChangeUnit(){
 void cmdNextUnit(){
 	validCommand = true;
 	initUndo();
+	currUnitID = nextUnit(playerID, currUnitID);
+	currUnit = getUnit(currUnitID);
 	printMainMap();
 }
 
@@ -224,19 +228,19 @@ void cmdAttack(){
 	free(listOfTargetID);
 }
 
-void cmdMap(){
+void cmdMap() {
 	validCommand = true;
 	printMainMap();
 }
 
-void cmdInfo(){
+void cmdInfo() {
 	validCommand = true;
 	printf("Enter​ ​the​ ​coordinate​ ​of​ ​the​ ​cell : ");
 	scanf("%d %d",&x,&y);
 	printInfoSquare(x, y, map);
 }
 
-void cmdEndTurn(){
+void cmdEndTurn() {
 	validCommand = true;
 	currPlayer->gold += currPlayer->income - currPlayer->upkeep;
 }
@@ -248,6 +252,18 @@ int main(const int argc, const char *argv[]) {
 		if (loadFrom("savefile.boo", &map, &players, &nPlayers)) {
 			number_of_player = nPlayers;
 			puts("Game restored!");
+			width = width(map);
+			height = height(map);
+
+			/*Give WARNING */
+			ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+			if (4*width+4 > w.ws_col) {
+				total_space = (w.ws_col-62)/2;
+				for (i = 0; i < total_space; i++) {
+					putchar(' ');
+				}
+				printf("******* WARNING: YOUR MAP IS WIDER THAN YOUR TERMINAL *******\n\n");
+			}
 		} else {
 			puts("Loading failed!");
 			return 1;
@@ -300,9 +316,9 @@ int main(const int argc, const char *argv[]) {
 				continue;
 			}
 			
-			healMage(currPlayer, playerID, &map);
 			initUndo();
 			printMainMap();
+			healMage(currPlayer, playerID, &map);
 
 			while(1) {
 				printf("\x1B[42m");

@@ -9,6 +9,8 @@
 #include "Undo.h"
 #include "User.h"
 #include "Unit.h"
+#include "Save.h"
+#include "Load.h"
 #include "boolean.h"
 #include <string.h>
 #include <sys/ioctl.h>
@@ -235,28 +237,38 @@ void cmdEndTurn(){
 }
 
 /* Main Program */
-int main() {
+int main(const int argc, const char *argv[]) {
 	int total_space;
-    srand(time(NULL));
-    printf("Start a New Game!\n");
+	srand(time(NULL));
+	if (argc > 1) {
+		if (loadFrom("savefile.boo", &map, &players, &nPlayers)) {
+			puts("Game restored!");
+			return 0; /* for now */
+		} else {
+			puts("Loading failed!");
+			return 1;
+		}
+	} else {
+		printf("Start a New Game!\n");
 
-	/* Create map */
-	printf("Insert map size :\n");
-	printf("Width : ");
-	scanf("%d", &width);
-	printf("Height : ");
-	scanf("%d", &height);
-	createMap(height, width, &map);
+		/* Create map */
+		printf("Insert map size :\n");
+		printf("Width : ");
+		scanf("%d", &width);
+		printf("Height : ");
+		scanf("%d", &height);
+		createMap(height, width, &map);
 
-	/* Create players */
-	printf("How many players do you want : ");
-	scanf("%d", &number_of_player);
-	createPlayers(&map, number_of_player);
+		/* Create players */
+		printf("How many players do you want : ");
+		scanf("%d", &number_of_player);
+		createPlayers(&map, number_of_player);
 
-	/* Initialize unit pool */
-	initUnitPool(&map);
-	/* Generate the Map for the Game */
-	generateMap(number_of_player, map.width, map.height, &map);
+		/* Initialize unit pool */
+		initUnitPool(&map);
+		/* Generate the Map for the Game */
+		generateMap(number_of_player, map.width, map.height, &map);
+	}
 
 	/* Initialize */
 	IsOneKing = false;
@@ -331,10 +343,9 @@ int main() {
 					break;
 				}else if (strcmp(command, "SAVE") == 0) {
 					validCommand = true;
-				
+					saveAs("savefile.boo", &map, players, nPlayers);
 				}else if (strcmp(command, "EXIT") == 0) {
 					validCommand = true;
-	
 				}else {
 					printf("Wrong command!\n");
 					validCommand = true;

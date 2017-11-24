@@ -48,10 +48,10 @@ void generateMap(int numPlayer, int w, int h, Map* map) {
 
     /* make a fixed map for player */
     for (i = 1; i <= numPlayer; i++) {
-        if (i == 1) initializeGrid(map, i, 1, 1);
-        else if (i == 2) initializeGrid(map, i, h - 2, w - 2);
-        else if (i == 3) initializeGrid(map, i, h - 2, 1);
-        else initializeGrid(map, i, 1, w - 2);
+        if (i == 1) initializeGrid(map, i, h - 2, 1);
+        else if (i == 2) initializeGrid(map, i, 1, w - 2);
+        else if (i == 3) initializeGrid(map, i, 1, 1);
+        else initializeGrid(map, i, h - 2, w - 2);
     }
 
     /* Time to do random */

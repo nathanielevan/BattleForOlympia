@@ -37,6 +37,28 @@ Player *currPlayer;
 boolean IsOneKing, validCommand;
 
 /* Game commands */
+void print_logo() {
+	printf("\x1B[2J\x1B[1;1H");
+	printf("▀█████████▄     ▄████████     ███         ███      ▄█          ▄████████         ▄████████  ▄██████▄     ▄████████  \n"); 
+  	printf("  ███    ███   ███    ███ ▀█████████▄ ▀█████████▄ ███         ███    ███        ███    ███ ███    ███   ███    ███        \n"); 
+  	printf("  ███    ███   ███    ███    ▀███▀▀██    ▀███▀▀██ ███         ███    █▀         ███    █▀  ███    ███   ███    ███      \n"); 
+ 	printf(" ▄███▄▄▄██▀    ███    ███     ███   ▀     ███   ▀ ███        ▄███▄▄▄           ▄███▄▄▄     ███    ███  ▄███▄▄▄▄██▀      \n"); 
+	printf("▀▀███▀▀▀██▄  ▀███████████     ███         ███     ███       ▀▀███▀▀▀          ▀▀███▀▀▀     ███    ███ ▀▀███▀▀▀▀▀       \n");     
+ 	printf("  ███    ██▄   ███    ███     ███         ███     ███         ███    █▄         ███        ███    ███ ▀███████████      \n");  
+  	printf("  ███    ███   ███    ███     ███         ███     ███▌    ▄   ███    ███        ███        ███    ███   ███    ███        \n");    
+	printf("▄█████████▀    ███    █▀     ▄████▀      ▄████▀   █████▄▄██   ██████████        ███         ▀██████▀    ███    ███      \n");       
+    printf("                                                  ▀                                                     ███    ███      \n");                         
+    printf(" ▄██████▄   ▄█       ▄██   ▄     ▄▄▄▄███▄▄▄▄      ▄███████▄  ▄█     ▄████████                                       \n");
+    printf("███    ███ ███       ███   ██▄ ▄██▀▀▀███▀▀▀██▄   ███    ███ ███    ███    ███                                       \n");
+    printf("███    ███ ███       ███▄▄▄███ ███   ███   ███   ███    ███ ███▌   ███    ███                                       \n");
+    printf("███    ███ ███       ▀▀▀▀▀▀███ ███   ███   ███   ███    ███ ███▌   ███    ███                                       \n");
+    printf("███    ███ ███       ▄██   ███ ███   ███   ███ ▀█████████▀  ███▌ ▀███████████                                       \n");
+    printf("███    ███ ███       ███   ███ ███   ███   ███   ███        ███    ███    ███                                       \n");
+    printf("███    ███ ███▌    ▄ ███   ███ ███   ███   ███   ███        ███    ███    ███                                       \n");
+    printf(" ▀██████▀  █████▄▄██  ▀█████▀   ▀█   ███   █▀   ▄████▀      █▀     ███    █▀                                         \n");
+    printf("           ▀ \n");
+}
+
 void printMainMap() {
 	total_space = (w.ws_col-(4*width+7))/2;
 
@@ -269,8 +291,21 @@ int main(const int argc, const char *argv[]) {
 			return 1;
 		}
 	} else {
-		printf("Start a New Game!\n");
-
+		/* Just to make it cool and some stuff */
+		print_logo();
+		putchar('\n');
+		printf("\x1B[44m");
+		ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+		total_space = (w.ws_col - 17)/2;
+		for(k = 0; k < total_space; k++) {
+			putchar(' ');
+		}
+		printf("Start a New Game!");
+		for(k = total_space + 17; k < w.ws_col; k++) {
+			putchar(' ');
+		}
+		putchar('\n');
+		printf("\x1B[0m\n");
 		/* Create map */
 		printf("Insert map size :\n");
 		printf("Width : ");

@@ -6,9 +6,10 @@
 #include <stdlib.h>
 
 typedef struct {
-    int unitID;
-    int delta;
-    int prevDestOwnerID;
+  int unitID;
+  int delta;
+  int oldMovPoints;
+  int prevDestOwnerID;
 } UndoStkEntry;
 
 #define stkInfoType UndoStkEntry

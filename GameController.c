@@ -23,6 +23,31 @@ boolean isInMap (Point point, Map *map) {
 	return absis(point) < width(*map) && absis(point) >= 0 && ordinat(point) < height(*map) && ordinat(point) >= 0;
 }
 
+void markMoveAbleSquare(Map *map, int currUnitID) {
+	/* Access the unit */
+	Unit *unit = getUnit(currUnitID);
+	/* Iterate through square in movPoint x movPoint range */
+	int x = absis(unit->location);
+	int y = ordinat(unit->location);
+	for (int i = x - unit->movPoints; i <= x + unit->movPoints; i++) {
+		for (int j = y - unit->movPoints; j <= y + unit->movPoints; j++) {
+			if (i + j < unit->movPoints && i >= 0 && i < width(*map) && j >= 0 && j < height(*map)) {
+				/* Highlight the position in the map */
+				getSquare(*map, MakePoint(i, j))->moveAble = 1;
+			}
+		}
+	}
+}
+
+void UnmarkMoveAbleSquare(Map *map) {
+	for (int i = 0; i < width(*map); i++) {
+		for (int j = 0; j < height(*map); j++) {
+			/* Remove the highlight */
+			getSquare(*map, MakePoint(i, j))->moveAble = 0;
+		}
+	}
+}
+
 boolean moveUnit(Map *map, int currUnitID, int deltaX, int deltaY) {
 
 	/* Access the address of the unit with the current unit ID */

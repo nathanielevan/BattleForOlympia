@@ -239,8 +239,8 @@ int main(const int argc, const char *argv[]) {
 	srand(time(NULL));
 	if (argc > 1) {
 		if (loadFrom("savefile.boo", &map, &players, &nPlayers)) {
+			number_of_player = nPlayers;
 			puts("Game restored!");
-			return 0; /* for now */
 		} else {
 			puts("Loading failed!");
 			return 1;

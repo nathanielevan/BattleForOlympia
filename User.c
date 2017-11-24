@@ -51,5 +51,6 @@ void createPlayers(const Map* map, int N){
         player->upkeep = 0;
         player->color = i;
         lcCreateEmpty(&player->units);
+        llCreateEmpty(&player->squares);
     }
 }

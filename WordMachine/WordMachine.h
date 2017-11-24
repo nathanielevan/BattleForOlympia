@@ -5,11 +5,11 @@
 #include "CharMachine.h"
 #include <stdio.h>
 
-#define WM_NMax 44
+#define WM_NMax 43
 
 typedef struct {
     int len;
-    char buf[WM_NMax];
+    char buf[WM_NMax + 1];
 } wmWord;
 
 /* State */
@@ -21,13 +21,13 @@ void wmIgnoreBlank();
    I.S. : CC sembarang 
    F.S. : CC ≠ BLANK atau CC = MARK */
 
-void wmStart(FILE *tape);
+boolean wmStart(FILE *tape);
 /* I.S. : CC sembarang 
    F.S. : EndKata = true, dan CC = MARK; 
           atau EndKata = false, CKata adalah kata yang sudah diakuisisi,
           CC karakter pertama sesudah karakter terakhir kata */
 
-void wmAdv();
+boolean wmAdv();
 /* I.S. : CC adalah karakter pertama kata yang akan diakuisisi 
    F.S. : CKata adalah kata terakhir yang sudah diakuisisi, 
           CC adalah karakter pertama dari kata berikutnya, mungkin MARK
@@ -41,5 +41,7 @@ void wmConsumeWord();
           CC = BLANK atau CC = MARK; 
           CC adalah karakter sesudah karakter terakhir yang diakuisisi.
           Jika panjang kata melebihi NMax, maka sisa kata "dipotong" */
+
+boolean wmEqStr(const char *str);
 
 #endif

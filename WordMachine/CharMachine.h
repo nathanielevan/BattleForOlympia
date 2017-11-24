@@ -2,6 +2,7 @@
 #define CHARMACHINE_H_
 
 #include "boolean.h"
+#include "Checksum.h"
 #include <stdio.h>
 
 #define CM_MARK EOF
@@ -24,5 +25,9 @@ void cmAdv();
    F.S. : CC adalah karakter berikutnya dari CC yang lama, 
           CC mungkin = MARK
           Jika  CC = MARK maka EOP akan menyala (true) */
+
+void cmFinish();
+
+ChecksumResult cmChecksum();
 
 #endif

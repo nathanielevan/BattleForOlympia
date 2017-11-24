@@ -1,4 +1,5 @@
 #include "CharMachine.h"
+#include "Checksum.h"
 #include <stdio.h>
 #include <assert.h>
 
@@ -6,6 +7,7 @@ char cmCC;
 boolean cmEOT;
 
 static FILE * cmTape;
+static ChecksumState cmSum;
 
 void cmStart(FILE *tape) {
     /* Mesin siap dioperasikan. Pita disiapkan untuk dibaca.
@@ -16,6 +18,7 @@ void cmStart(FILE *tape) {
 
     /* Algoritma */
     cmTape = tape;
+    checksumInit(&cmSum);
     cmAdv();
 }
 
@@ -34,5 +37,19 @@ void cmAdv() {
     if (cmEOT) {
         fclose(cmTape);
         cmTape = NULL;
+    } else {
+        checksumUpdate(&cmSum, cmCC);
     }
+}
+
+void cmFinish() {
+    if (cmTape != NULL)
+        fclose(cmTape);
+    cmEOT = true;
+    cmTape = NULL;
+}
+
+ChecksumResult cmChecksum() {
+    ChecksumState sum = cmSum;
+    return checksumFinal(&sum);
 }

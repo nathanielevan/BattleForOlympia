@@ -15,7 +15,7 @@ void wmIgnoreBlank()
         cmAdv();
 }
 
-void wmStart(FILE *tape)
+boolean wmStart(FILE *tape)
 /* I.S. : CC sembarang 
    F.S. : EndKata = true, dan CC = MARK; 
           atau EndKata = false, CKata adalah kata yang sudah diakuisisi,
@@ -29,9 +29,10 @@ void wmStart(FILE *tape)
         wmConsumeWord(); /* akan berhenti satu karakter setelah akhir kata */
     else
         wmEnd = true;
+    return !wmEnd;
 }
 
-void wmAdv()
+boolean wmAdv()
 /* I.S. : CC adalah karakter pertama kata yang akan diakuisisi 
    F.S. : CKata adalah kata terakhir yang sudah diakuisisi, 
           CC adalah karakter pertama dari kata berikutnya, mungkin MARK
@@ -46,6 +47,7 @@ void wmAdv()
     } else {
         wmEnd = true;
     }
+    return !wmEnd;
 }
 
 void wmConsumeWord()
@@ -63,5 +65,18 @@ void wmConsumeWord()
         wmCWord.buf[i] = cmCC;
         cmAdv();
     }
+    /* Zero-terminate */
+    wmCWord.buf[i] = '\0';
     wmCWord.len = i;
+    /*printf("Slurped: '%s'\n", wmCWord.buf);*/
+}
+
+boolean wmEqStr(const char *str) {
+    int i = 0;
+    while (str[i] != 0 && wmCWord.buf[i] != 0) {
+        if (str[i] != wmCWord.buf[i])
+            return false;
+        ++i;
+    }
+    return (str[i] == wmCWord.buf[i]);
 }

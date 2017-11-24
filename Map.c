@@ -147,7 +147,7 @@ void printInfoSquare(int h, int w, Map map) {
 }
 
 /* Fungsi untuk menampilkan map pada terminal */
-void printMap(Map map) {
+void printMap(Map map, int highlightUnitID) {
     /* Var lokal */
     int w = width(map), h = height(map);
     int i, j;
@@ -166,7 +166,7 @@ void printMap(Map map) {
         /* print the top of the grid */
         for (j = 0; j < w; j++) {
             /* Print char with the associative color */
-            printColor(grid(map, i, j).type, grid(map, i, j).ownerID);
+            printColor(grid(map, i, j).type, grid(map, i, j).ownerID, false);
         }
         putchar('*'); putchar('\n');
 
@@ -182,7 +182,7 @@ void printMap(Map map) {
                 ownerId = 0;
             }
             /* Print unit symbol with the associative color */
-            printColor(getUnitChar(map, i, j), ownerId);
+            printColor(getUnitChar(map, i, j), ownerId, grid(map, i, j).unitID == highlightUnitID);
         }
         putchar('*'); putchar('\n'); printf("   ");
 
@@ -205,34 +205,37 @@ char getUnitChar(Map map, int i, int j) {
         return ' ';
 }
 
-void printColor(char symbol, int ownerID) {
-    if (ownerID == 0) {
-        printf("* %s%c ", WHITE, symbol);
+void printColor(char symbol, int ownerID, boolean bold) {
+    int color = -1;
+    if (ownerID != 0) {
+        color = getPlayer(ownerID)->color;
     }
-    else {
-        int color = getPlayer(ownerID)->color;
-        switch (color) {
-            case 0 :
-                print_red(symbol);
-                break;
-            case 1 :
-                print_green(symbol);
-                break;
-            case 2 :
-                print_yellow(symbol);
-                break;
-            case 3 :
-                print_blue(symbol);
-                break;
-            case 4 :
-                print_magenta(symbol);
-                break;
-            case 5 :
-                print_cyan(symbol);
-                break;
-            default :
-                printf("* %c ", symbol);
-        }
+    printf("*");
+    if (bold) {
+        printf("\x1B[1m");
+    }
+    switch (color) {
+        case 0 :
+            print_red(symbol);
+            break;
+        case 1 :
+            print_green(symbol);
+            break;
+        case 2 :
+            print_yellow(symbol);
+            break;
+        case 3 :
+            print_blue(symbol);
+            break;
+        case 4 :
+            print_magenta(symbol);
+            break;
+        case 5 :
+            print_cyan(symbol);
+            break;
+        default :
+            printf(" %c ", symbol);
+            printf("%s", WHITE);
     }
 }
 

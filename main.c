@@ -38,21 +38,19 @@ boolean IsOneKing, validCommand;
 /* Game commands */
 void printMainMap() {
 	printf("\n");
-	printMap(map);
+	printMap(map, currUnitID);
 	printf("\n");
 }
 
 void healNearbyUnit(lcaddress addrUnit, Map* map, int playerID) {
 	/* Local Variabele */
 	Unit *unit;
-	Unit *unitTarget;
 	int numberOfUnits, j;
 	unit = getUnit(lcInfo(addrUnit));
 	if (unit->type == WHITE_MAGE) {
 		int* listOfTargetID = (int*) malloc(sizeof(int) * 4);
 		getTargetID(map, lcInfo(addrUnit), listOfTargetID, &numberOfUnits);
-		for (int j = 0; j < numberOfUnits; j++) {
-			unitTarget = getUnit(listOfTargetID[j]);
+		for (j = 0; j < numberOfUnits; j++) {
 			if (unit->ownerID == playerID) {
 				procHeal(map, lcInfo(addrUnit), listOfTargetID[j]);
 			}
@@ -78,10 +76,10 @@ void healMage(Player *currPlayer, int playerID, Map* map) {
 void cmdMove() {
 	boolean IsCanMove;
 	Point From, To;
-	int prevDestOwnerID;
+
 	validCommand = true;
 	printf("\n");
-	printMap(map);
+	printMap(map, currUnitID);
 	printf("\n");
 	printf("Please​ ​enter​ ​your unit movement (x y):​ ");
 	scanf("%d %d",&x,&y);
@@ -106,7 +104,7 @@ void cmdUndo(){
 						
 	if (!undo(&map))
 	puts("Cannot undo move!");
-	printMap(map);
+	printMap(map, currUnitID);
 }
 
 void cmdChangeUnit(){
@@ -134,7 +132,6 @@ void cmdRecruit(){
 	if (numberOfCastle > 0) {
 
 		int currCastleID, typeID;
-		Square *square;
 		Point castleLocation;
 
 		printf("=== List of Availabe Castle Location ===\n");
@@ -187,7 +184,7 @@ void cmdAttack(){
 	getTargetID(&map, currUnitID, listOfTargetID, &numberOfUnits);
 	if (numberOfUnits > 0) {
 		printf("Enemies that ​you​ ​can ​attack :\n");
-		for (int j = 0; j < numberOfUnits; j++) {
+		for (j = 0; j < numberOfUnits; j++) {
 			Unit *unit = getUnit(listOfTargetID[j]);
 			printf("%d. %c (%d,%d)\n", (j + 1), unitTypes[unit->type].mapSymbol, absis(unit->location), ordinat(unit->location));
 		}
@@ -276,17 +273,19 @@ int main(const int argc, const char *argv[]) {
 	while(!IsOneKing){
 		for(i = 1;; i++){
 			/* Initialize */
-			playerID = i % number_of_player + !(i % number_of_player) * number_of_player;
-			currUnitID = 0;
-			currUnit = getUnit(currUnitID);
-			currPlayer = getPlayer(playerID);
 			castleID = (int*) malloc(sizeof(int) * 4);
+			playerID = i % number_of_player + !(i % number_of_player) * number_of_player;
+			currPlayer = getPlayer(playerID);
+			if (!lcIsEmpty(currPlayer->units)) {
+				currUnit = getUnit(lcInfo(lcFirst(currPlayer->units)));
+			} else {
+				goto exitGame;
+			}
+			
 
 			healMage(currPlayer, playerID, &map);
 			initUndo();
 			printMainMap();
-
-			
 
 			while(1) {
 				printf("\x1B[42m");
@@ -346,6 +345,7 @@ int main(const int argc, const char *argv[]) {
 					saveAs("savefile.boo", &map, players, nPlayers);
 				}else if (strcmp(command, "EXIT") == 0) {
 					validCommand = true;
+					goto exitGame;
 				}else {
 					printf("Wrong command!\n");
 					validCommand = true;
@@ -353,5 +353,6 @@ int main(const int argc, const char *argv[]) {
 			}
 		}
 	}
+exitGame :
     return 0;
 }

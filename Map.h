@@ -61,13 +61,13 @@ void initializeGrid(Map* map, int ownerID, int x, int y);
 void printInfoSquare(int h, int w, Map map);
 
 /* Fungsi untuk menampilkan map pada terminal */
-void printMap(Map map);
+void printMap(Map map, int highlightUnitID);
 
 /* Fungsi untuk mendapatkan simbol character Unit*/
 char getUnitChar(Map map, int i, int j);
 
 /* memberikan warna sesuai dengan ID owner */
-void printColor(char symbol, int ownerID); 
+void printColor(char symbol, int ownerID, boolean bold); 
 
 Square* getSquareByID(Map map, int ID);
 

@@ -5,7 +5,7 @@
 #include "Point/Point.h"
 #include "Map.h"
 
-typedef enum { KING = 0, ARCHER, SWORDSMAN, WHITE_MAGE } TypeID;
+typedef enum { INVALID_TYPE = 0, KING, ARCHER, SWORDSMAN, WHITE_MAGE } TypeID;
 
 typedef struct {
     int health, movPoints, ownerID;
@@ -18,6 +18,7 @@ typedef enum {MELEE, RANGED} AtkType;
 
 typedef struct {
     char mapSymbol;
+    const char *description;
     int maxHealth, attack, defence, maxMovPoints, cost, upkeep;
     AtkType atkType;
 } UnitType;
@@ -34,5 +35,8 @@ int createUnit(TypeID type);
 
 /* destroy the unit */
 void destroyUnit();
+
+/* lookup a type ID by its map symbol; returns -1 if not found */
+TypeID lookupTypeID(char mapSymbol);
 
 #endif /* BATTLEFOROLYMPIA_UNIT_H */

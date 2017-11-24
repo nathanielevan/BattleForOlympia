@@ -7,8 +7,10 @@
 #include <string.h>
 
 const UnitType unitTypes[] = {
+    { '?', "MISSINGNO", 0, 0, 0, 0, MELEE, 0, 0 },
     {
         .mapSymbol = 'K',
+        .description = "King",
         .maxHealth = 100,
         .attack = 10,
         .defence = 7,
@@ -18,6 +20,7 @@ const UnitType unitTypes[] = {
         .upkeep = 0},
     {
         .mapSymbol = 'A',
+        .description = "Archer",
         .maxHealth = 100,
         .attack = 15,
         .defence = 3,
@@ -27,6 +30,7 @@ const UnitType unitTypes[] = {
         .upkeep = 1}, /* Spec 4e: Upkeep = number of units - king */
     {
         .mapSymbol = 'S',
+        .description = "Swordsman",
         .maxHealth = 150,
         .attack = 20,
         .defence = 4,
@@ -36,6 +40,7 @@ const UnitType unitTypes[] = {
         .upkeep = 1},
     {
         .mapSymbol = 'W',
+        .description = "White Mage",
         .maxHealth = 75,
         .attack = 10,
         .defence = 1,
@@ -93,4 +98,13 @@ int createUnit(TypeID typeID) {
 
 void destroyUnit(int id) {
     llInsVFirst(&freeList, id - 1);
+}
+
+TypeID lookupTypeID(char mapSymbol) {
+    int i;
+    const int nTypes = sizeof(unitTypes) / sizeof(unitTypes[0]);
+    for (i = 0; i < nTypes; i++)
+        if (unitTypes[i].mapSymbol == mapSymbol)
+            return i;
+    return -1;
 }

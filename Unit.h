@@ -32,7 +32,7 @@ Unit *getUnit(int id);
 /* returns id of newly created unit */
 int createUnit(TypeID type);
 
-/* destroy te unit */
+/* destroy the unit */
 void destroyUnit();
 
 #endif /* BATTLEFOROLYMPIA_UNIT_H */

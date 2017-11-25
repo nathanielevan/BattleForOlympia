@@ -1,4 +1,5 @@
 #include "boolean.h"
+#include "CircularList/CircularList.h"
 #include "GameController.h"
 #include "Point/Point.h"
 #include "Unit.h"
@@ -294,6 +295,14 @@ void AvailabeCastleLocation(Map map, int ownerID, int *castleID, int *numberOfCa
 	}
 }
 
+int nextUnit(int ownerID, int currUnitID) {
+	Player *player = getPlayer(ownerID);
+	lcList units = player->units;
+	lcaddress addressUnit = lcSearch(units, currUnitID);
+	addressUnit = lcNext(addressUnit);
+	return lcInfo(addressUnit);
+}
+
 int changeUnit(int ownerID) {
 	/* Variable */
 	int unitOrder, i, unitID;
@@ -349,7 +358,5 @@ int changeUnit(int ownerID) {
 	for (i = 0; i < unitOrder - 1; i++) {
 		address = lcNext(address);
 	}
-
 	return lcInfo(address);
-
 }

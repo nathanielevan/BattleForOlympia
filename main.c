@@ -9,6 +9,8 @@
 #include "Undo.h"
 #include "User.h"
 #include "Unit.h"
+#include "Save.h"
+#include "Load.h"
 #include "boolean.h"
 #include <string.h>
 #include <sys/ioctl.h>
@@ -24,6 +26,7 @@ struct winsize w;
 /* Var Global */
 int i,k; //Iterating variable
 int width, height, x, y;
+int total_space;
 int Enemy, myUnit, otherUnit;
 int number_of_player, playerID, currUnitID, numberOfCastle;
 int *castleID;
@@ -34,25 +37,52 @@ Player *currPlayer;
 boolean IsOneKing, validCommand;
 
 /* Game commands */
+void print_logo() {
+	printf("\x1B[2J\x1B[1;1H");
+	printf("▀█████████▄     ▄████████     ███         ███      ▄█          ▄████████         ▄████████  ▄██████▄     ▄████████  \n"); 
+  	printf("  ███    ███   ███    ███ ▀█████████▄ ▀█████████▄ ███         ███    ███        ███    ███ ███    ███   ███    ███        \n"); 
+  	printf("  ███    ███   ███    ███    ▀███▀▀██    ▀███▀▀██ ███         ███    █▀         ███    █▀  ███    ███   ███    ███      \n"); 
+ 	printf(" ▄███▄▄▄██▀    ███    ███     ███   ▀     ███   ▀ ███        ▄███▄▄▄           ▄███▄▄▄     ███    ███  ▄███▄▄▄▄██▀      \n"); 
+	printf("▀▀███▀▀▀██▄  ▀███████████     ███         ███     ███       ▀▀███▀▀▀          ▀▀███▀▀▀     ███    ███ ▀▀███▀▀▀▀▀       \n");     
+ 	printf("  ███    ██▄   ███    ███     ███         ███     ███         ███    █▄         ███        ███    ███ ▀███████████      \n");  
+  	printf("  ███    ███   ███    ███     ███         ███     ███▌    ▄   ███    ███        ███        ███    ███   ███    ███        \n");    
+	printf("▄█████████▀    ███    █▀     ▄████▀      ▄████▀   █████▄▄██   ██████████        ███         ▀██████▀    ███    ███      \n");       
+    printf("                                                  ▀                                                     ███    ███      \n");                         
+    printf(" ▄██████▄   ▄█       ▄██   ▄     ▄▄▄▄███▄▄▄▄      ▄███████▄  ▄█     ▄████████                                       \n");
+    printf("███    ███ ███       ███   ██▄ ▄██▀▀▀███▀▀▀██▄   ███    ███ ███    ███    ███                                       \n");
+    printf("███    ███ ███       ███▄▄▄███ ███   ███   ███   ███    ███ ███▌   ███    ███                                       \n");
+    printf("███    ███ ███       ▀▀▀▀▀▀███ ███   ███   ███   ███    ███ ███▌   ███    ███                                       \n");
+    printf("███    ███ ███       ▄██   ███ ███   ███   ███ ▀█████████▀  ███▌ ▀███████████                                       \n");
+    printf("███    ███ ███       ███   ███ ███   ███   ███   ███        ███    ███    ███                                       \n");
+    printf("███    ███ ███▌    ▄ ███   ███ ███   ███   ███   ███        ███    ███    ███                                       \n");
+    printf(" ▀██████▀  █████▄▄██  ▀█████▀   ▀█   ███   █▀   ▄████▀      █▀     ███    █▀                                         \n");
+    printf("           ▀ \n");
+}
+
 void printMainMap() {
+	total_space = (w.ws_col-(4*width+7))/2;
+
+	if (total_space < 0) {
+		total_space = 0;
+	}
 	printf("\n");
-	printMap(map);
+	printMap(map, currUnitID, total_space);
 	printf("\n");
 }
 
 void healNearbyUnit(lcaddress addrUnit, Map* map, int playerID) {
 	/* Local Variabele */
 	Unit *unit;
-	Unit *unitTarget;
 	int numberOfUnits, j;
 	unit = getUnit(lcInfo(addrUnit));
 	if (unit->type == WHITE_MAGE) {
 		int* listOfTargetID = (int*) malloc(sizeof(int) * 4);
 		getTargetID(map, lcInfo(addrUnit), listOfTargetID, &numberOfUnits);
-		for (int j = 0; j < numberOfUnits; j++) {
-			unitTarget = getUnit(listOfTargetID[j]);
+		for (j = 0; j < numberOfUnits; j++) {
 			if (unit->ownerID == playerID) {
+				Unit *targetUnit = getUnit(listOfTargetID[j]);
 				procHeal(map, lcInfo(addrUnit), listOfTargetID[j]);
+				printf("Your %s unit just healed your %s! \n\n", unitTypes[unit->type].description, unitTypes[targetUnit->type].description);
 			}
 		}
 		free(listOfTargetID);
@@ -76,11 +106,9 @@ void healMage(Player *currPlayer, int playerID, Map* map) {
 void cmdMove() {
 	boolean IsCanMove;
 	Point From, To;
-	int prevDestOwnerID;
+
 	validCommand = true;
-	printf("\n");
-	printMap(map);
-	printf("\n");
+	printMainMap();
 	printf("Please​ ​enter​ ​your unit movement (x y):​ ");
 	scanf("%d %d",&x,&y);
 	From = currUnit->location;
@@ -102,9 +130,11 @@ void cmdMove() {
 void cmdUndo(){
 	validCommand = true;
 						
-	if (!undo(&map))
-	puts("Cannot undo move!");
-	printMap(map);
+	if (!undo(&map)) {
+		printMainMap();
+		puts("Cannot undo move!");
+		putchar('\n');
+	}
 }
 
 void cmdChangeUnit(){
@@ -124,6 +154,9 @@ void destroyListTargetID(int* targetID) {
 void cmdNextUnit(){
 	validCommand = true;
 	initUndo();
+	currUnitID = nextUnit(playerID, currUnitID);
+	currUnit = getUnit(currUnitID);
+	printMainMap();
 }
 
 void cmdRecruit(){
@@ -136,7 +169,6 @@ void cmdRecruit(){
 	if (numberOfCastle > 0) {
 
 		int currCastleID, typeID;
-		Square *square;
 		Point castleLocation;
 
 		printf("=== List of Availabe Castle Location ===\n");
@@ -159,16 +191,17 @@ void cmdRecruit(){
 		printf("3. White Mage 	| HP 75  | ATK 10 | DEF 1 | GOLD 200\n");
 		printf("Enter the type of unit (1-3) : ");
 		scanf("%d", &typeID);
+		typeID = typeID - 1 + ARCHER;
 
 		RecruitOutcome recruitOutcome = recruitUnit(&map, playerID, typeID, castleLocation); 
 
 		printMainMap();
 
 		if (recruitOutcome == RECRUIT_SUCCESS) {
-			printf("Recruit success\n");
+			printf("Recruit success! \n\n");
 		}
 		else if (recruitOutcome == NOT_ENOUGH_GOLD) {
-			printf("Not enough gold to recruit unit\n");
+			printf("You don't have enough gold to recruit unit!\n\n");
 		}
 	}
 
@@ -189,7 +222,7 @@ void cmdAttack(){
 	getTargetID(&map, currUnitID, listOfTargetID, &numberOfUnits);
 	if (numberOfUnits > 0) {
 		printf("Enemies that ​you​ ​can ​attack :\n");
-		for (int j = 0; j < numberOfUnits; j++) {
+		for (j = 0; j < numberOfUnits; j++) {
 			Unit *unit = getUnit(listOfTargetID[j]);
 			printf("%d. %c (%d,%d)\n", (j + 1), unitTypes[unit->type].mapSymbol, absis(unit->location), ordinat(unit->location));
 		}
@@ -221,12 +254,12 @@ void cmdAttack(){
 	free(listOfTargetID);
 }
 
-void cmdMap(){
+void cmdMap() {
 	validCommand = true;
 	printMainMap();
 }
 
-void cmdInfo(){
+void cmdInfo() {
 	validCommand = true;
 	printf("Enter​ ​the​ ​coordinate​ ​of​ ​the​ ​cell : ");
 	scanf("%d %d",&x,&y);
@@ -234,34 +267,78 @@ void cmdInfo(){
 >>>>>>> ac0296f6ae053ad67316f639f39bd738dc84e0de
 }
 
-void cmdEndTurn(){
+void cmdEndTurn() {
 	validCommand = true;
 	currPlayer->gold += currPlayer->income - currPlayer->upkeep;
 }
 
 /* Main Program */
-int main() {
-	int total_space;
-    srand(time(NULL));
-    printf("Start a New Game!\n");
+int main(const int argc, const char *argv[]) {
+	srand(time(NULL));
+	if (argc > 1) {
+		if (loadFrom("savefile.boo", &map, &players, &nPlayers)) {
+			number_of_player = nPlayers;
+			puts("Game restored!");
+			width = width(map);
+			height = height(map);
 
-	/* Create map */
-	printf("Insert map size :\n");
-	printf("Width : ");
-	scanf("%d", &width);
-	printf("Height : ");
-	scanf("%d", &height);
-	createMap(height, width, &map);
+			/*Give WARNING */
+			ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+			if (4*width+4 > w.ws_col) {
+				total_space = (w.ws_col-62)/2;
+				for (i = 0; i < total_space; i++) {
+					putchar(' ');
+				}
+				printf("******* WARNING: YOUR MAP IS WIDER THAN YOUR TERMINAL *******\n\n");
+			}
+		} else {
+			puts("Loading failed!");
+			return 1;
+		}
+	} else {
+		/* Just to make it cool and some stuff */
+		print_logo();
+		putchar('\n');
+		printf("\x1B[44m");
+		ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+		total_space = (w.ws_col - 17)/2;
+		for(k = 0; k < total_space; k++) {
+			putchar(' ');
+		}
+		printf("Start a New Game!");
+		for(k = total_space + 17; k < w.ws_col; k++) {
+			putchar(' ');
+		}
+		putchar('\n');
+		printf("\x1B[0m\n");
+		/* Create map */
+		printf("Insert map size :\n");
+		printf("Width : ");
+		scanf("%d", &width);
+		printf("Height : ");
+		scanf("%d", &height);
 
-	/* Create players */
-	printf("How many players do you want : ");
-	scanf("%d", &number_of_player);
-	createPlayers(&map, number_of_player);
+		/*Give WARNING */
+		ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+		if (4*width+4 > w.ws_col) {
+			total_space = (w.ws_col-62)/2;
+			for (i = 0; i < total_space; i++) {
+				putchar(' ');
+			}
+			printf("******* WARNING: YOUR MAP IS WIDER THAN YOUR TERMINAL *******\n\n");
+		}
+		createMap(height, width, &map);
 
-	/* Initialize unit pool */
-	initUnitPool(&map);
-	/* Generate the Map for the Game */
-	generateMap(number_of_player, map.width, map.height, &map);
+		/* Create players */
+		printf("How many players do you want : ");
+		scanf("%d", &number_of_player);
+		createPlayers(&map, number_of_player);
+
+		/* Initialize unit pool */
+		initUnitPool(&map);
+		/* Generate the Map for the Game */
+		generateMap(number_of_player, map.width, map.height, &map);
+	}
 
 	/* Initialize */
 	IsOneKing = false;
@@ -269,17 +346,19 @@ int main() {
 	while(!IsOneKing){
 		for(i = 1;; i++){
 			/* Initialize */
-			playerID = i % number_of_player + !(i % number_of_player) * number_of_player;
-			currUnitID = 0;
-			currUnit = getUnit(currUnitID);
-			currPlayer = getPlayer(playerID);
 			castleID = (int*) malloc(sizeof(int) * 4);
-
-			healMage(currPlayer, playerID, &map);
+			playerID = i % number_of_player + !(i % number_of_player) * number_of_player;
+			currPlayer = getPlayer(playerID);
+			if (!lcIsEmpty(currPlayer->units)) {
+				currUnitID = lcInfo(lcFirst(currPlayer->units));
+				currUnit = getUnit(currUnitID);
+			} else {
+				continue;
+			}
+			
 			initUndo();
 			printMainMap();
-
-			
+			healMage(currPlayer, playerID, &map);
 
 			while(1) {
 				printf("\x1B[42m");
@@ -427,10 +506,11 @@ int main() {
 					break;
 				}else if (strcmp(command, "SAVE") == 0) {
 					validCommand = true;
-				
+					saveAs("savefile.boo", &map, players, nPlayers);
+					putchar('\n');
 				}else if (strcmp(command, "EXIT") == 0) {
 					validCommand = true;
-	
+					goto exitGame;
 				}else {
 					printf("Wrong command!\n");
 					validCommand = true;
@@ -438,5 +518,6 @@ int main() {
 			}
 		}
 	}
+exitGame :
     return 0;
 }

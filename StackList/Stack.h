@@ -3,11 +3,12 @@
 #define _STACKLIST_H
 
 #include "../boolean.h"
+#include "Point/Point.h"
 #include <stdlib.h>
 
 typedef struct {
   int unitID;
-  int delta;
+  Point oldLoc;
   int oldMovPoints;
   int prevDestOwnerID;
 } UndoStkEntry;

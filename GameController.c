@@ -27,11 +27,7 @@ boolean ownKing(int playerID) {
     /* Get the first ID in the list */
     lcaddress address = lcFirst(player->units);
     /* Iterate through the list */
-    if (address == NULL) {
-        puts("Null");
-    }
     if (address != NULL) {
-        puts("Non-Null");
         while (1) {
             if (lcNext(address) != lcFirst(player->units)) {
                 /* Access the unit */
@@ -231,7 +227,7 @@ BattleResult procBattle(Map *map, int attackerID, int defenderID, int* ePlayerId
         }
 
         /* Defender is still alive and can attack */
-        else if (defender->type == KING || defender->type == attacker->type) {
+        else if (defender->type == KING || unitTypes[defender->type].atkType == unitTypes[attacker->type].atkType) {
 
             /* Attacker lose health according to the defender attack point */
             attacker->health -= unitTypes[defender->type].attack - unitTypes[attacker->type].defence;
@@ -251,6 +247,9 @@ BattleResult procBattle(Map *map, int attackerID, int defenderID, int* ePlayerId
 
                 /* Remove the unit from user ownership */
                 removeUnit(attacker->ownerID, attackerID);
+
+                /* Remove the unit from the map */
+                getSquare(*map, attacker->location)->unitID = 0;                
             }
 
         }

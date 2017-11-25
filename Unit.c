@@ -11,8 +11,8 @@ const UnitType unitTypes[] = {
     {
         .mapSymbol = 'K',
         .description = "King",
-        .maxHealth = 10,
-        .attack = 10,
+        .maxHealth = 100,
+        .attack = 200,
         .defence = 7,
         .maxMovPoints = 200,
         .atkType = MELEE,

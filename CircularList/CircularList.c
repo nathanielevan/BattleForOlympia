@@ -243,8 +243,9 @@ void lcDelAfter (lcList *L, lcaddress *Pdel, lcaddress Prec)
     /* Algoritma */
     *Pdel = lcNext(Prec);
     lcNext(Prec) = lcNext(*Pdel);
-    if (*Pdel == lcFirst(*L))
+    if (*Pdel == lcFirst(*L)) {
         lcFirst(*L) = lcNext(Prec);
+    }
     lcNext(*Pdel) = Nil;
 }
 
@@ -263,7 +264,12 @@ void lcDelP (lcList *L, lcType X)
         for (pred = lcFirst; lcNext(pred) != lcFirst && lcInfo(lcNext(pred)) != X; pred = lcNext(pred))
             ;
         if (lcInfo(lcNext(pred)) == X) {
-            lcDelAfter(L, &P, pred);
+            if (pred == lcNext(pred)) {
+                P = pred;
+                lcFirst(*L) = Nil;
+            } else {
+                lcDelAfter(L, &P, pred);
+            }
             lcDealokasi(P);
         }
     }

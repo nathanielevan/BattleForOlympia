@@ -279,7 +279,12 @@ void deleteOwner(int ownerID, Map *map) {
         for (j = 0; j < wMap; j++) {
             if (grid(*map, i, j).ownerID == ownerID) {
                 grid(*map, i, j).ownerID = 0;
-                grid(*map, i, j).unitID = 0;
+                if (grid(*map, i, j).unitID != 0) {
+                    Unit* unit = getUnit(grid(*map, i, j).unitID);
+                    if (unit->ownerID == ownerID)
+                        grid(*map, i, j).unitID = 0;
+                }
+
             }
         }
     }

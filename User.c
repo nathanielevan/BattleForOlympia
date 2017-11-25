@@ -50,6 +50,7 @@ void createPlayers(const Map* map, int N){
         player->income = STARTING_INCOME;
         player->upkeep = 0;
         player->color = i;
+        player->isPlayable = true;
         lcCreateEmpty(&player->units);
         llCreateEmpty(&player->squares);
     }

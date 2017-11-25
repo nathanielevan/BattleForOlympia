@@ -23,7 +23,7 @@ boolean canMove(Unit *unit, int deltaX, int deltaY, Map *map);
 
 void markMoveAbleSquare(Map *map, int currUnitID);
 
-void UnmarkMoveAbleSquare(Map *map);
+void unmarkMoveAbleSquare(Map *map);
 
 /* Move unit with currUnitID with appropriate direction */
 /* False if the unit can't be moved as specified by the direction */
@@ -31,6 +31,10 @@ void UnmarkMoveAbleSquare(Map *map);
 boolean moveUnit(Map *map, int currUnitID, int deltaX, int deltaY);
 
 boolean isInMap (Point point, Map *map);
+
+boolean ownKing(int playerID);
+
+void resetUnitAttack(int ownerID);
 
 /* Procure battle between two units */
 /* False if the fight didn't occur */

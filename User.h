@@ -4,9 +4,11 @@
 #include "Unit.h"
 #include "CircularList/CircularList.h"
 #include "LinearList/LinearList.h"
+#include "boolean.h"
 
 typedef struct {
     int gold, income, upkeep, color;
+    boolean isPlayable;
     lcList units;
     llList squares;
 } Player;

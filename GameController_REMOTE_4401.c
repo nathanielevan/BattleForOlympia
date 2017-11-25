@@ -1,5 +1,4 @@
 #include "boolean.h"
-#include "CircularList/CircularList.h"
 #include "GameController.h"
 #include "Point/Point.h"
 #include "Unit.h"
@@ -8,76 +7,14 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-boolean canMove(Unit *unit, int X, int Y, Map *map) {
+boolean canMove(Unit *unit, int deltaX, int deltaY, Map *map) {
 
-	if ((abs(absis(unit->location) - X) + abs(ordinat(unit->location) - Y) <= unit->movPoints) &&
-			isInMap(MakePoint(X, Y), map) && getSquare(*map, MakePoint(X, Y))->unitID == 0)
+	if ((abs(deltaX) + abs(deltaY) <= unit->movPoints) &&
+			isInMap(PlusDelta(unit->location, deltaX, deltaY), map))
 		/* Hasilkan nilai true karena unit mampu bergerak */
 		return true;
 	/* Unit tidak mampu bergerak, hasilkan false */
 	return false;
-}
-
-boolean ownKing(int playerID) {
-	/* Get the player */
-	Player *player = getPlayer(playerID);
-
-	/* Iterate through the list */
-	/* Iterate through the list */
-	/* Get the first ID in the list */
-	lcaddress address = lcFirst(player->units);
-	/* Iterate through the list */
-	while (1) {
-		if (lcNext(address) != lcFirst(player->units)) {
-
-			/* Access the unit */
-			Unit *unit = getUnit(lcInfo(address));
-			/* Check if it's a king */
-			if (unit->type == KING) return true;
-
-		}
-		else {
-
-			/* Access the unit */
-			Unit *unit = getUnit(lcInfo(address));
-			/* Check if it's a king */
-			if (unit->type == KING) return true;
-
-			break;
-		}
-		address = lcNext(address);
-	}	
-	return false;
-}
-
-void resetUnitAttack(int ownerID) {
-	/* Get the player */
-	Player *player = getPlayer(ownerID);
-
-	/* Iterate through the list */
-	/* Get the first ID in the list */
-	lcaddress address = lcFirst(player->units);
-	/* Iterate through the list */
-	while (1) {
-		if (lcNext(address) != lcFirst(player->units)) {
-
-			/* Access the unit */
-			Unit *unit = getUnit(lcInfo(address));
-			/* Reset the attack counter */
-			unit->canAttack = true;
-
-		}
-		else {
-
-			/* Access the unit */
-			Unit *unit = getUnit(lcInfo(address));
-			/* Reset the attack counter */
-			unit->canAttack = true;
-
-			break;
-		}
-		address = lcNext(address);
-	}	
 }
 
 boolean isInMap (Point point, Map *map) {
@@ -92,19 +29,17 @@ void markMoveAbleSquare(Map *map, int currUnitID) {
 	/* Iterate through square in movPoint x movPoint range */
 	int x = absis(unit->location);
 	int y = ordinat(unit->location);
-	printf("(%d,%d)\n", x, y);
 	for (int i = x - unit->movPoints; i <= x + unit->movPoints; i++) {
 		for (int j = y - unit->movPoints; j <= y + unit->movPoints; j++) {
-			if (abs(i - x) + abs(j - y) <= unit->movPoints && i >= 0 && i < width(*map) && j >= 0 && j < height(*map)) {
+			if (i + j < unit->movPoints && i >= 0 && i < width(*map) && j >= 0 && j < height(*map)) {
 				/* Highlight the position in the map */
-				printf("(%d,%d)\n", i, j);
 				getSquare(*map, MakePoint(i, j))->moveAble = 1;
 			}
 		}
 	}
 }
 
-void unmarkMoveAbleSquare(Map *map) {
+void UnmarkMoveAbleSquare(Map *map) {
 	for (int i = 0; i < width(*map); i++) {
 		for (int j = 0; j < height(*map); j++) {
 			/* Remove the highlight */
@@ -113,24 +48,19 @@ void unmarkMoveAbleSquare(Map *map) {
 	}
 }
 
-boolean moveUnit(Map *map, int currUnitID, int X, int Y) {
+boolean moveUnit(Map *map, int currUnitID, int deltaX, int deltaY) {
 
 	/* Access the address of the unit with the current unit ID */
 	Unit *unit = getUnit(currUnitID);
 
 	/* Check if the unit able to do the move */
-	if (canMove(unit, X, Y, map)) {
+	if (canMove(unit, deltaX, deltaY, map)) {
 
 		/* Remove the current unit from the map */
 		getSquare(*map, unit->location)->unitID = 0;
 
-		/* Decrease the movement point of unit */
-		unit->movPoints -= abs(absis(unit->location) - X) + abs(ordinat(unit->location) - Y);
-
-		printf("(%d,%d)\n", absis(unit->location), ordinat(unit->location));
-
 		/* Translate the location of the unit with the corresponding X and Y */
-		unit->location = MakePoint(X, Y);
+		unit->location = PlusDelta(unit->location, deltaX, deltaY);
 
 		/* Add the current unit to the new square on the map */
 		getSquare(*map, unit->location)->unitID = currUnitID; 
@@ -142,6 +72,9 @@ boolean moveUnit(Map *map, int currUnitID, int X, int Y) {
 
 			player->income += getSquare(*map, unit->location)->tribute;
 		}
+
+		/* Decrease the movement point of unit */
+		unit->movPoints -= abs(deltaX) + abs(deltaY);
 
 		/* The movement is done succesfully */
 		return true;
@@ -160,31 +93,8 @@ BattleResult procBattle(Map *map, int attackerID, int defenderID) {
 	/* Create a container for battle result */
 	BattleResult battleResult;
 
-	/* Check if the battle is a deny */
-	if (attacker->ownerID == defender->ownerID) {
-		/* Remove the defender health according to the attacker attack point */
-		defender->health -= unitTypes[attacker->type].attack - unitTypes[defender->type].defence;
-
-		/* Update the battle result */
-		battleResult.defHealth = defender->health;
-		battleResult.atkDamageDone = unitTypes[attacker->type].attack - unitTypes[defender->type].defence;
-
-		/* Defender is dead */
-		if (defender->health <= 0) {
-
-			/* Remove the unit from the list of unit */
-			destroyUnit(defenderID);
-
-			/* Remove the unit from user ownership */
-			removeUnit(defender->ownerID, defenderID);
-
-			/* Remove the unit from the map */
-			getSquare(*map, defender->location)->unitID = 0;
-		}
-	}
-
 	/* Check if the two units can battle */
-	else if (attacker->canAttack) {
+	if (attacker->canAttack) {
 
 		/* Make the attacker unable to attack */
 		attacker->canAttack = false;
@@ -208,15 +118,8 @@ BattleResult procBattle(Map *map, int attackerID, int defenderID) {
 		/* Defender is dead */
 		if (defender->health <= 0) {
 
-			/* Give the attacker gold */
-			Player *player = getPlayer(attacker->ownerID);
-			player->gold += unitTypes[defender->type].cost / 4;
-
 			/* Remove the unit from the list of unit */
 			destroyUnit(defenderID);
-
-			/* Remove the unit from user ownership */
-			removeUnit(defender->ownerID, defenderID);
 
 			/* Remove the unit from the map */
 			getSquare(*map, defender->location)->unitID = 0;
@@ -230,20 +133,7 @@ BattleResult procBattle(Map *map, int attackerID, int defenderID) {
 
 			/* Update the battle result */
 			battleResult.atkHealth = attacker->health;
-			battleResult.defDamageDone = unitTypes[defender->type].attack - unitTypes[attacker->type].defence;
-
-			if (attacker->health <= 0) {
-				/* Give the gold to the defender */
-				Player *player = getPlayer(defender->ownerID);
-				player->gold += unitTypes[attacker->type].cost / 4;
-
-				/* Remove the unit from unit pool */
-				destroyUnit(attackerID);
-
-				/* Remove the unit from user ownership */
-				removeUnit(attacker->ownerID, attackerID);
-			}
-
+			battleResult.defDamageDone = defender->health;
 		}
 
 		/* The battle occured, update battle result */
@@ -396,17 +286,9 @@ void AvailabeCastleLocation(Map map, int ownerID, int *castleID, int *numberOfCa
 	}
 }
 
-int nextUnit(int ownerID, int currUnitID) {
-	Player *player = getPlayer(ownerID);
-	lcList units = player->units;
-	lcaddress addressUnit = lcSearch(units, currUnitID);
-	addressUnit = lcNext(addressUnit);
-	return lcInfo(addressUnit);
-}
-
 int changeUnit(int ownerID) {
 	/* Variable */
-	int unitOrder, i;
+	int unitOrder, i, unitID;
 	/* Access the player */
 	Player *player = getPlayer(ownerID);
 	/* Store the number of units */
@@ -459,5 +341,7 @@ int changeUnit(int ownerID) {
 	for (i = 0; i < unitOrder - 1; i++) {
 		address = lcNext(address);
 	}
+
 	return lcInfo(address);
+
 }

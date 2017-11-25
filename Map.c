@@ -74,11 +74,12 @@ void initializeGrid(Map* map, int ownerID, int h, int w) {
     grid(*map, h, w - 1).type = CASTLE;
     grid(*map, h, w + 1).type = CASTLE;
     grid(*map, h, w).type = TOWER;
+    printf("(%d,%d)\n", h, w);
     grid(*map, h, w).unitID = addUnit(ownerID, KING);
     /* Get the unit location */
     Unit *unit = getUnit(grid(*map, h, w).unitID);
     unit->ownerID = ownerID;
-    unit->location = MakePoint(h, w);
+    unit->location = MakePoint(w, h);
     /* Get the ownerID of the grid */
     grid(*map, h, w).ownerID = ownerID;
     grid(*map, h - 1, w).ownerID = ownerID;
@@ -188,10 +189,13 @@ void printMap(Map map, int highlightUnitID, int total_space) {
             /* Print unit symbol with the associative color */
             if (grid(map, i, j).unitID == highlightUnitID) {
                 printColor(getUnitChar(map, i, j), 5, true);
-            } else {
+            }
+            else if (grid(map, i, j).moveAble) {
+                printColor('#', 0, true);
+            }
+            else {
                 printColor(getUnitChar(map, i, j), ownerId, false);
             }
-            
         }
         putchar('*'); putchar('\n'); 
         for (k = 0; k < total_space; k++) {

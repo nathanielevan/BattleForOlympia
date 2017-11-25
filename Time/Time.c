@@ -6,6 +6,7 @@
  */
 
 #include <stdio.h>
+#include <time.h>
 #include "Time.h"
 
 /* ***************************************************************** */
@@ -41,7 +42,7 @@ boolean isTimeValid (int Y, int M, int D, int HH, int MM, int SS)
         if (isDiv400 || (!isDiv100 && isDiv4)) {
             if (D > 29)
                 return false;
-        } else if {
+        } else {
             if (D > 28)
                 return false;
         }
@@ -70,10 +71,10 @@ Time getCurrentTime ()
     time_t t;
     struct tm *tm;
     /* Algoritma */
-    t = time();
+    t = time(NULL);
     tm = localtime(&t);
-    return makeTime(tm.tm_year, tm.tm_mon, tm.tm_mday,
-                    tm.tm_hour, tm.tm_min, tm.tm_sec);
+    return makeTime(tm->tm_year, tm->tm_mon, tm->tm_mday,
+                    tm->tm_hour, tm->tm_min, tm->tm_sec);
 }
 
 /* ***************************************************************** */
@@ -84,7 +85,7 @@ void writeDate (Time J)
 /* Writes the date part of J as YYYY-MM-DD */
 {
     /* Algoritma */
-    printf("%04d-%02d-%02d", Year(J), Montth(J), Day(J));
+    printf("%04d-%02d-%02d", Year(J), Month(J), Day(J));
 }
 
 void writeTime (Time J)

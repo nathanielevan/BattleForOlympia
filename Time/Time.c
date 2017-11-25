@@ -14,174 +14,72 @@
 /* KELOMPOK VALIDASI TERHADAP TYPE                                   */
 /* ***************************************************************** */
 
-boolean IsTimeValid (int H, int M, int S)
+boolean isTimeValid (int Y, int M, int D, int HH, int MM, int SS)
 /* Mengirim true  jika H,M,S dapat membentuk J yang valid */
 /* dipakai untuk mentest SEBELUM membentuk sebuah Time */
 {
-  /* Algoritma */
-  return H >= 0 && H <= 23 && M >= 0 && M <= 59 && S >= 0 && S <= 59;
+    /* Kamus lokal */
+    boolean isDiv4, isDiv100, isDiv400;
+    /* Algoritma */
+    if (!(Y >= 2017 && Y < 65536))
+        return false;
+    if (D < 1)
+        return false;
+    switch (M) {
+    case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+        if (D > 31)
+            return false;
+        break;
+    case 4: case 6: case 9: case 11:
+        if (D > 30)
+            return false;
+        break;
+    case 2:
+        isDiv400 = ((Y % 400) == 0);
+        isDiv100 = isDiv400 || ((Y % 100) == 0);
+        isDiv4 = isDiv100 || ((Y % 4) == 0);
+        if (isDiv400 || (!isDiv100 && isDiv4)) {
+            if (D > 29)
+                return false;
+        } else if {
+            if (D > 28)
+                return false;
+        }
+        break;
+    default:
+        return false;
+    }
+    return (HH >= 0 && HH <= 23 && MM >= 0 && MM <= 59 && SS >= 0 && SS <= 59);
 }
 
 /* *** Konstruktor: Membentuk sebuah Time dari komponen-komponennya *** */
-Time MakeTime (int hh, int mm, int ss, int day, int month, int year)
+Time MakeTime (int year, int month, int day, int hh, int mm, int ss)
 /* Membentuk sebuah Time dari komponen-komponennya yang valid */
 /* Prekondisi : hh, mm, ss valid untuk membentuk Time */
 {
-  /* Kamus lokal dengan inisialisasi */
-  Time j = { hh, mm, ss, day, month, year };
-  /* Algoritma */
-  return j;
+    /* Kamus lokal dengan inisialisasi */
+    Time j = { year, month, day, hh, mm, ss };
+    /* Algoritma */
+    return j;
 }
 
 /* ***************************************************************** */
 /* KELOMPOK BACA/TULIS                                               */
 /* ***************************************************************** */
 
-void BacaTime (Time * J)
-/* I.S. : J tidak terdefinisi */
-/* F.S. : J terdefinisi dan merupakan jam yang valid */
-/* Proses : mengulangi membaca komponen hh, mm, ss sehingga membentuk J */
-/* yang valid. Tidak mungkin menghasilkan J yang tidak valid. */
-/* Pembacaan dilakukan dengan mengetikkan komponen hh, mm, ss
-   dalam satu baris, masing-masing dipisahkan 1 spasi, diakhiri enter. */
-/* Jika Time tidak valid maka diberikan pesan: "Time tidak valid", dan pembacaan
-   diulangi hingga didapatkan jam yang valid. */
-/* Contoh:
-   60 3 4
-   Time tidak valid
-   1 3 4
-   --> akan terbentuk Time <1,3,4> */
+void writeDate (Time J)
+/* Writes the date part of J as YYYY-MM-DD */
 {
-  /* Kamus lokal */
-  int h, m, s, day, month, year;
-  boolean valid = false;
-  /* Algoritma */
-  while (!valid) {
-    scanf("%d %d %d %d %d %d", &h, &m, &s, &day, &month, &year);
-    valid = IsTimeValid(h, m, s);
-    if (!valid)
-      puts("Time tidak valid");
-  }
-  *J = MakeTime(h, m, s);
+    /* Algoritma */
+    printf("%04d-%02d-%02d", Year(J), Montth(J), Day(J));
 }
 
-void TulisTime (Time J)
+void writeTime (Time J)
 /* I.S. : J sembarang */
 /* F.S. :   Nilai J ditulis dg format hh:mm:ss */
 /* Proses : menulis nilai setiap komponen J ke layar dalam format hh:mm:ss
    tanpa karakter apa pun di depan atau belakangnya, termasuk spasi, enter, dll.*/
 {
-  /* Algoritma */
-  printf("%02d:%02d:%02d", Hour(J), Minute(J), Second(J));
-}
-
-/* ***************************************************************** */
-/* KELOMPOK KONVERSI TERHADAP TYPE                                   */
-/* ***************************************************************** */
-
-long JamToDetik (Time J)
-/* Diberikan sebuah Time, mengkonversi menjadi jumlah detik dari pukul 0:0:0 */
-/* Rumus : detik = 3600*hh + 60*mm + ss */
-/* Nilai maksimum = 3600*23+59*60+59 */
-{
-  /* Algoritma */
-  return 3600 * Hour(J) + 60 * Minute(J) + Second(J);
-}
-
-Time DetikToJam (long N)
-/* Mengirim  konversi detik ke Time */
-/* Catatan: Jika N >= 86400, maka harus dikonversi dulu menjadi jumlah detik yang
-   mewakili jumlah detik yang mungkin dalam 1 hari, yaitu dengan rumus:
-   N1 = N mod 86400, baru N1 dikonversi menjadi Time */
-{
-  /* Kamus lokal */
-  int h, m, s;
-  /* Algoritma */
-  N = N % 86400;
-  /* Dapatkan modulo bila sisa bagi bertanda negatif */
-  N = N < 0 ? N + 86400 : N;
-  h = (N / 3600);
-  m = (N / 60) % 60;
-  s = N % 60;
-  return MakeTime(h, m, s);
-}
-
-/* ***************************************************************** */
-/* KELOMPOK OPERASI TERHADAP TYPE                                    */
-/* ***************************************************************** */
-
-/* *** Kelompok Operator Relational *** */
-
-boolean JEQ (Time J1, Time J2)
-/* Mengirimkan true jika J1=J2, false jika tidak */
-{
-  /* Algoritma */
-  return Hour(J1) == Hour(J2) && Minute(J1) == Minute(J2) &&
-    Second(J1) == Second(J2);
-}
-
-boolean JNEQ (Time J1, Time J2)
-/* Mengirimkan true jika J1 tidak sama dengan J2 */
-{
-  /* Algoritma */
-  return !JEQ(J1, J2);
-}
-
-boolean JLT (Time J1, Time J2)
-/* Mengirimkan true jika J1<J2, false jika tidak */
-{
-  /* Algoritma */
-  return TimeToDetik(J1) < TimeToDetik(J2);
-}
-
-boolean JGT (Time J1, Time J2)
-/* Mengirimkan true jika J1>J2, false jika tidak */
-{
-  /* Algoritma */
-  return TimeToDetik(J1) > TimeToDetik(J2);
-}
-
-/* *** Operator aritmatika Time *** */
-
-Time NextDetik (Time J)
-/* Mengirim 1 detik setelah J dalam bentuk Time */
-{
-  /* Algoritma */
-  return NextNDetik(J, 1);
-}
-
-Time NextNDetik (Time J, int N)
-/* Mengirim N detik setelah J dalam bentuk Time */
-{
-  /* Algoritma */
-  return DetikToTime(TimeToDetik(J) + N);
-}
-
-Time PrevDetik (Time J)
-/* Mengirim 1 detik sebelum J dalam bentuk Time */
-{
-  /* Algoritma */
-  return PrevNDetik(J, 1);
-}
-
-Time PrevNDetik (Time J, int N)
-/* Mengirim N detik sebelum J dalam bentuk Time */
-{
-  /* Algoritma */
-  return NextNDetik(J, -N);
-}
-
-/* *** Kelompok Operator Aritmetika *** */
-
-long Durasi (Time JAw, Time JAkh)
-/* Mengirim JAkh-JAw dlm Detik, dengan kalkulasi */
-/* Jika JAw > JAkh, maka JAkh adalah 1 hari setelah JAw */
-{
-  /* Kamus lokal dengan inisialisasi */
-  long dAw = TimeToDetik(JAw);
-  long dAk = TimeToDetik(JAkh);
-  /* Algoritma */
-  if (dAw > dAk)
-    dAk += 86400; /* tambah satu hari jika perlu */
-  return dAk - dAw;
+    /* Algoritma */
+    printf("%02d:%02d:%02d", Hour(J), Minute(J), Second(J));
 }

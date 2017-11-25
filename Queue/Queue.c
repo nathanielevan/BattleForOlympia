@@ -42,6 +42,12 @@ boolean qIsEmpty (Queue Q)
   return qHead(Q) == Nil && qTail(Q) == Nil;
 }
 
+boolean qIsOneElmt (Queue Q)
+/* Mengirim true jika Q berisi satu elemen */
+{
+  return qHead(Q) != Nil && qHead(Q) == qTail(Q);
+}
+
 int qNbElmt(Queue Q)
 /* Mengirimkan banyaknya elemen queue. Mengirimkan 0 jika Q kosong */
 {

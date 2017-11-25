@@ -37,7 +37,7 @@ void qDealokasi (qaddress  P);
 /* F.S. Alamat P didealokasi, dikembalikan ke sistem */
 boolean qIsEmpty (Queue Q);
 /* Mengirim true jika Q kosong: HEAD(Q)=Nil and TAIL(Q)=Nil */
-boolean qIsOneElmt (Queue Q)
+boolean qIsOneElmt (Queue Q);
 /* Mengirim true jika Q berisi satu elemen */
 int qNbElmt(Queue Q);
 /* Mengirimkan banyaknya elemen queue. Mengirimkan 0 jika Q kosong */

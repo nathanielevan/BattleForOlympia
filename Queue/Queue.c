@@ -15,20 +15,20 @@
 void Alokasi (qaddress *P, int X)
 /* I.S. Sembarang */
 /* F.S. Alamat P dialokasi, jika berhasil maka Info(P)=X dan 
-        Next(P)=Nil */
-/*      P=Nil jika alokasi gagal */
+        Next(P)=NULL */
+/*      P=NULL jika alokasi gagal */
 {
   /* Algoritma */
   *P = (ElmtQueue *) malloc(sizeof(ElmtQueue));
-  if (*P != Nil) {
+  if (*P != NULL) {
     qInfo(*P) = X;
-    qNext(*P) = Nil;
+    qNext(*P) = NULL;
   }
-  /* else *P == Nil */
+  /* else *P == NULL */
 }
 
 void qDealokasi (qaddress  P)
-/* I.S. P adalah hasil alokasi, P != Nil */
+/* I.S. P adalah hasil alokasi, P != NULL */
 /* F.S. Alamat P didealokasi, dikembalikan ke sistem */
 {
   /* Algoritma */
@@ -36,16 +36,16 @@ void qDealokasi (qaddress  P)
 }
 
 boolean qIsEmpty (Queue Q)
-/* Mengirim true jika Q kosong: HEAD(Q)=Nil and TAIL(Q)=Nil */
+/* Mengirim true jika Q kosong: HEAD(Q)=NULL and TAIL(Q)=NULL */
 {
   /* Algoritma */
-  return qHead(Q) == Nil && qTail(Q) == Nil;
+  return qHead(Q) == NULL && qTail(Q) == NULL;
 }
 
 boolean qIsOneElmt (Queue Q)
 /* Mengirim true jika Q berisi satu elemen */
 {
-  return qHead(Q) != Nil && qHead(Q) == qTail(Q);
+  return qHead(Q) != NULL && qHead(Q) == qTail(Q);
 }
 
 int qNbElmt(Queue Q)
@@ -55,7 +55,7 @@ int qNbElmt(Queue Q)
   int count = 0;
   qaddress P;
   /* Algoritma */
-  for (P = qHead(Q); P != Nil; P = qNext(P))
+  for (P = qHead(Q); P != NULL; P = qNext(P))
     ++count;
   return count;
 }
@@ -66,7 +66,7 @@ void qCreateEmpty(Queue * Q)
 /* F.S. Sebuah Q kosong terbentuk */
 {
   /* Algoritma */
-  qHead(*Q) = qTail(*Q) = Nil;
+  qHead(*Q) = qTail(*Q) = NULL;
 }
 
 /*** Primitif Add/Delete ***/
@@ -82,7 +82,7 @@ void qAdd (Queue * Q, int X)
   qaddress P;
   /* Algoritma */
   Alokasi(&P, X);
-  if (P != Nil) {
+  if (P != NULL) {
     if (qIsEmpty(*Q))
       qHead(*Q) = P;
     else
@@ -105,5 +105,5 @@ void qDel(Queue * Q, int * X)
   *X = qInfo(P);
   qHead(*Q) = qNext(P);
   if (qTail(*Q) == P) /* Queue satu elemen */
-    qTail(*Q) = Nil;
+    qTail(*Q) = NULL;
 }

@@ -108,24 +108,31 @@ void cmdMove() {
 	Point From, To;
 	markMoveAbleSquare(&map, currUnitID);
 	validCommand = true;
-	printMainMap();
-	printf("Please​ ​enter​ ​your unit movement (x y):​ ");
-	scanf("%d %d",&x,&y);
-	From = currUnit->location;
-	To = PlusDelta(From, x, y);
-	registerMove(currUnitID, &map, From, To);
-	IsCanMove = moveUnit(&map, currUnitID, x, y);
-	while(!IsCanMove){
-		cancelMoveReg();
-		printf("You​ ​can’t​ ​move​ ​there\n");
-		printf("Please​ ​enter​ ​direction ​x​ ​y :​ ");
+	if (currUnit->movPoints > 0) {
+		printMainMap();
+		printf("Please​ ​enter​ ​your unit movement (x y):​ ");
 		scanf("%d %d",&x,&y);
+		From = currUnit->location;
 		To = PlusDelta(From, x, y);
 		registerMove(currUnitID, &map, From, To);
 		IsCanMove = moveUnit(&map, currUnitID, x, y);
+		while(!IsCanMove){
+			cancelMoveReg();
+			printf("You​ ​can’t​ ​move​ ​there\n");
+			printf("Please​ ​enter​ ​direction ​x​ ​y :​ ");
+			scanf("%d %d",&x,&y);
+			To = PlusDelta(From, x, y);
+			registerMove(currUnitID, &map, From, To);
+			IsCanMove = moveUnit(&map, currUnitID, x, y);
+		}
+		unmarkMoveAbleSquare(&map);
+		printMainMap();
+	} else {
+		printMainMap();
+		printf("Your unit can't move anymore!\n\n");
 	}
-	unmarkMoveAbleSquare(&map);
-	printMainMap();
+
+	
 }
 
 void cmdUndo(){

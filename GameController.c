@@ -256,6 +256,47 @@ BattleResult procBattle(Map *map, int attackerID, int defenderID) {
 	return battleResult;
 }
 
+void healNearbyUnit(lcaddress addrUnit, Map* map, int playerID) {
+	/* Local Variabele */
+	Unit *unit;
+	int numberOfUnits, j;
+	/* Get the unit from unitID */
+	unit = getUnit(lcInfo(addrUnit));
+	/* Check if the unit is White Mage */
+	if (unit->type == WHITE_MAGE) {
+		/* Get the list of the unit nearby white mage */
+		int* listOfTargetID = (int*) malloc(sizeof(int) * 4);
+		getTargetID(map, lcInfo(addrUnit), listOfTargetID, &numberOfUnits);
+		for (j = 0; j < numberOfUnits; j++) {
+			/* Check if it is the same owner */
+			if (unit->ownerID == playerID) {
+				Unit *targetUnit = getUnit(listOfTargetID[j]);
+				procHeal(map, lcInfo(addrUnit), listOfTargetID[j]);
+				printf("Your %s unit just healed your %s! \n\n", unitTypes[unit->type].description, unitTypes[targetUnit->type].description);
+			}
+		}
+		/* free after malloc of memory */
+		free(listOfTargetID);
+	}
+}
+
+void healMage(Player *currPlayer, int playerID, Map* map) {
+	/* Local Variable */
+	lcList units = currPlayer->units;
+	lcaddress addrUnit = lcFirst(units);
+	 
+	/* Mage will heal nearby units */
+	if (!lcIsEmpty(units)) {
+		/* Loop for list circular */
+		while (lcNext(addrUnit) != lcFirst(units)) {
+			healNearbyUnit(addrUnit, map, playerID);
+			addrUnit = lcNext(addrUnit);
+		}
+		/* For last unit */
+		healNearbyUnit(addrUnit, map, playerID);
+	}
+}
+
 void procHeal(Map *map, int unitID, int targetID) {
 	Unit *unit = getUnit(unitID);
 	Unit *target = getUnit(targetID);

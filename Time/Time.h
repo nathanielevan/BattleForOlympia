@@ -39,6 +39,9 @@ Time makeTime (int year, int month, int day, int hh, int mm, int ss);
 /* Membentuk sebuah Time dari komponen-komponennya yang valid */
 /* Prekondisi : hh, mm, ss valid untuk membentuk Time */
 
+Time getCurrentTime ();
+/* Gets the current local time */
+
 /* ***************************************************************** */
 /* KELOMPOK BACA/TULIS                                               */
 /* ***************************************************************** */

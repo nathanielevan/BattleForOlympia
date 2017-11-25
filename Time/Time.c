@@ -53,7 +53,7 @@ boolean isTimeValid (int Y, int M, int D, int HH, int MM, int SS)
 }
 
 /* *** Konstruktor: Membentuk sebuah Time dari komponen-komponennya *** */
-Time MakeTime (int year, int month, int day, int hh, int mm, int ss)
+Time makeTime (int year, int month, int day, int hh, int mm, int ss)
 /* Membentuk sebuah Time dari komponen-komponennya yang valid */
 /* Prekondisi : hh, mm, ss valid untuk membentuk Time */
 {
@@ -61,6 +61,19 @@ Time MakeTime (int year, int month, int day, int hh, int mm, int ss)
     Time j = { year, month, day, hh, mm, ss };
     /* Algoritma */
     return j;
+}
+
+Time getCurrentTime ()
+/* Gets the current local time */
+{
+    /* Kamus lokal */
+    time_t t;
+    struct tm *tm;
+    /* Algoritma */
+    t = time();
+    tm = localtime(&t);
+    return makeTime(tm.tm_year, tm.tm_mon, tm.tm_mday,
+                    tm.tm_hour, tm.tm_min, tm.tm_sec);
 }
 
 /* ***************************************************************** */

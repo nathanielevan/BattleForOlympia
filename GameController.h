@@ -30,16 +30,25 @@ void unmarkMoveAbleSquare(Map *map);
 /* True if the unit have moved */
 boolean moveUnit(Map *map, int currUnitID, int deltaX, int deltaY);
 
+/* Check if the point X Y in Map */
 boolean isInMap (Point point, Map *map);
 
+/* Check if user own the king */
 boolean ownKing(int playerID);
 
+/* Reset all the attack of the unit */
 void resetUnitAttack(int ownerID);
 
 /* Procure battle between two units */
 /* False if the fight didn't occur */
 /* True if the fight occured */
 BattleResult procBattle(Map *map, int attackerID, int defenderID);
+
+/* To heal the nearby unit owned by user*/
+void healNearbyUnit(lcaddress addrUnit, Map* map, int playerID); 
+
+/* Heal nearby unit if player has mage */
+void healMage(Player *currPlayer, int playerID, Map* map);
 
 void procHeal(Map *map, int unitID, int targetID); 
 

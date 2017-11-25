@@ -34,7 +34,7 @@ Map map;
 int total_space;
 /* For controller of the game */
 int Enemy, myUnit, otherUnit;
-int number_of_player, numberOfCastle;
+int nPlayer, totalPlayer, numberOfCastle;
 int *castleID;
 /* For the unit right now */
 int currUnitID;
@@ -43,7 +43,6 @@ Unit *currUnit;
 int playerID;
 Player *currPlayer;
 /* Controller for the game */
-boolean validCommand;
 char command[20];
 
 /* Game commands */
@@ -71,7 +70,9 @@ void print_logo() {
     printf("           ▀ \n");
 }
 
+/* To print the map */
 void printMainMap() {
+	/* Just a space for printing the map */
 	total_space = (w.ws_col-(4*width+7))/2;
 
 	if (total_space < 0) {
@@ -82,54 +83,13 @@ void printMainMap() {
 	printf("\n");
 }
 
-void healNearbyUnit(lcaddress addrUnit, Map* map, int playerID) {
-	/* Local Variabele */
-	Unit *unit;
-	int numberOfUnits, j;
-	/* Get the unit from unitID */
-	unit = getUnit(lcInfo(addrUnit));
-	/* Check if the unit is White Mage */
-	if (unit->type == WHITE_MAGE) {
-		/* Get the list of the unit nearby white mage */
-		int* listOfTargetID = (int*) malloc(sizeof(int) * 4);
-		getTargetID(map, lcInfo(addrUnit), listOfTargetID, &numberOfUnits);
-		for (j = 0; j < numberOfUnits; j++) {
-			/* Check if it is the same owner */
-			if (unit->ownerID == playerID) {
-				Unit *targetUnit = getUnit(listOfTargetID[j]);
-				procHeal(map, lcInfo(addrUnit), listOfTargetID[j]);
-				printf("Your %s unit just healed your %s! \n\n", unitTypes[unit->type].description, unitTypes[targetUnit->type].description);
-			}
-		}
-		/* free after malloc of memory */
-		free(listOfTargetID);
-	}
-}
-
-void healMage(Player *currPlayer, int playerID, Map* map) {
-	/* Local Variable */
-	lcList units = currPlayer->units;
-	lcaddress addrUnit = lcFirst(units);
-	 
-	/* Mage will heal nearby units */
-	if (!lcIsEmpty(units)) {
-		/* Loop for list circular */
-		while (lcNext(addrUnit) != lcFirst(units)) {
-			healNearbyUnit(addrUnit, map, playerID);
-			addrUnit = lcNext(addrUnit);
-		}
-		/* For last unit */
-		healNearbyUnit(addrUnit, map, playerID);
-	}
-}
-
+/* Make a move for the unit */
 void cmdMove() {
 	/* Local Variable */
 	boolean IsCanMove;
 	Point From, To;
 	/* To mark the movement of the unit */
 	markMoveAbleSquare(&map, currUnitID);
-	validCommand = true;
 	/* Check if the unit can move */
 	if (currUnit->movPoints > 0) {
 		printMainMap();
@@ -139,7 +99,7 @@ void cmdMove() {
 		To = PlusDelta(From, x, y);
 		registerMove(currUnitID, &map, From, To);
 		IsCanMove = moveUnit(&map, currUnitID, x, y);
-		while(!IsCanMove){
+		while (!IsCanMove) {
 			cancelMoveReg();
 			printf("You​ ​can’t​ ​move​ ​there\n");
 			printf("Please​ ​enter​ ​direction ​x​ ​y :​ ");
@@ -154,12 +114,9 @@ void cmdMove() {
 		printMainMap();
 		printf("Your unit can't move anymore!\n\n");
 	}
-
-	
 }
 
 void cmdUndo(){
-	validCommand = true;
 						
 	if (!undo(&map)) {
 		printMainMap();
@@ -169,7 +126,6 @@ void cmdUndo(){
 }
 
 void cmdChangeUnit(){
-	validCommand = true;
 	initUndo();
 
 	printf("=== List of Units ===\n");
@@ -179,7 +135,6 @@ void cmdChangeUnit(){
 }
 
 void cmdNextUnit(){
-	validCommand = true;
 	initUndo();
 	currUnitID = nextUnit(playerID, currUnitID);
 	currUnit = getUnit(currUnitID);
@@ -192,7 +147,6 @@ void cmdRecruit(){
 	int currCastleID, typeID;
 	Point castleLocation;
 
-	validCommand = true;
 	initUndo();
 	AvailabeCastleLocation(map, playerID, castleID, &numberOfCastle);
 	if (numberOfCastle > 0) {
@@ -234,7 +188,6 @@ void cmdRecruit(){
 }
 
 void cmdAttack(){
-	validCommand = true;
 	initUndo();
 
 	int* listOfTargetID;
@@ -277,21 +230,18 @@ void cmdAttack(){
 	free(listOfTargetID);
 }
 
-void cmdMap() {
-	validCommand = true;
-	printMainMap();
-}
-
 void cmdInfo() {
-	validCommand = true;
 	printf("Enter​ ​the​ ​coordinate​ ​of​ ​the​ ​cell : ");
 	scanf("%d %d",&x,&y);
 	printInfoSquare(x, y, map);
 }
 
 void cmdEndTurn() {
-	validCommand = true;
 	currPlayer->gold += currPlayer->income - currPlayer->upkeep;
+}
+
+void checkWin() {
+	
 }
 
 /* Main Program */
@@ -299,7 +249,7 @@ int main(const int argc, const char *argv[]) {
 	srand(time(NULL));
 	if (argc > 1) {
 		if (loadFrom("savefile.boo", &map, &players, &nPlayers)) {
-			number_of_player = nPlayers;
+			totalPlayer = nPlayers;
 			puts("Game restored!");
 			width = width(map);
 			height = height(map);
@@ -353,22 +303,20 @@ int main(const int argc, const char *argv[]) {
 
 		/* Create players */
 		printf("How many players do you want : ");
-		scanf("%d", &number_of_player);
-		createPlayers(&map, number_of_player);
+		scanf("%d", &totalPlayer);
+		createPlayers(&map, totalPlayer);
+		nPlayer = totalPlayer;
 
 		/* Initialize unit pool */
 		initUnitPool(&map);
 		/* Generate the Map for the Game */
-		generateMap(number_of_player, map.width, map.height, &map);
+		generateMap(totalPlayer, map.width, map.height, &map);
 	}
 
-	/* Initialize */
-	IsOneKing = false;
-
-	for(i = 1;; i++){
+	while (nPlayer > 1){
 		/* Initialize */
 		castleID = (int*) malloc(sizeof(int) * 4);
-		playerID = i % number_of_player + !(i % number_of_player) * number_of_player;
+		playerID = i % totalPlayer + !(i % totalPlayer) * totalPlayer;
 		currPlayer = getPlayer(playerID);
 		if (currPlayer->isPlayable) {
 			if (!lcIsEmpty(currPlayer->units)) {
@@ -409,7 +357,6 @@ int main(const int argc, const char *argv[]) {
 				/* Input command game */
 				printf("Insert your command : ");
 				scanf("%s", command);
-				validCommand = false;
 
 				/* Choose action */
 				if (strcmp(command, "MOVE") == 0){
@@ -425,11 +372,8 @@ int main(const int argc, const char *argv[]) {
 				}else if (strcmp(command, "ATTACK") == 0){
 					cmdAttack();
 				}else if (strcmp(command, "MAP") == 0){ //UDAH JADI
-					validCommand = true;
 					printMainMap();
 					cmdAttack();
-				}else if (strcmp(command, "MAP") == 0){
-					cmdMap();
 				}else if (strcmp(command, "INFO") == 0){
 					cmdInfo();
 				}else if (strcmp(command, "END_TURN") == 0) {
@@ -444,15 +388,12 @@ int main(const int argc, const char *argv[]) {
 					}
 					break;
 				}else if (strcmp(command, "SAVE") == 0) {
-					validCommand = true;
 					saveAs("savefile.boo", &map, players, nPlayers);
 					putchar('\n');
 				}else if (strcmp(command, "EXIT") == 0) {
-					validCommand = true;
 					goto exitGame;
 				}else {
 					printf("You input the wrong command!\n");
-					validCommand = true;
 				}
 			}
 		}

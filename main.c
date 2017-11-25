@@ -17,7 +17,7 @@
 #include <unistd.h>
 
 /* The constant of the game */
-const int MISS_CHANCE = 30;
+const float MISS_CHANCE = 0.2;
 const int STARTING_GOLD = 200;
 const int STARTING_INCOME = 100;
 
@@ -202,8 +202,10 @@ void cmdAttack(){
 			Unit *unit = getUnit(listOfTargetID[j]);
 			printf("%d. %c (%d,%d)\n", (j + 1), unitTypes[unit->type].mapSymbol, absis(unit->location), ordinat(unit->location));
 		}
-		printf("Select enemy you want to attack : ");
-		scanf("%d", &Enemy);
+		while ((Enemy <= numberOfUnits) && (Enemy > 0)) {
+			printf("Select enemy you want to attack : ");
+			scanf("%d", &Enemy);
+		}
 
 		battleResult = procBattle(&map, currUnitID, listOfTargetID[Enemy - 1]);
 

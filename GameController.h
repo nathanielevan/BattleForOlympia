@@ -7,9 +7,9 @@
 #include "User.h"
 #include "Map.h"
 
-const int MISS_CHANCE;
-const int STARTING_GOLD;
-const int STARTING_INCOME;
+extern const float MISS_CHANCE;
+extern const int STARTING_GOLD;
+extern const int STARTING_INCOME;
 
 typedef enum { ATTACK_MISSED, ATTACK_NOT_PERFORMED, ATTACK_SUCCEED} BattleFlag;
 typedef enum { NO_AVAILABE_CASTLE = 0, NOT_ENOUGH_GOLD, RECRUIT_SUCCESS } RecruitOutcome;

@@ -12,7 +12,7 @@ int addUnit(int playerID, TypeID unitType){
     int unitID = createUnit(unitType);
     unit = getUnit(unitID);
     unit->ownerID = playerID;
-    lcInsVFirst(&player->units, unitID);
+    lcInsVLast(&player->units, unitID);
     return unitID;
 }
 

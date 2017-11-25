@@ -57,12 +57,12 @@ void generateMap(int numPlayer, int w, int h, Map* map) {
     /* Time to do random */
     i = totalVillage;
     while (i > 0) {
-        randomN = (rand() / (float) RAND_MAX) * w * h;
+        randomN = (rand() / (float) RAND_MAX) * (MAX_TRIBUTE - MIN_TRIBUTE);
         randomX = (rand() / (float) RAND_MAX) * w;
         randomY = (rand() / (float) RAND_MAX) * h;
-        printf("%d %d\n", randomX, randomY);
         if (grid(*map, randomY, randomX).ownerID == 0) {
             grid(*map, randomY, randomX).type = VILLAGE;
+            grid(*map, randomY, randomX).tribute = MIN_TRIBUTE + randomN;
             i--;
         } 
     }
@@ -147,12 +147,13 @@ void printInfoSquare(int h, int w, Map map) {
 }
 
 /* Fungsi untuk menampilkan map pada terminal */
-void printMap(Map map) {
+void printMap(Map map, int highlightUnitID) {
     /* Var lokal */
     int w = width(map), h = height(map);
     int i, j;
     /* Algoritma */
-    system("clear");
+    /* Clear the entire window, then move the cursor to the top left corner */
+    printf("\x1B[2J\x1B[1;1H");
     printf("   ");
     for (i = 0; i < w; i++) {
         printf(" %2d ", i);
@@ -166,7 +167,7 @@ void printMap(Map map) {
         /* print the top of the grid */
         for (j = 0; j < w; j++) {
             /* Print char with the associative color */
-            printColor(grid(map, i, j).type, grid(map, i, j).ownerID);
+            printColor(grid(map, i, j).type, grid(map, i, j).ownerID, false);
         }
         putchar('*'); putchar('\n');
 
@@ -182,7 +183,7 @@ void printMap(Map map) {
                 ownerId = 0;
             }
             /* Print unit symbol with the associative color */
-            printColor(getUnitChar(map, i, j), ownerId);
+            printColor(getUnitChar(map, i, j), ownerId, grid(map, i, j).unitID == highlightUnitID);
         }
         putchar('*'); putchar('\n'); printf("   ");
 
@@ -205,8 +206,15 @@ char getUnitChar(Map map, int i, int j) {
         return ' ';
 }
 
-void printColor(char symbol, int ownerID) {
-    int color = getPlayer(ownerID)->color;
+void printColor(char symbol, int ownerID, boolean bold) {
+    int color = -1;
+    if (ownerID != 0) {
+        color = getPlayer(ownerID)->color;
+    }
+    printf("*");
+    if (bold) {
+        printf("\x1B[1m");
+    }
     switch (color) {
         case 0 :
             print_red(symbol);
@@ -227,7 +235,8 @@ void printColor(char symbol, int ownerID) {
             print_cyan(symbol);
             break;
         default :
-            printf("* %c ", symbol);
+            printf(" %c ", symbol);
+            printf("%s", WHITE);
     }
 }
 

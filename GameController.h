@@ -21,6 +21,10 @@ typedef struct {
 
 boolean canMove(Unit *unit, int deltaX, int deltaY, Map *map);
 
+void markMoveAbleSquare(Map *map, int currUnitID);
+
+void UnmarkMoveAbleSquare(Map *map);
+
 /* Move unit with currUnitID with appropriate direction */
 /* False if the unit can't be moved as specified by the direction */
 /* True if the unit have moved */

@@ -9,31 +9,31 @@ Created at: 30/10/2017
 #include "pcolor.h"
 
 void print_red(char c) {
-    printf("* %s%c ", RED, c);
+    printf(" %s%c ", RED, c);
     printf("%s", WHITE);
 }
 
 void print_green(char c) {
-    printf("* %s%c ", GREEN, c);
+    printf(" %s%c ", GREEN, c);
     printf("%s", WHITE);
 }
 
 void print_yellow(char c) {
-    printf("* %s%c ", YELLOW, c);
+    printf(" %s%c ", YELLOW, c);
     printf("%s", WHITE);
 }
 
 void print_blue(char c) {
-    printf("* %s%c ", BLUE, c);
+    printf(" %s%c ", BLUE, c);
     printf("%s", WHITE);
 }
 
 void print_magenta(char c) {
-    printf("* %s%c ", MAGENTA, c);
+    printf(" %s%c ", MAGENTA, c);
     printf("%s", WHITE);
 }
 
 void print_cyan(char c) {
-    printf("* %s%c ", MAGENTA, c);
+    printf(" %s%c ", MAGENTA, c);
     printf("%s", WHITE);
 }

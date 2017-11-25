@@ -6,10 +6,13 @@
 #include "LinearList/LinearList.h"
 
 typedef struct {
-    int id, gold, income, upkeep, color;
+    int gold, income, upkeep, color;
     lcList units;
     llList squares;
 } Player;
+
+extern Player *players;
+extern int nPlayers;
 
 int addUnit(int playerID, TypeID unitType);
 

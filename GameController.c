@@ -27,11 +27,19 @@ void markMoveAbleSquare(Map *map, int currUnitID) {
 	/* Access the unit */
 	Unit *unit = getUnit(currUnitID);
 	/* Iterate through square in movPoint x movPoint range */
+<<<<<<< HEAD
 	x = absis(unit->location);
 	y = ordinat(unit->location);
 	for (int i = x - unit->movPoint; i <= x + unit->movPoint; i++) {
 		for (int j = y - unit->movPoint; j <= y + unit->movPoint; j++) {
 			if (i + j < unit->movPoint && i >= 0 && i < width(*map) && j >= 0 && j < height(*map)) {
+=======
+	int x = absis(unit->location);
+	int y = ordinat(unit->location);
+	for (int i = x - unit->movPoints; i <= x + unit->movPoints; i++) {
+		for (int j = y - unit->movPoints; j <= y + unit->movPoints; j++) {
+			if (i + j < unit->movPoints && i >= 0 && i < width(*map) && j >= 0 && j < height(*map)) {
+>>>>>>> ac0296f6ae053ad67316f639f39bd738dc84e0de
 				/* Highlight the position in the map */
 				getSquare(*map, MakePoint(i, j))->moveAble = 1;
 			}

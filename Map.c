@@ -128,7 +128,7 @@ void printInfoSquare(int h, int w, Map map) {
 }
 
 void printMap(Map map, int highlightUnitID, int total_space) {
-    /* Var lokal */
+    /* Local Variables*/
     int wMap = width(map), hMap = height(map);
     int i, j, k;
     /* Algoritma */
@@ -272,9 +272,11 @@ Point getPointByID(Map map, int ID) {
 }
 
 void deleteOwner(int ownerID, Map *map) {
+    /* Local Variables */
     int wMap = width(*map), hMap = height(*map);
     int i, j;
 
+    /* How to delete the owner ID */
     for (i = 0; i < hMap; i++) {
         for (j = 0; j < wMap; j++) {
             if (grid(*map, i, j).ownerID == ownerID) {

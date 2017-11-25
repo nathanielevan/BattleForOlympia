@@ -42,7 +42,7 @@ void resetUnit(int ownerID);
 /* Procure battle between two units */
 /* False if the fight didn't occur */
 /* True if the fight occured */
-BattleResult procBattle(Map *map, int attackerID, int defenderID);
+BattleResult procBattle(Map *map, int attackerID, int defenderID, int* ePlayerId);
 
 /* To heal the nearby unit owned by user*/
 void healNearbyUnit(lcaddress addrUnit, Map* map, int playerID); 

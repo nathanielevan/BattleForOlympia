@@ -37,7 +37,7 @@ boolean isInMap (Point point, Map *map);
 boolean ownKing(int playerID);
 
 /* Reset all the attack of the unit */
-void resetUnitAttack(int ownerID);
+void resetUnit(int ownerID);
 
 /* Procure battle between two units */
 /* False if the fight didn't occur */

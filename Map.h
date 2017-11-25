@@ -17,6 +17,7 @@ typedef struct {
     int moveAble;
 } Square;
 /*
+    The square of the map
 */
 
 /* Maximum and minimum tributes from villages */
@@ -32,6 +33,7 @@ typedef struct {
     Square* squares;
 } Map;
 /*
+    The Map of the game
 */
 
 #define height(M) (M).height
@@ -72,5 +74,7 @@ void printColor(char symbol, int ownerID, boolean bold);
 Square* getSquareByID(Map map, int ID);
 
 Point getPointByID(Map map, int ID);
+
+void deleteOwner(int ownerID, Map *map);
 
 #endif 

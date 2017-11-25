@@ -8,9 +8,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* Fungsi untuk membuat peta berdasarkan input tinggi dan lebar dari pengguna 
-    I.S.    : map belum terdefinisi
-    F.S.    : map terbentuk */
 void createMap(int h, int w, Map* map) {
     /* Var lokal */
     int i, j;
@@ -30,9 +27,6 @@ void createMap(int h, int w, Map* map) {
     }
 }
 
-/* Destruktor */
-
-/* Fungsi untuk menghapus map */
 void deleteMap(Map* map) {
     /* Set the square value to default */
     free(map->squares);
@@ -40,7 +34,6 @@ void deleteMap(Map* map) {
     width(*map) = 0;
 }
 
-/* Create Random empty Map first */
 void generateMap(int numPlayer, int w, int h, Map* map) {
     int i;
     int totalVillage = (w * h) / 8;
@@ -93,7 +86,6 @@ void initializeGrid(Map* map, int ownerID, int h, int w) {
     addSquare(ownerID, grid(*map, h + 1, w).squareID);
 }
 
-/* memberikan input mengenai informasi pada suatu koordinat x y */
 void printInfoSquare(int h, int w, Map map) {
 
     /* Local Variables */
@@ -135,7 +127,6 @@ void printInfoSquare(int h, int w, Map map) {
     } 
 }
 
-/* Fungsi untuk menampilkan map pada terminal */
 void printMap(Map map, int highlightUnitID, int total_space) {
     /* Var lokal */
     int wMap = width(map), hMap = height(map);
@@ -261,7 +252,6 @@ void printColor(char symbol, int ownerID, boolean bold) {
     }
 }
 
-/* Fungsi untuk mendapatkan nilai square dari id square */
 Square* getSquareByID(Map map, int ID) {
     /* Dapatkan nilai dari sumbu x */
     int x = (ID - 1) % width(map);
@@ -279,4 +269,18 @@ Point getPointByID(Map map, int ID) {
     int y = (ID - 1) / width(map);
     P = MakePoint(x, y);
     return P;
+}
+
+void deleteOwner(int ownerID, Map *map) {
+    int wMap = width(*map), hMap = height(*map);
+    int i, j;
+
+    for (i = 0; i < hMap; i++) {
+        for (j = 0; j < wMap; j++) {
+            if (grid(*map, i, j).ownerID == ownerID) {
+                grid(*map, i, j).ownerID = 0;
+                grid(*map, i, j).unitID = 0;
+            }
+        }
+    }
 }

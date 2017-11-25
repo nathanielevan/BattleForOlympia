@@ -1,99 +1,105 @@
 /* File: jam.h */
 /* Tanggal: 28 Agustus 2016 */
-/* Definisi ADT JAM */
+/* Definisi ADT Time */
 
-#ifndef JAM_H
-#define JAM_H
+#ifndef Time_H
+#define Time_H
 
 #include "boolean.h"
 
-/* *** Definisi TYPE JAM <HH:MM:SS> *** */
+/* *** Definisi TYPE Time <hh:mm:ss> *** */
 typedef struct { 
-	int HH; /* integer [0..23] */
-	int MM; /* integer [0..59] */
-	int SS; /* integer [0..59] */
-} JAM;
+	char hh; /* integer [0..23] */
+	char mm; /* integer [0..59] */
+	char ss; /* integer [0..59] */
+   char Day;
+   char Month;
+   char Year
+} Time;
 
-/* *** Notasi Akses: selektor JAM *** */
-#define Hour(J) (J).HH
-#define Minute(J) (J).MM
-#define Second(J) (J).SS
+/* *** Notasi Akses: selektor Time *** */
+#define Hour(J) (J).hh
+#define Minute(J) (J).mm
+#define Second(J) (J).ss
+#define Day(J) (J).Day
+#define Month(J) (J).Month
+#define Year(J) (J).Year
 
 /* ***************************************************************** */
 /* DEFINISI PRIMITIF                                                 */
 /* ***************************************************************** */
 /* KELOMPOK VALIDASI TERHADAP TYPE                                   */
 /* ***************************************************************** */
-boolean IsJAMValid (int H, int M, int S);
+boolean IsTimeValid (int H, int M, int S);
 /* Mengirim true  jika H,M,S dapat membentuk J yang valid */
-/* dipakai untuk mentest SEBELUM membentuk sebuah Jam */
+/* dipakai untuk mentest SEBELUM membentuk sebuah Time */
 
-/* *** Konstruktor: Membentuk sebuah JAM dari komponen-komponennya *** */
-JAM MakeJAM (int HH, int MM, int SS);
-/* Membentuk sebuah JAM dari komponen-komponennya yang valid */
-/* Prekondisi : HH, MM, SS valid untuk membentuk JAM */
+/* *** Konstruktor: Membentuk sebuah Time dari komponen-komponennya *** */
+Time MakeTime (int hh, int mm, int ss, int day, int month, int year);
+/* Membentuk sebuah Time dari komponen-komponennya yang valid */
+/* Prekondisi : hh, mm, ss valid untuk membentuk Time */
 
 /* ***************************************************************** */
 /* KELOMPOK BACA/TULIS                                               */
 /* ***************************************************************** */
-void BacaJAM (JAM * J);
+void BacaTime (Time * J);
 /* I.S. : J tidak terdefinisi */
 /* F.S. : J terdefinisi dan merupakan jam yang valid */
-/* Proses : mengulangi membaca komponen HH, MM, SS sehingga membentuk J */
+/* Proses : mengulangi membaca komponen hh, mm, ss sehingga membentuk J */
 /* yang valid. Tidak mungkin menghasilkan J yang tidak valid. */
-/* Pembacaan dilakukan dengan mengetikkan komponen HH, MM, SS
+/* Pembacaan dilakukan dengan mengetikkan komponen hh, mm, ss
    dalam satu baris, masing-masing dipisahkan 1 spasi, diakhiri enter. */
-/* Jika JAM tidak valid maka diberikan pesan: "Jam tidak valid", dan pembacaan
+/* Jika Time tidak valid maka diberikan pesan: "Time tidak valid", dan pembacaan
    diulangi hingga didapatkan jam yang valid. */
 /* Contoh: 
    60 3 4
-   Jam tidak valid
+   Time tidak valid
    1 3 4
-   --> akan terbentuk JAM <1,3,4> */
+   --> akan terbentuk Time <1,3,4> */
    
-void TulisJAM (JAM J);
+void TulisTime (Time J);
 /* I.S. : J sembarang */
-/* F.S. :   Nilai J ditulis dg format HH:MM:SS */
-/* Proses : menulis nilai setiap komponen J ke layar dalam format HH:MM:SS
+/* F.S. :   Nilai J ditulis dg format hh:mm:ss */
+/* Proses : menulis nilai setiap komponen J ke layar dalam format hh:mm:ss
    tanpa karakter apa pun di depan atau belakangnya, termasuk spasi, enter, dll.*/ 
 
 /* ***************************************************************** */
 /* KELOMPOK KONVERSI TERHADAP TYPE                                   */
 /* ***************************************************************** */
-long JAMToDetik (JAM J);
-/* Diberikan sebuah JAM, mengkonversi menjadi jumlah detik dari pukul 0:0:0 */
-/* Rumus : detik = 3600*HH + 60*MM + SS */
+long JamToDetik (Time J);
+/* Diberikan sebuah Time, mengkonversi menjadi jumlah detik dari pukul 0:0:0 */
+/* Rumus : detik = 3600*hh + 60*mm + ss */
 /* Nilai maksimum = 3600*23+59*60+59 */
 
-JAM DetikToJAM (long N); 
-/* Mengirim  konversi detik ke JAM */
+Time DetikToJam (long N); 
+/* Mengirim  konversi detik ke Time */
 /* Catatan: Jika N >= 86400, maka harus dikonversi dulu menjadi jumlah detik yang 
    mewakili jumlah detik yang mungkin dalam 1 hari, yaitu dengan rumus: 
-   N1 = N mod 86400, baru N1 dikonversi menjadi JAM */
+   N1 = N mod 86400, baru N1 dikonversi menjadi Time */
 
 /* ***************************************************************** */
 /* KELOMPOK OPERASI TERHADAP TYPE                                    */
 /* ***************************************************************** */
 /* *** Kelompok Operator Relational *** */
-boolean JEQ (JAM J1, JAM J2);
+boolean JEQ (Time J1, Time J2);
 /* Mengirimkan true jika J1=J2, false jika tidak */
-boolean JNEQ (JAM J1, JAM J2);
+boolean JNEQ (Time J1, Time J2);
 /* Mengirimkan true jika J1 tidak sama dengan J2 */
-boolean JLT (JAM J1, JAM J2);
+boolean JLT (Time J1, Time J2);
 /* Mengirimkan true jika J1<J2, false jika tidak */
-boolean JGT (JAM J1, JAM J2);
+boolean JGT (Time J1, Time J2);
 /* Mengirimkan true jika J1>J2, false jika tidak */
-/* *** Operator aritmatika JAM *** */
-JAM NextDetik (JAM J);
-/* Mengirim 1 detik setelah J dalam bentuk JAM */
-JAM NextNDetik (JAM J, int N);
-/* Mengirim N detik setelah J dalam bentuk JAM */
-JAM PrevDetik (JAM J);
-/* Mengirim 1 detik sebelum J dalam bentuk JAM */
-JAM PrevNDetik (JAM J, int N);
-/* Mengirim N detik sebelum J dalam bentuk JAM */
+/* *** Operator aritmatika Time *** */
+Time NextDetik (Time J);
+/* Mengirim 1 detik setelah J dalam bentuk Time */
+Time NextNDetik (Time J, int N);
+/* Mengirim N detik setelah J dalam bentuk Time */
+Time PrevDetik (Time J);
+/* Mengirim 1 detik sebelum J dalam bentuk Time */
+Time PrevNDetik (Time J, int N);
+/* Mengirim N detik sebelum J dalam bentuk Time */
 /* *** Kelompok Operator Aritmetika *** */
-long Durasi (JAM JAw, JAM JAkh);
+long Durasi (Time JAw, Time JAkh);
 /* Mengirim JAkh-JAw dlm Detik, dengan kalkulasi */
 /* Jika JAw > JAkh, maka JAkh adalah 1 hari setelah JAw */
 

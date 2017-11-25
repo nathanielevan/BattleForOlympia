@@ -5,58 +5,52 @@
 #include "boolean.h"
 #include <stdlib.h>
 
-/* Konstanta */
-#define Nil NULL
-
-/* Deklarasi infotype */
-typedef int infotype;
-
 /* Queue dengan representasi berkait dengan pointer */
-typedef struct tElmtQueue * address;
+typedef struct tElmtQueue * qaddress;
 typedef struct tElmtQueue { 
-	infotype Info;
-	address Next; 
+	int Info;
+	qaddress Next; 
 } ElmtQueue; 
 
 /* Type queue dengan ciri HEAD dan TAIL : */
 typedef struct { 
-	address HEAD;  /* alamat penghapusan */
-	address TAIL;  /* alamat penambahan */
+	qaddress HEAD;  /* alamat penghapusan */
+	qaddress TAIL;  /* alamat penambahan */
 } Queue;
 
 /* Selektor */
-#define Head(Q) (Q).HEAD
-#define Tail(Q) (Q).TAIL
-#define InfoHead(Q) (Q).HEAD->Info
-#define InfoTail(Q) (Q).TAIL->Info
-#define Next(P) (P)->Next
-#define Info(P) (P)->Info
+#define qHead(Q) (Q).HEAD
+#define qTail(Q) (Q).TAIL
+#define qInfoHead(Q) (Q).HEAD->Info
+#define qInfoTail(Q) (Q).TAIL->Info
+#define qNext(P) (P)->Next
+#define qInfo(P) (P)->Info
 
 /* Prototype manajemen memori */
-void Alokasi (address *P, infotype X);
+void qAlokasi (qaddress *P, int X);
 /* I.S. Sembarang */
 /* F.S. Alamat P dialokasi, jika berhasil maka Info(P)=X dan 
         Next(P)=Nil */
 /*      P=Nil jika alokasi gagal */
-void Dealokasi (address  P);
+void qDealokasi (qaddress  P);
 /* I.S. P adalah hasil alokasi, P != Nil */
 /* F.S. Alamat P didealokasi, dikembalikan ke sistem */
-boolean IsEmpty (Queue Q);
+boolean qIsEmpty (Queue Q);
 /* Mengirim true jika Q kosong: HEAD(Q)=Nil and TAIL(Q)=Nil */
-int NbElmt(Queue Q);
+int qNbElmt(Queue Q);
 /* Mengirimkan banyaknya elemen queue. Mengirimkan 0 jika Q kosong */
 /*** Kreator ***/
-void CreateEmpty(Queue * Q);
+void qCreateEmpty(Queue * Q);
 /* I.S. sembarang */
 /* F.S. Sebuah Q kosong terbentuk */
 /*** Primitif Add/Delete ***/
-void Add (Queue * Q, infotype X);
+void qAdd (Queue * Q, int X);
 /* Proses: Mengalokasi X dan menambahkan X pada bagian TAIL dari Q
    jika alokasi berhasil; jika alokasi gagal Q tetap */
 /* Pada dasarnya adalah proses insert last */
 /* I.S. Q mungkin kosong */
 /* F.S. X menjadi TAIL, TAIL "maju" */
-void Del(Queue * Q, infotype * X);
+void qDel(Queue * Q, int * X);
 /* Proses: Menghapus X pada bagian HEAD dari Q dan mendealokasi
    elemen HEAD */
 /* Pada dasarnya operasi delete first */

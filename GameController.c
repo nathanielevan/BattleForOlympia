@@ -50,7 +50,7 @@ boolean ownKing(int playerID) {
 	return false;
 }
 
-void resetUnitAttack(int ownerID) {
+void resetUnit(int ownerID) {
 	/* Get the player */
 	Player *player = getPlayer(ownerID);
 
@@ -65,6 +65,8 @@ void resetUnitAttack(int ownerID) {
 			Unit *unit = getUnit(lcInfo(address));
 			/* Reset the attack counter */
 			unit->canAttack = true;
+			/* Reset the movement counter */
+			unit->movPoints = unitTypes[unit->type].maxMovPoints;
 
 		}
 		else {
@@ -73,6 +75,8 @@ void resetUnitAttack(int ownerID) {
 			Unit *unit = getUnit(lcInfo(address));
 			/* Reset the attack counter */
 			unit->canAttack = true;
+			/* Reset the movement counter */
+			unit->movPoints = unitTypes[unit->type].maxMovPoints;
 
 			break;
 		}
@@ -97,8 +101,9 @@ void markMoveAbleSquare(Map *map, int currUnitID) {
 		for (int j = y - unit->movPoints; j <= y + unit->movPoints; j++) {
 			if (abs(i - x) + abs(j - y) <= unit->movPoints && i >= 0 && i < width(*map) && j >= 0 && j < height(*map)) {
 				/* Highlight the position in the map */
-				printf("(%d,%d)\n", i, j);
-				getSquare(*map, MakePoint(i, j))->moveAble = 1;
+				if (getSquare(*map, MakePoint(i, j))->unitID == 0) {
+					getSquare(*map, MakePoint(i, j))->moveAble = 1;
+				} 
 			}
 		}
 	}
@@ -231,6 +236,7 @@ BattleResult procBattle(Map *map, int attackerID, int defenderID) {
 			/* Update the battle result */
 			battleResult.atkHealth = attacker->health;
 			battleResult.defDamageDone = unitTypes[defender->type].attack - unitTypes[attacker->type].defence;
+			printf("%d %d\n", unitTypes[defender->type].attack, unitTypes[attacker->type].defence);
 
 			if (attacker->health <= 0) {
 				/* Give the gold to the defender */

@@ -1,4 +1,4 @@
-/* the main program of the games */
+/* The main program of the games */
 
 /* All things included */
 #include <time.h>
@@ -23,20 +23,32 @@ const int STARTING_INCOME = 100;
 
 struct winsize w;
 
-/* Var Global */
-int i,k; //Iterating variable
+/* Global Variable for the program */
+
+/* Iterating variable */
+int i,k; 
+/* For the map */
 int width, height, x, y;
-int total_space;
-int Enemy, myUnit, otherUnit;
-int number_of_player, playerID, currUnitID, numberOfCastle;
-int *castleID;
 Map map;
-char command[20];
-Unit *currUnit;
+/* For printing */
+int total_space;
+/* For controller of the game */
+int Enemy, myUnit, otherUnit;
+int number_of_player, numberOfCastle;
+int *castleID;
+/* For the unit right now */
+int currUnitID;
+Unit *currUnit; 
+/* For the player right now */
+int playerID;
 Player *currPlayer;
-boolean IsOneKing, validCommand;
+/* Controller for the game */
+boolean validCommand;
+char command[20];
 
 /* Game commands */
+
+/* Just a logo for the game */
 void print_logo() {
 	printf("\x1B[2J\x1B[1;1H");
 	printf("▀█████████▄     ▄████████     ███         ███      ▄█          ▄████████         ▄████████  ▄██████▄     ▄████████  \n"); 
@@ -74,40 +86,51 @@ void healNearbyUnit(lcaddress addrUnit, Map* map, int playerID) {
 	/* Local Variabele */
 	Unit *unit;
 	int numberOfUnits, j;
+	/* Get the unit from unitID */
 	unit = getUnit(lcInfo(addrUnit));
+	/* Check if the unit is White Mage */
 	if (unit->type == WHITE_MAGE) {
+		/* Get the list of the unit nearby white mage */
 		int* listOfTargetID = (int*) malloc(sizeof(int) * 4);
 		getTargetID(map, lcInfo(addrUnit), listOfTargetID, &numberOfUnits);
 		for (j = 0; j < numberOfUnits; j++) {
+			/* Check if it is the same owner */
 			if (unit->ownerID == playerID) {
 				Unit *targetUnit = getUnit(listOfTargetID[j]);
 				procHeal(map, lcInfo(addrUnit), listOfTargetID[j]);
 				printf("Your %s unit just healed your %s! \n\n", unitTypes[unit->type].description, unitTypes[targetUnit->type].description);
 			}
 		}
+		/* free after malloc of memory */
 		free(listOfTargetID);
 	}
 }
 
 void healMage(Player *currPlayer, int playerID, Map* map) {
-	/* Local Variabele */
+	/* Local Variable */
 	lcList units = currPlayer->units;
 	lcaddress addrUnit = lcFirst(units);
-	
+	 
+	/* Mage will heal nearby units */
 	if (!lcIsEmpty(units)) {
+		/* Loop for list circular */
 		while (lcNext(addrUnit) != lcFirst(units)) {
 			healNearbyUnit(addrUnit, map, playerID);
 			addrUnit = lcNext(addrUnit);
 		}
+		/* For last unit */
 		healNearbyUnit(addrUnit, map, playerID);
 	}
 }
 
 void cmdMove() {
+	/* Local Variable */
 	boolean IsCanMove;
 	Point From, To;
+	/* To mark the movement of the unit */
 	markMoveAbleSquare(&map, currUnitID);
 	validCommand = true;
+	/* Check if the unit can move */
 	if (currUnit->movPoints > 0) {
 		printMainMap();
 		printf("Please​ ​enter​ ​your unit movement (x y):​ ");
@@ -164,17 +187,15 @@ void cmdNextUnit(){
 }
 
 void cmdRecruit(){
+	/* Local Variable */
 	int j;
+	int currCastleID, typeID;
+	Point castleLocation;
 
 	validCommand = true;
 	initUndo();
 	AvailabeCastleLocation(map, playerID, castleID, &numberOfCastle);
-
 	if (numberOfCastle > 0) {
-
-		int currCastleID, typeID;
-		Point castleLocation;
-
 		printf("=== List of Availabe Castle Location ===\n");
 
 		for (j = 0; j < numberOfCastle; j++) {
@@ -194,13 +215,12 @@ void cmdRecruit(){
 		printf("2. Swordsman	| HP 150 | ATK 20 | DEF 4 | GOLD 200\n");
 		printf("3. White Mage 	| HP 75  | ATK 10 | DEF 1 | GOLD 200\n");
 		printf("Enter the type of unit (1-3) : ");
+		/* Read the Input */
 		scanf("%d", &typeID);
 		typeID = typeID - 1 + ARCHER;
-
 		RecruitOutcome recruitOutcome = recruitUnit(&map, playerID, typeID, castleLocation); 
-
 		printMainMap();
-
+		/* Check if recruit is succes */
 		if (recruitOutcome == RECRUIT_SUCCESS) {
 			printf("Recruit success! \n\n");
 		}
@@ -208,7 +228,6 @@ void cmdRecruit(){
 			printf("You don't have enough gold to recruit unit!\n\n");
 		}
 	}
-
 	else {
 		printf("No empty castle\n");
 	}
@@ -432,7 +451,7 @@ int main(const int argc, const char *argv[]) {
 					validCommand = true;
 					goto exitGame;
 				}else {
-					printf("Wrong command!\n");
+					printf("You input the wrong command!\n");
 					validCommand = true;
 				}
 			}

@@ -247,8 +247,7 @@ void printColor(char symbol, int ownerID, boolean bold) {
             print_cyan(symbol);
             break;
         default :
-            printf(" %c ", symbol);
-            printf("%s", WHITE);
+            print_white(symbol);
     }
 }
 

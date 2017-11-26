@@ -78,7 +78,7 @@ Unit *getUnit(int id) {
 int createUnit(TypeID typeID) {
     Unit *unit;
     const UnitType *type;
-    int i;
+    long i;
     if (llIsEmpty(freeList)) {
         return -1;
     } else {

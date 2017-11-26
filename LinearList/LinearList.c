@@ -30,7 +30,7 @@ void llCreateEmpty (llList *L)
 
 /****************** Manajemen Memori ******************/
 
-lladdress llAlokasi (int X)
+lladdress llAlokasi (llInfoType X)
 /* Mengirimkan lladdress hasil alokasi sebuah elemen */
 /* Jika alokasi berhasil, maka lladdress tidak nil, dan misalnya */
 /* menghasilkan P, maka llInfo(P)=X, llNext(P)=Nil */
@@ -59,7 +59,7 @@ void llDealokasi (lladdress *P)
 
 /****************** PENCARIAN SEBUAH ELEMEN LIST ******************/
 
-lladdress llSearch (llList L, int X)
+lladdress llSearch (llList L, llInfoType X)
 /* Mencari apakah ada elemen list dengan llInfo(P)= X */
 /* Jika ada, mengirimkan lladdress elemen tersebut. */
 /* Jika tidak ada, mengirimkan Nil */
@@ -86,7 +86,7 @@ boolean llFSearch (llList L, lladdress P)
     return Q == P;
 }
 
-lladdress llSearchPrec (llList L, int X)
+lladdress llSearchPrec (llList L, llInfoType X)
 /* Mengirimkan lladdress elemen sebelum elemen yang nilainya=X */
 /* Mencari apakah ada elemen list dengan llInfo(P)=X */
 /* Jika ada, mengirimkan lladdress Prec, dengan llNext(Prec)=P dan llInfo(P)=X. */
@@ -112,7 +112,7 @@ lladdress llSearchPrec (llList L, int X)
 
 /*** PENAMBAHAN ELEMEN ***/
 
-void llInsVFirst (llList *L, int X)
+void llInsVFirst (llList *L, llInfoType X)
 /* I.S. L mungkin kosong */
 /* F.S. Melakukan alokasi sebuah elemen dan */
 /* menambahkan elemen pertama dengan nilai X jika alokasi berhasil */
@@ -125,7 +125,7 @@ void llInsVFirst (llList *L, int X)
         llInsertFirst(L, P);
 }
 
-void llInsVLast (llList *L, int X)
+void llInsVLast (llList *L, llInfoType X)
 /* I.S. L mungkin kosong */
 /* F.S. Melakukan alokasi sebuah elemen dan */
 /* menambahkan elemen list di akhir: elemen terakhir yang baru */
@@ -141,7 +141,7 @@ void llInsVLast (llList *L, int X)
 
 /*** PENGHAPUSAN ELEMEN ***/
 
-void llDelVFirst (llList *L, int *X)
+void llDelVFirst (llList *L, llInfoType *X)
 /* I.S. llList L tidak kosong  */
 /* F.S. Elemen pertama list dihapus: nilai llInfo disimpan pada X */
 /*      dan alamat elemen pertama di-dealokasi */
@@ -154,7 +154,7 @@ void llDelVFirst (llList *L, int *X)
     llDealokasi(&P);
 }
 
-void llDelVLast (llList *L, int *X)
+void llDelVLast (llList *L, llInfoType *X)
 /* I.S. list tidak kosong */
 /* F.S. Elemen terakhir list dihapus: nilai llInfo disimpan pada X */
 /*      dan alamat elemen terakhir di-dealokasi */
@@ -221,7 +221,7 @@ void llDelFirst (llList *L, lladdress *P)
     llNext(*P) = Nil;
 }
 
-void llDelP (llList *L, int X)
+void llDelP (llList *L, llInfoType X)
 /* I.S. Sembarang */
 /* F.S. Jika ada elemen list berlladdress P, dengan llInfo(P)=X  */
 /* Maka P dihapus dari list dan di-dealokasi */
@@ -298,7 +298,7 @@ void llPrintInfo (llList L)
             putchar(',');
         else
             llFirst = false;
-        printf("%d", llInfo(P));
+        printf("%ld", llInfo(P));
     }
     putchar(']');
 }
@@ -317,7 +317,7 @@ int llNbElmt (llList L)
 
 /*** Prekondisi untuk Max/Min/rata-rata : llList tidak kosong ***/
 
-int llMax (llList L)
+llInfoType llMax (llList L)
 /* Mengirimkan nilai llInfo(P) yang maksimum */
 {
     /* Kamus lokal */
@@ -331,7 +331,7 @@ lladdress llAdrMax (llList L)
 /* Mengirimkan lladdress P, dengan llInfo(P) yang bernilai maksimum */
 {
     /* Kamus lokal */
-    int max;
+    llInfoType max;
     lladdress P, maxP;
     /* Algoritma */
     P = llFirst(L);
@@ -346,7 +346,7 @@ lladdress llAdrMax (llList L)
     return maxP;
 }
 
-int llMin (llList L)
+llInfoType llMin (llList L)
 /* Mengirimkan nilai llInfo(P) yang minimum */
 {
     /* Kamus lokal */
@@ -360,7 +360,7 @@ lladdress llAdrMin (llList L)
 /* Mengirimkan lladdress P, dengan llInfo(P) yang bernilai minimum */
 {
     /* Kamus lokal */
-    int min;
+    llInfoType min;
     lladdress P, minP;
     /* Algoritma */
     P = llFirst(L);
@@ -431,7 +431,7 @@ llList llFInversList (llList L)
     /* Kamus lokal */
     llList L2;
     lladdress P, Q;
-    int X;
+    llInfoType X;
     boolean fail = false;
     /* Algoritma */
     llCreateEmpty(&L2);
@@ -469,7 +469,7 @@ llList llFCopyList (llList L)
     /* Kamus lokal */
     llList L2;
     lladdress P, Q, last;
-    int X;
+    llInfoType X;
     boolean fail = false;
     /* Algoritma */
     llCreateEmpty(&L2);
@@ -522,7 +522,7 @@ void llKonkat (llList L1, llList L2, llList * L3)
 {
     /* Kamus lokal */
     lladdress P, Q, last;
-    int X;
+    llInfoType X;
     boolean fail = false;
     /* Algoritma */
     llCreateEmpty(L3);
@@ -595,7 +595,7 @@ void llPecahList (llList *L1, llList *L2, llList L)
          di-dealokasi */
     /* Kamus lokal */
     lladdress P, Q, last;
-    int X;
+    llInfoType X;
     unsigned n, i;
     boolean fail = false;
     /* Algoritma */

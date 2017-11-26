@@ -10,9 +10,10 @@
 
 #define Nil NULL
 
+typedef long llInfoType;
 typedef struct llSElmtList *lladdress;
 typedef struct llSElmtList { 
-    int info;
+    llInfoType info;
     lladdress next;
 } llElmtList;
 typedef struct {
@@ -38,7 +39,7 @@ void llCreateEmpty (llList *L);
 /* F.S. Terbentuk list kosong */
 
 /****************** Manajemen Memori ******************/
-lladdress llAlokasi (int X);
+lladdress llAlokasi (llInfoType X);
 /* Mengirimkan lladdress hasil alokasi sebuah elemen */
 /* Jika alokasi berhasil, maka lladdress tidak nil, dan misalnya */
 /* menghasilkan P, maka info(P)=X, Next(P)=Nil */
@@ -49,14 +50,14 @@ void llDealokasi (lladdress *P);
 /* Melakukan dealokasi/pengembalian lladdress P */
 
 /****************** PENCARIAN SEBUAH ELEMEN LIST ******************/
-lladdress llSearch (llList L, int X);
+lladdress llSearch (llList L, llInfoType X);
 /* Mencari apakah ada elemen list dengan info(P)= X */
 /* Jika ada, mengirimkan lladdress elemen tersebut. */
 /* Jika tidak ada, mengirimkan Nil */
 boolean llFSearch (llList L, lladdress P);
 /* Mencari apakah ada elemen list yang beralamat P */
 /* Mengirimkan true jika ada, false jika tidak ada */
-lladdress llSearchPrec (llList L, int X);
+lladdress llSearchPrec (llList L, llInfoType X);
 /* Mengirimkan lladdress elemen sebelum elemen yang nilainya=X */
 /* Mencari apakah ada elemen list dengan Info(P)=X */
 /* Jika ada, mengirimkan lladdress Prec, dengan Next(Prec)=P dan Info(P)=X. */
@@ -67,22 +68,22 @@ lladdress llSearchPrec (llList L, int X);
 
 /****************** PRIMITIF BERDASARKAN NILAI ******************/
 /*** PENAMBAHAN ELEMEN ***/
-void llInsVFirst (llList *L, int X);
+void llInsVFirst (llList *L, llInfoType X);
 /* I.S. L mungkin kosong */
 /* F.S. Melakukan alokasi sebuah elemen dan */
 /* menambahkan elemen pertama dengan nilai X jika alokasi berhasil */
-void llInsVLast (llList *L, int X);
+void llInsVLast (llList *L, llInfoType X);
 /* I.S. L mungkin kosong */
 /* F.S. Melakukan alokasi sebuah elemen dan */
 /* menambahkan elemen list di akhir: elemen terakhir yang baru */
 /* bernilai X jika alokasi berhasil. Jika alokasi gagal: I.S.= F.S. */
 
 /*** PENGHAPUSAN ELEMEN ***/
-void llDelVFirst (llList *L, int *X);
+void llDelVFirst (llList *L, llInfoType *X);
 /* I.S. llList L tidak kosong  */
 /* F.S. Elemen pertama list dihapus: nilai info disimpan pada X */
 /*      dan alamat elemen pertama di-dealokasi */
-void llDelVLast (llList *L, int *X);
+void llDelVLast (llList *L, llInfoType *X);
 /* I.S. list tidak kosong */
 /* F.S. Elemen terakhir list dihapus: nilai info disimpan pada X */
 /*      dan alamat elemen terakhir di-dealokasi */
@@ -106,7 +107,7 @@ void llDelFirst (llList *L, lladdress *P);
 /* F.S. P adalah alamat elemen pertama list sebelum penghapusan */
 /*      Elemen list berkurang satu (mungkin menjadi kosong) */
 /* First element yg baru adalah suksesor elemen pertama yang lama */
-void llDelP (llList *L, int X);
+void llDelP (llList *L, llInfoType X);
 /* I.S. Sembarang */
 /* F.S. Jika ada elemen list berlladdress P, dengan info(P)=X  */
 /* Maka P dihapus dari list dan di-dealokasi */
@@ -134,11 +135,11 @@ int llNbElmt (llList L);
 /* Mengirimkan banyaknya elemen list; mengirimkan 0 jika list kosong */
 
 /*** Prekondisi untuk Max/Min/rata-rata : llList tidak kosong ***/
-int llMax (llList L);
+llInfoType llMax (llList L);
 /* Mengirimkan nilai info(P) yang maksimum */
 lladdress llAdrMax (llList L);
 /* Mengirimkan lladdress P, dengan info(P) yang bernilai maksimum */
-int llMin (llList L);
+llInfoType llMin (llList L);
 /* Mengirimkan nilai info(P) yang minimum */
 lladdress llAdrMin (llList L);
 /* Mengirimkan lladdress P, dengan info(P) yang bernilai minimum */

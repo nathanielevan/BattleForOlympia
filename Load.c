@@ -1,5 +1,6 @@
 #include "Load.h"
 #include "WordMachine/WordMachine.h"
+#include "Time/Time.h"
 #include <stdio.h>
 #include <assert.h>
 
@@ -25,26 +26,24 @@ void wmPrint() {
 }
 
 boolean handleDate() {
-    printf("Date: ");
-    check(wmAdv());
-    wmPrint(); putchar('-');
-    check(wmAdv());
-    wmPrint(); putchar('-');
-    check(wmAdv());
-    wmPrint(); putchar('\n');
+    int y, m, d;
+    checkScan("%d", &y, true);
+    checkScan("%d", &m, true);
+    checkScan("%d", &d, true);
+    check(isTimeValid(y, m, d, 0, 0, 0));
+    printf("Date: %04d-%02d-%02d\n", y, m, d);
     return true;
  fail:
     return false;
 }
 
 boolean handleTime() {
-    printf("Time: ");
-    check(wmAdv());
-    wmPrint(); putchar(':');
-    check(wmAdv());
-    wmPrint(); putchar(':');
-    check(wmAdv());
-    wmPrint(); putchar('\n');
+    int h, m ,s;
+    checkScan("%d", &h, true);
+    checkScan("%d", &m, true);
+    checkScan("%d", &s, true);
+    check(isTimeValid(2017, 06, 24, h, m, s));
+    printf("Time: %02d:%02d:%02d\n", h, m, s);
     return true;
  fail:
     return false;
@@ -92,7 +91,7 @@ boolean handleUnit(Square *square, const Point loc, Player *players,
     checkScan("%c", &type, true);
     typeID = lookupTypeID(type);
     check(typeID != INVALID_TYPE);
-    printf("Type %c: ID %d\n", type, typeID);
+    /*printf("Type %c: ID %d\n", type, typeID);*/
     /* Create a unit of that type */
     unitID = createUnit(typeID);
     unit = getUnit(unitID);

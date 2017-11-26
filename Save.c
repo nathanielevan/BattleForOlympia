@@ -1,5 +1,6 @@
 #include "Save.h"
 #include "Checksum.h"
+#include "Time/Time.h"
 #include <stdio.h>
 
 #define check(x) do { if (!(x)) goto fail; } while (0)
@@ -10,14 +11,18 @@ boolean saveAs(const char *fname, const Map *map, const Player *players,
     FILE *file;
     ChecksumState sum;
     int c;
+    Time now;
     /* Open file */
     file = fopen(fname, "w+");
     if (file == NULL)
         return false;
+    now = getCurrentTime();
     checkPos(fputs("BATTLEFOROLYMPIA SAVEFILE\n", file));
     checkPos(fputs("VERSION 1\n", file));
-    checkPos(fputs("DATE YYYY MM DD\n", file));
-    checkPos(fputs("TIME HH MM SS\n", file));
+    checkPos(fprintf(file, "DATE %04d %02d %02d\n",
+                     Year(now), Month(now), Day(now)));
+    checkPos(fprintf(file, "TIME %02d %02d %02d\n",
+                     Hour(now), Minute(now), Second(now)));
     check(savePlayers(file, players, nPlayers));
     check(saveSquares(file, map));
     checkPos(fputs("CHECKSUM #", file));
@@ -27,7 +32,7 @@ boolean saveAs(const char *fname, const Map *map, const Player *players,
     while ((c = getc(file)) != EOF)
         checksumUpdate(&sum, c);
     fseek(file, 0, SEEK_END);
-    checkPos(fprintf(file, "%08lx\n", checksumFinal(&sum)));
+    checkPos(fprintf(file, "%08lX\n", checksumFinal(&sum)));
     checkPos(fputs("ENDFILE\n", file));
     fclose(file);
     return true;

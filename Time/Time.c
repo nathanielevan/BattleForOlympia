@@ -22,7 +22,7 @@ boolean isTimeValid (int Y, int M, int D, int HH, int MM, int SS)
     /* Kamus lokal */
     boolean isDiv4, isDiv100, isDiv400;
     /* Algoritma */
-    if (!(Y >= 2017 && Y < 65536))
+    if (!(Y >= 1970 && Y < 65536))
         return false;
     if (D < 1)
         return false;
@@ -73,7 +73,7 @@ Time getCurrentTime ()
     /* Algoritma */
     t = time(NULL);
     tm = localtime(&t);
-    return makeTime(tm->tm_year, tm->tm_mon, tm->tm_mday,
+    return makeTime(tm->tm_year + 1900, tm->tm_mon + 1, tm->tm_mday,
                     tm->tm_hour, tm->tm_min, tm->tm_sec);
 }
 

@@ -50,6 +50,7 @@ const UnitType unitTypes[] = {
         .upkeep = 1},
 };
 
+const int nTypes = sizeof(unitTypes) / sizeof(unitTypes[0]);
 Unit *unitPool;
 int capacity;
 llList freeList;
@@ -102,9 +103,8 @@ void destroyUnit(int id) {
 
 TypeID lookupTypeID(char mapSymbol) {
     int i;
-    const int nTypes = sizeof(unitTypes) / sizeof(unitTypes[0]);
     for (i = 0; i < nTypes; i++)
         if (unitTypes[i].mapSymbol == mapSymbol)
             return i;
-    return -1;
+    return INVALID_TYPE;
 }

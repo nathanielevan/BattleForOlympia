@@ -24,6 +24,7 @@ typedef struct {
 } UnitType;
 
 extern const UnitType unitTypes[];
+extern const int nTypes;
 
 void initUnitPool(const Map *map);
 
@@ -36,7 +37,7 @@ int createUnit(TypeID type);
 /* destroy the unit */
 void destroyUnit();
 
-/* lookup a type ID by its map symbol; returns -1 if not found */
+/* lookup a type ID by its map symbol; returns INVALID_TYPE if not found */
 TypeID lookupTypeID(char mapSymbol);
 
 #endif /* BATTLEFOROLYMPIA_UNIT_H */

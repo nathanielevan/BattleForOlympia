@@ -14,6 +14,7 @@
 #include "boolean.h"
 #include <unistd.h>
 #include <string.h>
+#include <ctype.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
 
@@ -289,7 +290,9 @@ void cmdNextUnit(){
 void cmdRecruit(){
     /* Local Variable */
     int j;
-    int currCastleID, typeID;
+    int currCastleID;
+    TypeID typeID;
+    char typeChar;
     Point castleLocation;
 
     initUndo();
@@ -315,27 +318,40 @@ void cmdRecruit(){
         /* Print list of recruitable unit */
         indent();
         printf("============= List of Recruitable Units ============\n");
-        indent();
-        printf("1. Archer   | HP 100 | ATK 15 | DEF 3 | GOLD 150\n");
-        indent();
-        printf("2. Swordsman    | HP 150 | ATK 20 | DEF 4 | GOLD 200\n");
-        indent();
-        printf("3. White Mage   | HP 75  | ATK 10 | DEF 1 | GOLD 200\n");
-        indent();
-        printf("Enter the type of unit (1-3) : ");
+        for (j = KING + 1; j < nTypes; j++) {
+            UnitType t = unitTypes[j];
+            indent();
+            printf("[%c] %12s | HP %3d | ATK %2d | DEF %d | GOLD %2d\n",
+                   t.mapSymbol, t.description, t.maxHealth, t.attack, t.defence, t.cost);
+        }
+        /* indent();
+        printf("3. White Mage   | HP 75  | ATK 10 | DEF 1 | GOLD 200\n"); */
         /* Read the Input */
-        scanf("%d", &typeID);
-        typeID = typeID - 1 + ARCHER;
+        do {
+            indent();
+            printf("Enter the type of unit [");
+            for (j = KING + 1; j < nTypes; j++)
+                putchar(unitTypes[j].mapSymbol);
+            printf("] : ");
+            do
+                scanf("%c", &typeChar);
+            while (isspace(typeChar));
+            typeID = lookupTypeID(typeChar);
+            if (typeID == INVALID_TYPE) {
+                indent();
+                puts("No such unit type!");
+            }
+        } while (typeID == INVALID_TYPE);
         RecruitOutcome recruitOutcome = recruitUnit(&map, playerID, typeID, castleLocation); 
         /* Print the new map */
         printMainMap();
         /* Check if recruit is success */
         if (recruitOutcome == RECRUIT_SUCCESS) {
-        	indent();
+            indent();
             printf("Recruit success! \n\n");
         }
         else if (recruitOutcome == NOT_ENOUGH_GOLD) {
-        	indent();
+            indent();
             printf("You don't have enough gold to recruit unit!\n\n");
         }
     }
@@ -513,7 +529,7 @@ int main(const int argc, const char *argv[]) {
         putchar(' ');
     }
     /* Choice to start or load game */
-    printf("START NEW GAME (START) | LOAD GAME (LOAD)\n\n");
+    printf("START NEW GAME (\x1B[33mSTART\x1B[0m) | LOAD GAME (\x1B[33mLOAD\x1B[0m)\n\n");
     for (k = 0; k < total_space / 2; k++) {
         putchar(' ');
     }

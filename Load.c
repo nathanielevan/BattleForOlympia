@@ -38,9 +38,9 @@ boolean handleDate(Time *time) {
     checkScan("%d", &d, true);
     check(isTimeValid(y, m, d, 0, 0, 0));
     if (time != NULL) {
-        time->year = y;
-        time->month = m;
-        time->day = d;
+        Year(*time) = y;
+        Month(*time) = m;
+        Day(*time) = d;
     }
     /*printf("Date: %04d-%02d-%02d\n", y, m, d);*/
     return true;
@@ -55,9 +55,9 @@ boolean handleTime(Time *time) {
     checkScan("%d", &s, true);
     check(isTimeValid(2017, 06, 24, h, m, s));
     if (time != NULL) {
-        time->hh = h;
-        time->mm = m;
-        time->ss = s;
+        Hour(*time) = h;
+        Minute(*time) = m;
+        Second(*time) = s;
     }
     /*printf("Time: %02d:%02d:%02d\n", h, m, s);*/
     return true;

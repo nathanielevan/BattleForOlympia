@@ -23,6 +23,7 @@ boolean wmStart(FILE *tape)
 {
     /* Algoritma */
     cmStart(tape);
+    wmEnd = false;
     /* Abaikan blank di awal pita */
     wmIgnoreBlank();
     if (!cmEOT)

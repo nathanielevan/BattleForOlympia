@@ -86,47 +86,6 @@ void initializeGrid(Map* map, int ownerID, int h, int w) {
     addSquare(ownerID, grid(*map, h + 1, w).squareID);
 }
 
-void printInfoSquare(int h, int w, Map map) {
-
-    /* Local Variables */
-    Square square = grid(map, h, w);
-    Unit* unit;
-
-    if (square.unitID > 0)  unit = getUnit(square.unitID); 
-    else unit = Nil;
-
-    /* print the information from one square */
-    /* print Cell Info */
-    printf("== Cell Info ==\n");
-    switch (square.type){
-        case TOWER:
-            printf("Tower\n");
-            printf("Owned by Player %d\n", square.ownerID);
-            break;
-        case VILLAGE:
-            printf("Village\n");
-            printf("Owned by Player %d\n", square.ownerID);
-            break;
-        case CASTLE:
-            printf("Castle\n");
-            printf("Owned by Player %d\n", square.ownerID);
-            break;
-        default:
-            printf("No Building here... It's just a plain field\n");
-    }
-    /* Print Unit Info */
-    printf("== Unit Info ==\n");
-    if (unit != Nil) {
-        printf("%s\n", unitTypes[unit->type].description);
-        printf("Owned by Player %d\n", square.ownerID);
-        printf("Health %d/%d | ", unit->health, unitTypes[unit->type].maxHealth);
-        printf("ATK %d | ", unitTypes[unit->type].attack);
-        printf("DEF %d\n", unitTypes[unit->type].defence);
-    } else {
-        printf("There's no unit here..\n");
-    } 
-}
-
 void printMap(Map map, int highlightUnitID, int total_space) {
     /* Local Variables*/
     int wMap = width(map), hMap = height(map);

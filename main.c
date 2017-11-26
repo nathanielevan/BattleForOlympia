@@ -50,7 +50,15 @@ Queue playersTurn;
 /* Game commands */
 
 void indent() {
-	for (k = 0; k < total_space / 2; k++) {
+    total_space = (w.ws_col-(4*width+7))/2;
+	for (k = 0; k < total_space; k++) {
+        putchar(' ');
+    }
+}
+
+void indentButNoNeedForWidth() {
+	total_space = (w.ws_col - 40)/2;
+	for (k = 0; k < total_space; k++) {
         putchar(' ');
     }
 }
@@ -403,12 +411,68 @@ void cmdAttack(){
     free(listOfTargetID);
 }
 
+void printInfoSquare(int w, int h, Map map) {
+
+    /* Local Variables */
+    Square square = grid(map, h, w);
+    Unit* unit;
+
+    if (square.unitID > 0)  unit = getUnit(square.unitID); 
+    else unit = Nil;
+
+    /* print the information from one square */
+    /* print Cell Info */
+    indent();
+    printf("== Cell Info ==\n");
+    switch (square.type){
+        case TOWER:
+        	indent();
+            printf("Tower\n");
+            indent();
+            printf("Owned by Player %d\n", square.ownerID);
+            break;
+        case VILLAGE:
+        	indent();
+            printf("Village\n");
+            indent();
+            printf("Owned by Player %d\n", square.ownerID);
+            break;
+        case CASTLE:
+        	indent();
+            printf("Castle\n");
+            indent();
+            printf("Owned by Player %d\n", square.ownerID);
+            break;
+        default:
+        	indent();
+            printf("No Building here... It's just a plain field\n");
+    }
+    /* Print Unit Info */
+    indent();
+    printf("== Unit Info ==\n");
+    if (unit != Nil) {
+    	indent();
+        printf("%s\n", unitTypes[unit->type].description);
+        indent();
+        printf("Owned by Player %d\n", square.ownerID);
+        indent();
+        printf("Health %d/%d | ", unit->health, unitTypes[unit->type].maxHealth);
+        printf("ATK %d | ", unitTypes[unit->type].attack);
+        printf("DEF %d\n", unitTypes[unit->type].defence);
+    } else {
+    	indent();
+        printf("There's no unit here..\n");
+    } 
+}
+
 /* Give the information of the square of the map */
 void cmdInfo() {
 	indent();
     printf("Enter​ ​the​ ​coordinate​ ​of​ ​the​ ​cell : ");
     scanf("%d %d",&x,&y);
+    printMainMap();
     printInfoSquare(x, y, map);
+    putchar('\n');
 }
 
 /* End the player's turn */
@@ -448,7 +512,9 @@ int main(const int argc, const char *argv[]) {
     }
     /* Choice to start or load game */
     printf("START NEW GAME (START) | LOAD GAME (LOAD)\n\n");
-    indent();
+    for (k = 0; k < total_space / 2; k++) {
+        putchar(' ');
+    }
     scanf("%s", command);
     /* Program will load if user choose load */
     if (strcmp(command, "LOAD") == 0) {
@@ -489,12 +555,12 @@ int main(const int argc, const char *argv[]) {
         putchar('\n');
         printf("\x1B[0m\n");
         /* Create the map */
-        indent();
+		indentButNoNeedForWidth();
         printf("Insert map size :\n");
-        indent();
+        indentButNoNeedForWidth();
         printf("Width : ");
         scanf("%d", &width);
-        indent();
+        indentButNoNeedForWidth();
         printf("Height : ");
         scanf("%d", &height);
 
@@ -510,7 +576,7 @@ int main(const int argc, const char *argv[]) {
         createMap(height, width, &map);
 
         /* Create players */
-        indent();
+        indentButNoNeedForWidth();
         printf("How many players do you want : ");
         scanf("%d", &totalPlayer);
         createPlayers(&map, totalPlayer);

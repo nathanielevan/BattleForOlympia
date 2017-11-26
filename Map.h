@@ -57,9 +57,6 @@ void generateMap(int numPlayer, int w, int h, Map* map);
 void initializeGrid(Map* map, int ownerID, int x, int y);
 /* Aksesor */
 
-/* memberikan input mengenai informasi pada suatu koordinat x y */
-void printInfoSquare(int h, int w, Map map);
-
 /* Fungsi untuk menampilkan map pada terminal */
 void printMap(Map map, int highlightUnitID, int total_space);
 

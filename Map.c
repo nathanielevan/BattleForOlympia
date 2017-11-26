@@ -103,6 +103,8 @@ void printMap(Map map, int highlightUnitID, int total_space) {
     putchar('\n'); printf("   ");
 
     for (i = 0; i < hMap; i++) {
+        Unit* unit;
+        int ownerId;
 
         for (k = 0; k < total_space; k++) {
             putchar(' ');
@@ -126,8 +128,6 @@ void printMap(Map map, int highlightUnitID, int total_space) {
             putchar(' ');
         }   
         /* print the center of the grid*/
-        Unit* unit;
-        int ownerId;
         printf("%3d", i);
         for (j = 0; j < wMap; j++) {
             unit = getUnit(grid(map, i, j).unitID);
@@ -148,15 +148,16 @@ void printMap(Map map, int highlightUnitID, int total_space) {
             }
         }
         putchar('*'); putchar('\n'); 
-        for (k = 0; k < total_space; k++) {
+        /* print the bottom of the grid */
+        /* what about no */
+        /*for (k = 0; k < total_space; k++) {
             putchar(' ');
         }
         printf("   ");
-        /* print the bottom of the grid */
         for (j = 0; j < wMap; j++) {
             printf("*   ");
         }
-        putchar('*'); putchar('\n'); 
+        putchar('*'); putchar('\n'); */
         printf("   ");
     }
     for (k = 0; k < total_space; k++) {

@@ -4,7 +4,13 @@
 #include <stdio.h>
 #include <assert.h>
 
-#define check(x) do { if (!(x)) goto fail; } while (0)
+#ifndef NDEBUG
+void handleFailure() { }
+#else
+#define handleFailure() do{}while(0)
+#endif
+
+#define check(x) do { if (!(x)) { handleFailure(); goto fail; } } while (0)
 #define checkMsg(x, m) do { if (!(x)) { errormsg(m); goto fail; } } while (0)
 #define expect(s) check(wmAdv() && wmEqStr(s))
 #define expectMsg(s, m) checkMsg(wmAdv() && wmEqStr(s), (m))
@@ -13,6 +19,7 @@
                                  (c))
 
 void errormsg(const char *m) {
+    handleFailure();
     fputs(m, stderr);
     fputc('\n', stderr);
 }

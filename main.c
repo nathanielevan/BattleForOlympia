@@ -295,7 +295,7 @@ void cmdRecruit(){
     /* Check if there is available castle */
     if (numberOfCastle > 0) {
     	indent();
-        printf("=== List of Availabe Castle Location ===\n");
+        printf("=== List of Available Castle Location ===\n");
         /* Iteration through the castle */
         for (j = 0; j < numberOfCastle; j++) {
             castleLocation = getPointByID(map, castleID[j]);
@@ -497,7 +497,7 @@ void printCommandAvailable() {
 	indent();
     printf("AVAILABLE COMMANDS : \n"); 
     indent();
-    printf("MOVE | CHANGE_UNIT | NEXT_UNIT | MAP | INFO | SAVE | QUIT | END_TURN | RECRUIT | UNDO\n\n");
+    printf("MOVE | CHANGE_UNIT | NEXT_UNIT | MAP | INFO | SAVE | EXIT | END_TURN | RECRUIT | UNDO\n\n");
 }
 
 /* Main Program */

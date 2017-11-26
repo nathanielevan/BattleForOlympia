@@ -1,6 +1,5 @@
 #include "Load.h"
 #include "WordMachine/WordMachine.h"
-#include "Time/Time.h"
 #include <stdio.h>
 #include <assert.h>
 
@@ -32,25 +31,35 @@ void wmPrint() {
     fputs(wmCWord.buf, stdout);
 }
 
-boolean handleDate() {
+boolean handleDate(Time *time) {
     int y, m, d;
     checkScan("%d", &y, true);
     checkScan("%d", &m, true);
     checkScan("%d", &d, true);
     check(isTimeValid(y, m, d, 0, 0, 0));
-    printf("Date: %04d-%02d-%02d\n", y, m, d);
+    if (time != NULL) {
+        time->year = y;
+        time->month = m;
+        time->day = d;
+    }
+    /*printf("Date: %04d-%02d-%02d\n", y, m, d);*/
     return true;
  fail:
     return false;
 }
 
-boolean handleTime() {
+boolean handleTime(Time *time) {
     int h, m ,s;
     checkScan("%d", &h, true);
     checkScan("%d", &m, true);
     checkScan("%d", &s, true);
     check(isTimeValid(2017, 06, 24, h, m, s));
-    printf("Time: %02d:%02d:%02d\n", h, m, s);
+    if (time != NULL) {
+        time->hh = h;
+        time->mm = m;
+        time->ss = s;
+    }
+    /*printf("Time: %02d:%02d:%02d\n", h, m, s);*/
     return true;
  fail:
     return false;
@@ -212,9 +221,9 @@ boolean loadFrom(const char *fname, Map *map, Player **players, int *nPlayers) {
     expectMsg("VERSION", "Header not found");
     checkMsg(handleVersion(), "Savefile version not compatible");
     expectMsg("DATE", "Save date not found");
-    checkMsg(handleDate(), "Date format error");
+    checkMsg(handleDate(NULL), "Date format error");
     expectMsg("TIME", "Save time not found");
-    checkMsg(handleTime(), "Time format error");
+    checkMsg(handleTime(NULL), "Time format error");
     expectMsg("PLAYERS", "Player section not found");
     checkMsg(handlePlayers(map, players, nPlayers), "Cannot load player data");
     expectMsg("MAP", "Map section not found");
@@ -224,6 +233,37 @@ boolean loadFrom(const char *fname, Map *map, Player **players, int *nPlayers) {
     expectMsg("ENDFILE", "End-of-file mark not found");
     /* Ensure that file ends here */
     checkMsg(!wmAdv(), "Garbage at end of file");
+    cmFinish();
+    return true;
+ fail:
+    cmFinish();
+    return false;
+}
+
+boolean validateFile(const char *fname, Time *saveTime) {
+    FILE *file = fopen(fname, "r");
+    check(file != NULL);
+    check(wmStart(file));
+    check(wmEqStr("BATTLEFOROLYMPIA"));
+    expect("SAVEFILE");
+    expect("VERSION");
+    check(handleVersion());
+    expect("DATE");
+    check(handleDate(saveTime));
+    expect("TIME");
+    check(handleTime(saveTime));
+    expect("PLAYERS");
+    check(wmAdv());
+    while (!wmEqStr("ENDPLAYERS"))
+        check(wmAdv());
+    expect("MAP");
+    check(wmAdv());
+    while (!wmEqStr("ENDMAP"))
+        check(wmAdv());
+    expect("CHECKSUM");
+    check(handleChecksum());
+    expect("ENDFILE");
+    check(!wmAdv());
     cmFinish();
     return true;
  fail:

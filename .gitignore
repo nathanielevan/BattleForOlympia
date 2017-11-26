@@ -5,3 +5,6 @@ game
 *.o
 a.out
 *.boo
+.gdb_history
+.#*
+#*#

@@ -7,9 +7,9 @@
 #include "User.h"
 #include "Map.h"
 
-const int MISS_CHANCE;
-const int STARTING_GOLD;
-const int STARTING_INCOME;
+extern const float MISS_CHANCE;
+extern const int STARTING_GOLD;
+extern const int STARTING_INCOME;
 
 typedef enum { ATTACK_MISSED, ATTACK_NOT_PERFORMED, ATTACK_SUCCEED} BattleFlag;
 typedef enum { NO_AVAILABE_CASTLE = 0, NOT_ENOUGH_GOLD, RECRUIT_SUCCESS } RecruitOutcome;
@@ -30,16 +30,25 @@ void unmarkMoveAbleSquare(Map *map);
 /* True if the unit have moved */
 boolean moveUnit(Map *map, int currUnitID, int deltaX, int deltaY);
 
+/* Check if the point X Y in Map */
 boolean isInMap (Point point, Map *map);
 
+/* Check if user own the king */
 boolean ownKing(int playerID);
 
-void resetUnitAttack(int ownerID);
+/* Reset all the attack of the unit */
+void resetUnit(int ownerID);
 
 /* Procure battle between two units */
 /* False if the fight didn't occur */
 /* True if the fight occured */
-BattleResult procBattle(Map *map, int attackerID, int defenderID);
+BattleResult procBattle(Map *map, int attackerID, int defenderID, int* ePlayerId);
+
+/* To heal the nearby unit owned by user*/
+void healNearbyUnit(lcaddress addrUnit, Map* map, int playerID); 
+
+/* Heal nearby unit if player has mage */
+void healMage(Player *currPlayer, int playerID, Map* map);
 
 void procHeal(Map *map, int unitID, int targetID); 
 

@@ -17,6 +17,7 @@
 #include <ctype.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <dirent.h>
 
 /* The constant of the game */
 const float MISS_CHANCE = 0.2;
@@ -206,15 +207,20 @@ void print_logo() {
 
 /* To print the map */
 void printMainMap() {
+    ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
     /* Just a space for printing the map */
     total_space = (w.ws_col-(4*width+7))/2;
 
-    if (total_space < 0) {
-        total_space = 0;
-    }
     printf("\n");
     printMap(map, currUnitID, total_space);
     printf("\n");
+    if (total_space < 0) {
+        total_space = (w.ws_col-62)/2;
+        for (i = 0; i < total_space; i++) {
+            putchar(' ');
+        }
+        printf("******* WARNING: YOUR MAP IS WIDER THAN YOUR TERMINAL *******\n");
+    }
 }
 
 /* Make a move for the unit */
@@ -498,6 +504,118 @@ void cmdEndTurn() {
     currPlayer->gold += currPlayer->income - currPlayer->upkeep;
 }
 
+/* Save the game */
+void cmdSave() {
+    int c;
+    static char fname[NAME_MAX];
+    int len;
+    printf("Enter filename to save to (or press enter for default): ");
+    /* Consume trailing newline from previous scanf() */
+    while ((c = getchar()) != '\n') {}
+    fgets(fname, sizeof(fname) - 6, stdin);
+    /* Remove trailing newline */
+    len = strlen(fname);
+    if (len > 0) {
+        fname[len - 1] = '\0';
+        len--;
+    }
+    if (len == 0) {
+        /* Provide default name */
+        Time now = getCurrentTime();
+        snprintf(fname, sizeof(fname), "BoO-%04d-%02d-%02d-%02d:%02d:%02d.save",
+                 Year(now), Month(now), Day(now),
+                 Hour(now), Minute(now), Second(now));
+    } else {
+        /* Make sure it ends in .save */
+        const char *suffix = ".save";
+        const int suffixlen = 5;
+        if ((len < suffixlen) || (strcmp(fname + len - suffixlen, suffix) != 0))
+            strcat(fname, suffix);
+    }
+    saveAs(fname, &map, players, nPlayers);
+    printMainMap();
+    printf("Your file was saved to %s!\n", fname);
+    putchar('\n');
+}
+
+/* Filter filenames for *.save */
+int filterSaves(const struct dirent *d) {
+    const char *suffix = ".save";
+    const int suffixlen = 5;
+    int len;
+    /* reject if it's not a regular file */
+    if (d->d_type != DT_REG)
+        return 0;
+    /* make sure it ends in .save */
+    len = strlen(d->d_name);
+    if ((len < suffixlen) || (strcmp(d->d_name + len - suffixlen, suffix) != 0))
+        return 0;
+    return 1;
+}
+
+/* Cleanup savefile list */
+void cleanupDirents(struct dirent **entries, int n) {
+    while (n-- > 0)
+        free(entries[n]);
+    free(entries);
+}
+
+/* Load a saved game */
+boolean loadGame() {
+    static char dirname[PATH_MAX];
+    struct dirent **saves;
+    int nSaves, i;
+    Time t;
+    /* Get name of current directory */
+    if (getcwd(dirname, sizeof(dirname)) == NULL)
+        strcpy(dirname, "unknown");
+    printf("\nLooking for save files in the current directory (%s)...\n", dirname);
+    /* Make a list of savefiles */
+    nSaves = scandir(".", &saves, filterSaves, alphasort);
+    if (nSaves == -1) {
+        perror("Cannot read directory");
+        return false;
+    }
+    if (nSaves == 0) {
+        puts("There are no savefiles here!");
+        return false;
+    }
+    printf("\nFound %d savefiles:\n\n", nSaves);
+    /* Print the savefiles */
+    for (i = 0; i < nSaves; i++) {
+        printf("%d. %s (", i + 1, saves[i]->d_name);
+        if (validateFile(saves[i]->d_name, &t))
+            printf("saved on %04d-%02d-%02d %02d:%02d:%02d)\n",
+                   Year(t), Month(t), Day(t),
+                   Hour(t), Minute(t), Second(t));
+        else
+            puts("corrupt)");
+    }
+    putchar('\n');
+    /* Ask for the user to select one */
+    i = 0;
+    while (i < 1 || i > nSaves) {
+        printf("Select a savefile to load (1-%d): ", nSaves);
+        scanf("%d", &i);
+    }
+    printf("\nLoading file %s...\n", saves[i - 1]->d_name);
+    if (loadFrom(saves[i - 1]->d_name, &map, &players, &nPlayers)) {
+        cleanupDirents(saves, nSaves);
+        totalPlayer = nPlayers;
+        indent();
+        puts("Game restored!");
+        width = width(map);
+        height = height(map);
+        nPlayer = totalPlayer;
+        return true;
+    } else {
+        cleanupDirents(saves, nSaves);
+        indent();
+        puts("Loading failed!");
+        return false;
+    }
+}
+
 /* Check if the game is done and find the winning player */
 void checkWin() {
     for (i = 1; i <= totalPlayer; i++) {
@@ -536,27 +654,8 @@ int main(const int argc, const char *argv[]) {
     scanf("%s", command);
     /* Program will load if user choose load */
     if (strcmp(command, "LOAD") == 0) {
-        if (loadFrom("savefile.boo", &map, &players, &nPlayers)) {
-            totalPlayer = nPlayers;
-            indent();
-            puts("Game restored!");
-            width = width(map);
-            height = height(map);
-            nPlayer = totalPlayer;           
-            /*Give WARNING */
-            ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-            if (4*width+4 > w.ws_col) {
-                total_space = (w.ws_col-62)/2;
-                for (i = 0; i < total_space; i++) {
-                    putchar(' ');
-                }
-                printf("******* WARNING: YOUR MAP IS WIDER THAN YOUR TERMINAL *******\n\n");
-            }
-        } else {
-        	indent();
-            puts("Loading failed!");
+        if (!loadGame())
             return 1;
-        }
     } else {
         /* Start the Game */
         printf("\x1B[2J\x1B[1;1H");
@@ -708,10 +807,7 @@ int main(const int argc, const char *argv[]) {
                 cmdEndTurn();
                 break;
             } else if (strcmp(command, "SAVE") == 0) {
-                saveAs("savefile.boo", &map, players, nPlayers);
-                printMainMap();
-                printf("Your file was saved !\n");
-                putchar('\n');
+                cmdSave();
             } else if (strcmp(command, "EXIT") == 0) {
                 goto exitGame;
             } else {

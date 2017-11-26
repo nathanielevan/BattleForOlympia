@@ -194,7 +194,7 @@ BattleResult procBattle(Map *map, int attackerID, int defenderID, int* ePlayerId
         attacker->canAttack = false;
 
         /* Check if the attack missed the target */
-        if ((float) rand()/RAND_MAX >= MISS_CHANCE) {
+        if ((float) rand()/RAND_MAX <= MISS_CHANCE) {
             /* The attack missed */
             battleResult.battleFlag = ATTACK_MISSED;
 
@@ -309,15 +309,10 @@ void procHeal(Map *map, int unitID, int targetID) {
     Unit *unit = getUnit(unitID);
     Unit *target = getUnit(targetID);
 
-    if (unit->canAttack) {
-        unit->canAttack = false;
-        target->health += unitTypes[unit->type].attack*3;
+    target->health += unitTypes[unit->type].attack;
 
-        if (target->health > unitTypes[target->type].maxHealth) {
-            target->health = unitTypes[target->type].maxHealth;
-        }
-    } else {
-        printf("You can't heal right now!\n");
+    if (target->health > unitTypes[target->type].maxHealth) {
+        target->health = unitTypes[target->type].maxHealth;
     }
 }
 

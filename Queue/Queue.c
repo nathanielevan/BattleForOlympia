@@ -12,7 +12,7 @@
 
 /* Prototype manajemen memori */
 
-void Alokasi (qaddress *P, int X)
+void qAlokasi (qaddress *P, int X)
 /* I.S. Sembarang */
 /* F.S. Alamat P dialokasi, jika berhasil maka Info(P)=X dan 
         Next(P)=NULL */
@@ -81,7 +81,7 @@ void qAdd (Queue * Q, int X)
   /* Kamus lokal */
   qaddress P;
   /* Algoritma */
-  Alokasi(&P, X);
+  qAlokasi(&P, X);
   if (P != NULL) {
     if (qIsEmpty(*Q))
       qHead(*Q) = P;

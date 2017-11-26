@@ -19,8 +19,10 @@
 
 /* The constant of the game */
 const float MISS_CHANCE = 0.2;
-const int STARTING_GOLD = 200;
-const int STARTING_INCOME = 100;
+const int STARTING_GOLD = 50;
+const int STARTING_INCOME = 5;
+const int MIN_TRIBUTE = 2;
+const int MAX_TRIBUTE = 5;
 
 struct winsize w;
 

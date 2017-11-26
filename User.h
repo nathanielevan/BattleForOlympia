@@ -4,6 +4,7 @@
 #include "Unit.h"
 #include "CircularList/CircularList.h"
 #include "LinearList/LinearList.h"
+#include "Queue/Queue.h"
 #include "boolean.h"
 
 typedef struct {
@@ -26,4 +27,9 @@ void createPlayers(const Map* map, int N);
 
 void addSquare(int playerID, int squareID);
 
+Queue createQueue(int nPlayers);
+
+void delUserQueue(Queue *queue, int* i);
+
+void changeUserTurn(Queue *queue);
 #endif /* BATTLEFOROLYMPIA_USER_H */

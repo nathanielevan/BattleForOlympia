@@ -55,3 +55,24 @@ void createPlayers(const Map* map, int N){
         llCreateEmpty(&player->squares);
     }
 }
+
+Queue createQueue(int nPlayers) {
+    Queue queue;
+    int i;
+    qCreateEmpty(&queue);
+    for (i = 1; i <= nPlayers; i++) {
+        qAdd(&queue, i);
+    }
+
+    return queue;
+}
+
+void delUserQueue(Queue *queue, int* i) {
+    qDel(queue, i);
+}
+
+void changeUserTurn(Queue *queue) {
+    int i;
+    qDel(queue, &i);
+    qAdd(queue, i);
+}

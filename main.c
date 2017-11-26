@@ -18,7 +18,7 @@
 #include <unistd.h>
 
 /* The constant of the game */
-const float MISS_CHANCE = 0.3;
+const float MISS_CHANCE = 0.2;
 const int STARTING_GOLD = 200;
 const int STARTING_INCOME = 100;
 
@@ -45,6 +45,7 @@ int playerID;
 Player *currPlayer, *ePlayer;
 /* Controller for the game */
 char command[20];
+Queue playersTurn;
 
 /* Game commands */
 
@@ -395,6 +396,7 @@ void cmdAttack(){
     else {
     	indent();
         puts("There are no enemies in your sight");
+        ePlayerID = 1;
         putchar('\n');
     }
     /* Free the memory for efficiency */
@@ -456,7 +458,7 @@ int main(const int argc, const char *argv[]) {
             puts("Game restored!");
             width = width(map);
             height = height(map);
-
+            nPlayer = totalPlayer;           
             /*Give WARNING */
             ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
             if (4*width+4 > w.ws_col) {
@@ -520,24 +522,29 @@ int main(const int argc, const char *argv[]) {
         generateMap(totalPlayer, map.width, map.height, &map);
     }
     /*Initialize playerID to 0 */
-    playerID = 0;
+    playerID = 0; 
+
+    /* Creater the player's turn */
+    playersTurn = createQueue(totalPlayer);
+
     /* The main loop of the program */
     while (nPlayer > 1) {
         /* Initialize */
-        castleID = (int*) malloc(sizeof(int) * 4);
-        playerID++;
-        if (playerID > totalPlayer) 
-            playerID = 1;
-
+        castleID = (int*) malloc(sizeof(int) * 4 * (totalPlayer-1));
+        playerID = qInfoHead(playersTurn);
         currPlayer = getPlayer(playerID);
+
+        while (!currPlayer->isPlayable) {
+            changeUserTurn(&playersTurn);
+            playerID = qInfoHead(playersTurn);
+            currPlayer = getPlayer(playerID);
+        }
 
         if (currPlayer->isPlayable) {
             currUnitID = lcInfo(lcFirst(currPlayer->units));
             currUnit = getUnit(currUnitID);
-        } else {
-            continue;
-        }
-            
+        } 
+
         initUndo();
         printMainMap();
         healMage(currPlayer, playerID, &map);
@@ -590,15 +597,16 @@ int main(const int argc, const char *argv[]) {
                 cmdRecruit();
             } else if (strcmp(command, "ATTACK") == 0){
                 cmdAttack();
+                /* When your king is dead */
                 if (!ownKing(playerID)) {
-                    while (getchar() != '\n') {}
+                    sleep(2);
                     currPlayer->isPlayable = false;
                     nPlayer--;
                     deleteOwner(playerID, &map);
                     printMainMap();
-                }
-                if (!ownKing(ePlayerID)) {
-                    while (getchar() != '\n') {}
+                /* When enemy's king is dead */
+                } else if (!ownKing(ePlayerID)) {
+                    sleep(2);
                     ePlayer = getPlayer(ePlayerID);
                     ePlayer->isPlayable = false;
                     nPlayer--;
@@ -612,6 +620,7 @@ int main(const int argc, const char *argv[]) {
                 cmdInfo();
             } else if (strcmp(command, "END_TURN") == 0) {
                 resetUnit(playerID);
+                changeUserTurn(&playersTurn);
                 cmdEndTurn();
                 break;
             } else if (strcmp(command, "SAVE") == 0) {
@@ -625,6 +634,8 @@ int main(const int argc, const char *argv[]) {
                 printf("You input the wrong command!\n\n");
             }
         }
+
+        free(castleID);
     }
     /* Label last */
     afterWin:

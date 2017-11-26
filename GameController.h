@@ -67,6 +67,5 @@ void AvailabeCastleLocation(Map map, int ownerID, int *castleID, int* numberOfCa
 int nextUnit(int ownerID, int currUnitID);
 
 /* Return the unitId of the choices of unit */
-int changeUnit(int ownerID);
 
 #endif

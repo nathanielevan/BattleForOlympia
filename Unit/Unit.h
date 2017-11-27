@@ -3,7 +3,7 @@
 
 #include "boolean.h"
 #include "Point/Point.h"
-#include "Map.h"
+#include "Map/Map.h"
 
 typedef enum { INVALID_TYPE = 0, KING, ARCHER, SWORDSMAN, WHITE_MAGE } TypeID;
 

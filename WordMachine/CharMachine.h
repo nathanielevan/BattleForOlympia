@@ -2,7 +2,7 @@
 #define CHARMACHINE_H_
 
 #include "boolean.h"
-#include "Checksum.h"
+#include "Checksum/Checksum.h"
 #include <stdio.h>
 
 #define CM_MARK EOF

@@ -1,10 +1,10 @@
 #include "boolean.h"
 #include "CircularList/CircularList.h"
-#include "GameController.h"
+#include "GameController/GameController.h"
 #include "Point/Point.h"
-#include "Unit.h"
-#include "User.h"
-#include "Map.h"
+#include "Unit/Unit.h"
+#include "User/User.h"
+#include "Map/Map.h"
 #include <stdlib.h>
 #include <stdio.h>
 

@@ -5,6 +5,8 @@ game
 *.o
 a.out
 *.boo
+*.save
 .gdb_history
 .#*
 #*#
+bin/

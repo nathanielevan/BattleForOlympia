@@ -6,7 +6,7 @@ Created at: 30/10/2017
 **/
 
 #include <stdio.h>
-#include "pcolor.h"
+#include "pcolor/pcolor.h"
 
 void print_white(char c) {
     if (c == 'K') {

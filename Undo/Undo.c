@@ -1,6 +1,6 @@
-#include "Undo.h"
-#include "Unit.h"
-#include "GameController.h"
+#include "Undo/Undo.h"
+#include "Unit/Unit.h"
+#include "GameController/GameController.h"
 #include "StackList/Stack.h"
 #include <assert.h>
 

@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 #include <time.h>
-#include "Time.h"
+#include "Time/Time.h"
 
 /* ***************************************************************** */
 /* IMPLEMENTASI PRIMITIF                                             */

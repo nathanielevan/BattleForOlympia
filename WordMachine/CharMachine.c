@@ -1,5 +1,5 @@
 #include "CharMachine.h"
-#include "Checksum.h"
+#include "Checksum/Checksum.h"
 #include <stdio.h>
 #include <assert.h>
 

@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include <math.h>
-#include "Point.h"
+#include "Point/Point.h"
 
 /* *** Konstruktor membentuk Point *** */
 Point MakePoint (int X, int Y)

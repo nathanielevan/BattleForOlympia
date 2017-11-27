@@ -1,5 +1,5 @@
-#include "User.h"
-#include "GameController.h"
+#include "User/User.h"
+#include "GameController/GameController.h"
 #include <string.h>
 #include <stdio.h>
 

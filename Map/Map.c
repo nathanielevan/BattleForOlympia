@@ -1,10 +1,10 @@
 /*
     Body of Map
 */
-#include "Map.h"
-#include "pcolor.h"
-#include "Unit.h"
-#include "User.h"
+#include "Map/Map.h"
+#include "pcolor/pcolor.h"
+#include "Unit/Unit.h"
+#include "User/User.h"
 #include <stdio.h>
 #include <stdlib.h>
 

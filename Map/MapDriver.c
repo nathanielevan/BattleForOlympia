@@ -1,9 +1,8 @@
 /* Testing driver of the map */
 
-#include "Unit.h"
-#include "User.h"
-#include "pcolor.h"
-#include "Map.h"
+#include "Unit/Unit.h"
+#include "User/User.h"
+#include "Map/Map.h"
 #include <stdio.h>
 
 /* The constant of the game */
@@ -32,7 +31,6 @@ int main () {
     scanf("%d", &height);
     /* Create the Map */
     createMap(height, width, &map);
-
     createPlayers(&map, numPlayer);
     initUnitPool(&map);
     /* Generate the map */

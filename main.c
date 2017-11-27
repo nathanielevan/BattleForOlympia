@@ -403,15 +403,15 @@ void cmdAttack(){
         /* All scenes you can get */
         if (battleResult.battleFlag == ATTACK_MISSED) {
         	indent();
-            puts("Ow no! Your attack missed.\n");
+            puts("Ow no! Your attack missed.\n\n");
         }
         else if (battleResult.battleFlag == ATTACK_NOT_PERFORMED) {
         	indent();
-            puts("Your unit is tired, it can't attack anymore.\n");
+            puts("Your unit is tired, it can't attack anymore.\n\n");
         }
         else {
         	indent();
-            printf("Your unit attack the enemy and inflict %d damage.\n", battleResult.atkDamageDone);
+            printf("Your unit attack the enemy and inflict %d damage.\n\n", battleResult.atkDamageDone);
             if (battleResult.defHealth < 0) {
             	indent();
                 puts("The enemy unit died!");
@@ -754,14 +754,15 @@ int main(const int argc, const char *argv[]) {
 
             if (currUnitID != 0) {
             	indent();
-                printf("Unit : %c (%d,%d) | HP %d | Movement Point : %d\n", 
+                printf("Unit : %c (%d,%d) | HP %d | Movement Point : %d | Attack : %d\n", 
                     unitTypes[currUnit->type].mapSymbol, 
                     absis(currUnit->location), 
                     ordinat(currUnit->location), 
                     currUnit->health, 
-                    currUnit->movPoints);
+                    currUnit->movPoints,
+                    unitTypes[currUnit->type].attack);
                	indent();
-                printf("--------------------------------------------\n");
+                printf("------------------------------------------------\n");
             }
             /* Print the available Command */
             printCommandAvailable();

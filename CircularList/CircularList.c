@@ -1,13 +1,4 @@
-/* File: lcListsirkuler.c
- * NIM            : 13516103
- * Nama           : Gerardus Samudra S.
- * Tanggal        : 2017-10-25
- * Topik praktikum: ADT lcList
- * Deskripsi      : Implementasi ADT lcList sirkuler dengan
- *                  representasi berkait dan lcaddress pointer
- */
-
-#include "CircularList/CircularList.h"
+#include "CircularList.h"
 #include <stdlib.h>
 #include <stdio.h>
 

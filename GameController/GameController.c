@@ -185,6 +185,9 @@ BattleResult procBattle(Map *map, int attackerID, int defenderID, int* ePlayerId
             /* Remove the unit from the map */
             getSquare(*map, defender->location)->unitID = 0;
         }
+
+        battleResult.battleFlag = ATTACK_SUCCEED;
+        return battleResult;
     }
 
     /* Check if the two units can battle */

@@ -1,13 +1,4 @@
-/* File: listlinier.c
- * NIM            : 13516103
- * Nama           : Gerardus Samudra S.
- * Tanggal        : 2017-10-27
- * Topik praktikum: ADT llList Linier
- * Deskripsi      : Implementasi ADT list berkait dengan representasi
- *                  fisik pointer
- */
-
-#include "LinearList/LinearList.h"
+#include "LinearList.h"
 #include <stdlib.h>
 #include <stdio.h>
 

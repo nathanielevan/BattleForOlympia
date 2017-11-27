@@ -6,14 +6,14 @@ UndoStkEntry undoStack;
 stkElement StackElmt;
 stkStack Stack;
 
-undoStack.unitID = 123;
-undoStack.oldLoc.X = 100;
-undoStack.oldLoc.Y = 200;
-undoStack.oldMovPoints = 2;
-undoStack.prevDestOwnerID = 120;
-
 int main()
 {
+    undoStack.unitID = 123;
+    undoStack.oldLoc.X = 100;
+    undoStack.oldLoc.Y = 200;
+    undoStack.oldMovPoints = 2;
+    undoStack.prevDestOwnerID = 120;
+
     printf("Welcome to Stack! We'll create an empty stack first...\n");
     stkCreateEmpty(&Stack);
     if (stkIsEmpty(Stack)) {

@@ -5,6 +5,7 @@
 #include "Unit/Unit.h"
 #include "User/User.h"
 #include "Map/Map.h"
+#include "GameConstants.h"
 #include <stdlib.h>
 #include <stdio.h>
 

@@ -6,10 +6,7 @@
 #include "Unit/Unit.h"
 #include "User/User.h"
 #include "Map/Map.h"
-
-extern const float MISS_CHANCE;
-extern const int STARTING_GOLD;
-extern const int STARTING_INCOME;
+#include "GameConstants.h"
 
 typedef enum { ATTACK_MISSED, ATTACK_NOT_PERFORMED, ATTACK_SUCCEED} BattleFlag;
 typedef enum { NO_AVAILABE_CASTLE = 0, NOT_ENOUGH_GOLD, RECRUIT_SUCCESS } RecruitOutcome;

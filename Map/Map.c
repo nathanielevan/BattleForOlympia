@@ -7,6 +7,7 @@
 #include "User/User.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "GameConstants.h"
 
 void createMap(int h, int w, Map* map) {
     /* Var lokal */

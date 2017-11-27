@@ -2,6 +2,7 @@
 #include "WordMachine/WordMachine.h"
 #include <stdio.h>
 #include <assert.h>
+#include "GameConstants.h"
 
 #ifndef NDEBUG
 void handleFailure() { }

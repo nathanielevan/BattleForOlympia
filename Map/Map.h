@@ -20,9 +20,6 @@ typedef struct {
     The square of the map
 */
 
-/* Maximum and minimum tributes from villages */
-extern const int MIN_TRIBUTE, MAX_TRIBUTE;
-
 typedef struct {
     int height;
     int width;

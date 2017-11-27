@@ -5,11 +5,6 @@
 #include "Map/Map.h"
 #include <stdio.h>
 
-/* The constant of the game */
-const float MISS_CHANCE = 0.3;
-const int STARTING_GOLD = 200;
-const int STARTING_INCOME = 100;
-
 /* Global Variables */
 Map map;
 int currUnitID = 0, total_space = 0, numPlayer = 2;

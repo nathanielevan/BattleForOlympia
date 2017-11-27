@@ -38,7 +38,7 @@ void wmConsumeWord();
 /* Mengakuisisi kata, menyimpan dalam CKata
    I.S. : CC adalah karakter pertama dari kata
    F.S. : CKata berisi kata yang sudah diakuisisi; 
-          CC = BLANK atau CC = MARK; 
+          CC = BLANK atau CC = MARK;
           CC adalah karakter sesudah karakter terakhir yang diakuisisi.
           Jika panjang kata melebihi NMax, maka sisa kata "dipotong" */
 

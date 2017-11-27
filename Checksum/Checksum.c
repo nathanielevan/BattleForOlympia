@@ -1,4 +1,4 @@
-#include "Checksum.h"
+#include "Checksum/Checksum.h"
 
 /* Adler-32 checksum (Mark Adler, circa 1995) */
 /* Specified in RFC 1950 (Deutsch and Gailly, 1996) */

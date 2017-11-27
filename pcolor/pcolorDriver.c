@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "pcolor.h"
+#include "pcolor/pcolor.h"
 
 const char InputDriver[] = "KWSACTVX";
 int foo;

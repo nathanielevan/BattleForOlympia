@@ -1,7 +1,7 @@
 #ifndef BATTLEFOROLYMPIA_USER_H
 #define BATTLEFOROLYMPIA_USER_H
 
-#include "Unit.h"
+#include "Unit/Unit.h"
 #include "CircularList/CircularList.h"
 #include "LinearList/LinearList.h"
 #include "Queue/Queue.h"

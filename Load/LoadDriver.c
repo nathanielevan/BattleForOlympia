@@ -1,6 +1,6 @@
-#include "Map.h"
-#include "User.h"
-#include "Load.h"
+#include "Map/Map.h"
+#include "User/User.h"
+#include "Load/Load.h"
 #include <stdio.h>
 
 Map map;

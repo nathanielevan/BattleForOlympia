@@ -3,9 +3,9 @@
 
 #include "boolean.h"
 #include "Point/Point.h"
-#include "Unit.h"
-#include "User.h"
-#include "Map.h"
+#include "Unit/Unit.h"
+#include "User/User.h"
+#include "Map/Map.h"
 
 extern const float MISS_CHANCE;
 extern const int STARTING_GOLD;

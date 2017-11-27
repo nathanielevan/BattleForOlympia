@@ -1,8 +1,8 @@
 #ifndef BATTLEFOROLYMPIA_LOAD_H
 #define BATTLEFOROLYMPIA_LOAD_H
 
-#include "Map.h"
-#include "User.h"
+#include "Map/Map.h"
+#include "User/User.h"
 #include "Time/Time.h"
 #include "boolean.h"
 

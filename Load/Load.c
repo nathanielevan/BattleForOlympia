@@ -1,4 +1,4 @@
-#include "Load.h"
+#include "Load/Load.h"
 #include "WordMachine/WordMachine.h"
 #include <stdio.h>
 #include <assert.h>

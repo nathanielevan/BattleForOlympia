@@ -1,9 +1,9 @@
 #ifndef BATTLEFOROLYMPIA_SAVE_H
 #define BATTLEFOROLYMPIA_SAVE_H
 
-#include "Map.h"
-#include "Unit.h"
-#include "User.h"
+#include "Map/Map.h"
+#include "Unit/Unit.h"
+#include "User/User.h"
 #include "boolean.h"
 #include <stdio.h>
 

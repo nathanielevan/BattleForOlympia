@@ -7,7 +7,7 @@
  *                  dengan HEAD dan TAIL eksplisit
  */
 
-#include "Queue.h"
+#include "Queue/Queue.h"
 #include <stdlib.h>
 
 /* Prototype manajemen memori */

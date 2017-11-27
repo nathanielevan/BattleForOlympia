@@ -2,7 +2,6 @@
 
 #include "Unit.h"
 #include "User.h"
-#include "pcolor.h"
 #include "Map.h"
 #include <stdio.h>
 
@@ -32,7 +31,6 @@ int main () {
     scanf("%d", &height);
     /* Create the Map */
     createMap(height, width, &map);
-
     createPlayers(&map, numPlayer);
     initUnitPool(&map);
     /* Generate the map */

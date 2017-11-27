@@ -26,5 +26,35 @@ clean:
 bin/llDriver: obj/llDriver.o obj/LinearList.o
 	$(CC) $(CFLAGS) -o $@ $^
 
+bin/pcolorDriver: obj/pcolorDriver.o obj/pcolor.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+bin/MapDriver: obj/MapDriver.o obj/Map.o obj/User.o obj/Unit.o obj/LinearList.o obj/Queue.o obj/Point.o obj/pcolor.o obj/CircularList.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+bin/pointDriver: obj/pointDriver.o obj/Point.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+bin/LoadDriver: obj/LoadDriver.o obj/Load.o obj/WordMachine.o obj/CharMachine.o obj/Checksum.o obj/Time.o obj/Map.o obj/User.o obj/Unit.o obj/LinearList.o obj/Queue.o obj/Point.o obj/pcolor.o obj/CircularList.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+bin/ChecksumDriver: obj/ChecksumDriver.o obj/Checksum.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+bin/WordMachineDriver: obj/WordMachineDriver.o obj/WordMachine.o obj/CharMachine.o obj/Checksum.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+bin/CircularListDriver: obj/CircularListDriver.o obj/CircularList.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+bin/lcDriver: obj/lcDriver.o obj/CircularList.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+bin/StackDriver: obj/StackDriver.o obj/Stack.o
+	$(CC) $(CFLAGS) -o $@ $^
+
+bin/timeDriver: obj/timeDriver.o obj/Time.o
+	$(CC) $(CFLAGS) -o $@ $^
+
 -include $(OBJS:%.o=%.d)
 -include $(DRIVEROBJS:%.o=%.d)

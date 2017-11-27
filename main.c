@@ -383,6 +383,7 @@ void cmdAttack(){
         indent();
         printf("Enemies that ​you​ ​can ​attack :\n");
         for (j = 0; j < numberOfUnits; j++) {
+            indent();
             Unit *unit = getUnit(listOfTargetID[j]);
             printf("%d. %c (%d,%d)\n", (j + 1), unitTypes[unit->type].mapSymbol, absis(unit->location), ordinat(unit->location));
         }
@@ -426,6 +427,7 @@ void cmdAttack(){
         }
     }
     else {
+        printMainMap();
     	indent();
         puts("There are no enemies in your sight");
         ePlayerID = 1;
@@ -633,7 +635,9 @@ void printCommandAvailable() {
 	indent();
     printf("AVAILABLE COMMANDS : \n"); 
     indent();
-    printf("MOVE | CHANGE_UNIT | NEXT_UNIT | MAP | INFO | SAVE | EXIT | END_TURN | RECRUIT | UNDO\n\n");
+    printf("MOVE | CHANGE_UNIT | ATTACK | NEXT_UNIT | MAP | \n");
+    indent();
+    printf("INFO | SAVE | EXIT | END_TURN | RECRUIT | UNDO\n\n");
 }
 
 /* Main Program */
